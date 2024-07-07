@@ -15,26 +15,26 @@ const Header = () => {
           <input
             type="text"
             placeholder="Search..."
-            className="bg-transparent outline-none w-24 sm:w-60"
+            className="bg-transparent outline-none w-24 sm:w-52"
           />
           <FaSearch className="text-slate-500 w-5" />
         </form>
-        <ul className="flex gap-4 text-white">
+        <ul className="flex gap-4 text-white items-center">
           <Link to="/">
             {' '}
-            <li className="hidden sm:inline cursor-pointer hover:text-slate-500 hover:underline">
+            <li className="hidden sm:inline cursor-pointer  rounded px-[6px] py-[5px] border-slate-900  hover:text-slate-500 hover:opacity-90">
               Home
             </li>{' '}
           </Link>
           <Link to="/about">
             {' '}
-            <li className="hidden sm:inline cursor-pointer hover:text-slate-500 hover:underline">
+            <li className="hidden sm:inline cursor-pointer  rounded px-[6px] py-[5px]  border-slate-900 hover:text-slate-500 hover:opacity-90">
               About
             </li>{' '}
           </Link>
           <Link to="sign-in">
             {' '}
-            <li className="cursor-pointer hover:text-slate-500 ">
+            <li className="cursor-pointer hover:text-slate-500 bg-slate-900 rounded  px-[10px] py-[4px] border-slate-900 hover:opacity-90">
               Sign in
             </li>{' '}
           </Link>
