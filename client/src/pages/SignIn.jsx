@@ -1,13 +1,18 @@
 /* eslint-disable react/no-unescaped-entities */
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  signInStart,
+  signInSuccess,
+  signInFailure,
+} from '../redux/user/userSlice';
 
 const SignIn = () => {
   const [formData, setFormData] = useState({});
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const {loading, error} = useSelector((state) => state.user);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
     setFormData({
@@ -19,29 +24,25 @@ const SignIn = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      setLoading(true);
+      dispatch(signInStart());
       const res = await fetch('/api/auth/signin', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(formData),
-        });
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
       const data = await res.json();
       if (data.success === false) {
-        setLoading(false);
-        setError(data.message);
+        dispatch(signInFailure(data.message));
         return;
       }
-      setLoading(false);
-      setError(null);
+      dispatch(signInSuccess(data));
       navigate('/');
       console.log(data);
     } catch (error) {
-      setLoading(false);
-      setError(error.message);
+      dispatch(signInFailure(error.message));
     }
-   
   };
 
   // console.log(formData);
@@ -63,7 +64,10 @@ const SignIn = () => {
           placeholder="password"
           onChange={handleChange}
         />
-        <button disabled={loading} className="cursor-pointer hover:opacity-90 disabled:opacity-80  bg-slate-900 text-white p-3 rounded-lg uppercase">
+        <button
+          disabled={loading}
+          className="cursor-pointer hover:opacity-90 disabled:opacity-80  bg-slate-900 text-white p-3 rounded-lg uppercase"
+        >
           {loading ? 'loading...' : 'sign in'}
         </button>
       </form>
@@ -73,7 +77,7 @@ const SignIn = () => {
           <span className="text-blue-700">Sign up</span>
         </Link>
       </div>
-      {error && <p className='text-red-500 mt-5'>{error}</p>}
+      {error && <p className="text-red-500 mt-5">{error}</p>}
     </div>
   );
 };
