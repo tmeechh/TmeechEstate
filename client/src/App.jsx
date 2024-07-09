@@ -4,7 +4,7 @@ import SignIn from './pages/SignIn.jsx';
 import SignUp from './pages/SignUp.jsx';
 import About from './pages/About.jsx';
 import Profile from './pages/Profile.jsx';
-import Header from './header/Header.jsx';
+import Header from './component/Header.jsx'
 
 
 const App = () => {
