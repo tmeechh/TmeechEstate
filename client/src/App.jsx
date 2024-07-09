@@ -4,18 +4,21 @@ import SignIn from './pages/SignIn.jsx';
 import SignUp from './pages/SignUp.jsx';
 import About from './pages/About.jsx';
 import Profile from './pages/Profile.jsx';
-import Header from './component/Header.jsx'
+import Navbar from './component/Navbar.jsx'
+import PrivateRoute from './component/PrivateRoute.jsx';
 
 
 const App = () => {
   return <BrowserRouter>
-    <Header/>
+    <Navbar/>
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/sign-in" element={<SignIn/>} />
       <Route path="/sign-up" element={<SignUp />} />
-      <Route path="/about" element={<About/>} />
-      <Route path="/profile" element={<Profile/> }/>
+      <Route path="/about" element={<About />} />
+      <Route element={<PrivateRoute />} >
+        <Route path="/profile" element={<Profile />} />
+      </Route>
     </Routes>
     </BrowserRouter>;
 };

@@ -1,7 +1,11 @@
 import { MagnifyingGlassIcon as FaSearch } from '@heroicons/react/24/solid';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const Header = () => {
+  const {currentUser} = useSelector((state) => state.user);
+  console.log('currentUser:', currentUser);
+
   return (
     <div className="bg-slate-400 shadow-md ">
       <div className=" flex justify-between items-center max-w-6xl mx-auto p-3">
@@ -32,11 +36,14 @@ const Header = () => {
               About
             </li>{' '}
           </Link>
-          <Link to="sign-in">
-            {' '}
-            <li className="cursor-pointer hover:text-slate-500 bg-slate-900 rounded  px-[10px] py-[4px] border-slate-900 hover:opacity-90">
-              Sign in
-            </li>{' '}
+          <Link to="profile">
+            {currentUser ? (
+              <img className='rounded-full h-7 w-7 object-cover' src={currentUser.avatar} alt="profile" />
+            ) : (
+              <li className="cursor-pointer hover:text-slate-500 bg-slate-900 rounded  px-[10px] py-[4px] border-slate-900 hover:opacity-90">
+               Sign in
+              </li>
+            )}
           </Link>
         </ul>
       </div>
