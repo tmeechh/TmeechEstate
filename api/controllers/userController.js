@@ -6,36 +6,34 @@ export const updateUser = async (req, res, next) => {
     console.log("req.user:", req.user);
     console.log("req.params.id:", req.params.id);
 
-    if (req.user._id.toString() !== req.params.id) {
-        return next(errorHandler(401, "You can only update your own account!"));
-    }
+    
+ // Convert both IDs to strings for comparison
+ if (!req.user || req.user.id !== req.params.id) {
+    return next(errorHandler(401, "You can only update your own account!"));
+  }
 
     try {
-        const user = await userModel.findById(req.params.id);
-
-        if (!user) {
-            return next(errorHandler(404, "User not found"));
-        }
-
-        // Update user fields
-        user.username = req.body.username || user.username;
-        user.email = req.body.email || user.email;
-
-        // Hash new password if provided
         if (req.body.password) {
-            user.password = bcryptjs.hashSync(req.body.password, 10);
+            req.body.password = bcryptjs.hashSync(req.body.password, 10);
+          }
+
+          const updatedUser = await userModel.findByIdAndUpdate(
+            req.params.id,
+            {
+              $set: {
+                username: req.body.username,
+                email: req.body.email,
+                password: req.body.password,
+                avatar: req.body.avatar,
+              },
+            },
+            { new: true }
+          );
+
+          const { password, ...rest } = updatedUser._doc;
+
+          res.status(200).json(rest);
+        } catch (error) {
+          next(error);
         }
-
-        // Update avatar if provided
-        user.avatar = req.body.avatar || user.avatar;
-
-        // Save updated user
-        const updatedUser = await user.save();
-
-        const { password, ...rest } = updatedUser._doc;
-        
-        res.status(200).json(rest);
-    } catch (error) {
-        next(error);
-    }
 }
