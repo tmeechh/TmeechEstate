@@ -1,6 +1,7 @@
 import { MagnifyingGlassIcon as FaSearch } from '@heroicons/react/24/solid';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import Hamburger from './Hamburger'
 
 const Header = () => {
   const {currentUser} = useSelector((state) => state.user);
@@ -8,7 +9,16 @@ const Header = () => {
 
   return (
     <div className="bg-slate-400 shadow-md ">
-      <div className=" flex justify-between items-center max-w-6xl mx-auto p-3">
+      <nav className="flex items-center justify-between px-8 py-3 md:hidden">
+        <Link to="/">
+          <h1 className="font-bold text-sm sm:text-xl flex flex-wrap">
+            <span className="text-slate-200">Tmeech</span>
+            <span className="text-slate-500">Estate</span>
+          </h1>
+        </Link>
+        <Hamburger />
+      </nav>
+      <div className="hidden md:flex justify-between items-center max-w-6xl mx-auto p-3">
         <Link to="/">
           <h1 className="font-bold text-sm sm:text-xl flex flex-wrap">
             <span className="text-slate-200">Tmeech</span>

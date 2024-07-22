@@ -146,6 +146,7 @@ const Profile = () => {
           src={formData.avatar || currentUser.avatar}
           alt="profile"
         />
+        
         <p className="text-sm self-center">
           {fileUploadError ? (
             <span className="text-red-700">Error image upload(max 2mb)</span>
