@@ -1,9 +1,15 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 
+
+
+
 body{
     --tw-bg-opacity: 1;
-    background-color: rgb(231 240 240 / var(--tw-bg-opacity)) 
+    background-color: rgb(231 240 240 / var(--tw-bg-opacity)) ;
+    font-family: "Nunito", sans-serif;
 }

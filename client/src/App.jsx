@@ -6,6 +6,7 @@ import About from './pages/About.jsx';
 import Profile from './pages/Profile.jsx';
 import Navbar from './component/Navbar.jsx'
 import PrivateRoute from './component/PrivateRoute.jsx';
+import CreatingListing from './pages/CreatingListing.jsx';
 
 
 const App = () => {
@@ -18,6 +19,7 @@ const App = () => {
       <Route path="/about" element={<About />} />
       <Route element={<PrivateRoute />} >
         <Route path="/profile" element={<Profile />} />
+        <Route path="/create-listing" element={<CreatingListing />} />
       </Route>
     </Routes>
     </BrowserRouter>;
