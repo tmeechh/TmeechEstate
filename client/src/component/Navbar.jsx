@@ -5,7 +5,7 @@ import Hamburger from './Hamburger'
 
 const Header = () => {
   const {currentUser} = useSelector((state) => state.user);
-  console.log('currentUser:', currentUser);
+  // console.log('currentUser:', currentUser);
 
   return (
     <div className="bg-slate-400 shadow-md ">
