@@ -63,10 +63,11 @@ const listingSchema = new mongoose.Schema(
             required: true,
             validate: {
               validator: function (value) {
+                const currentYear = new Date().getFullYear();
                 return value >= 1800 && value <= currentYear;
               },
               message: props => `${props.value} is not a valid year!`
-            }
+            } 
           }
         },
      {timestamps: true}

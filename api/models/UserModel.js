@@ -8,7 +8,7 @@ const userSchema = new mongoose.Schema(
       required: true,
       unique: true,
       match: [
-        /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/,
+        /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
         'Please enter a valid email address'
       ]
     },
@@ -21,3 +21,6 @@ const userSchema = new mongoose.Schema(
 
 const userModel = mongoose.models.user || mongoose.model('user', userSchema);
 export default userModel;
+
+
+ 
