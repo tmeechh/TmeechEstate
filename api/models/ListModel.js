@@ -54,9 +54,23 @@ const listingSchema = new mongoose.Schema(
             type: String,
             required:true,
         },
-    }, {timestamps: true}
+        squareFootage: {
+            type: Number,
+            required:true,
+        },
+        yearBuilt: {
+            type: Number,
+            required: true,
+            validate: {
+              validator: function (value) {
+                return value >= 1800 && value <= currentYear;
+              },
+              message: props => `${props.value} is not a valid year!`
+            }
+          }
+        },
+     {timestamps: true}
 )
-
 
 
 const Listing = mongoose.model('Listing', listingSchema);
