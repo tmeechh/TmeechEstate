@@ -1,6 +1,7 @@
+import dotenv from 'dotenv';
 import express from 'express';
 import mongoose from 'mongoose';
-import dotenv from 'dotenv';
+
 import userRouter from './routes/userRoute.js';
 import authRouter from './routes/authRoute.js';
 import cors from 'cors';

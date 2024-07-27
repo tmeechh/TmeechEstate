@@ -1,9 +1,16 @@
 import { useSelector } from 'react-redux';
 import { Outlet, Navigate } from 'react-router-dom';
 
-const PrivateRoute = () => {
-  const {currentUser} = useSelector((state) => state.user);
-  return currentUser ? <Outlet /> : <Navigate to="/sign-in" />;
+const PrivateRoute = ({ handleShowSignIn }) => {
+  const { currentUser } = useSelector((state) => state.user);
+
+  // console.log(currentUser);
+  if (!currentUser) {
+     handleShowSignIn();
+    return null;
+  }
+
+  return <Outlet />;
 };
 
 export default PrivateRoute;

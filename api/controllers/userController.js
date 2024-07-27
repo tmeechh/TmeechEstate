@@ -2,17 +2,22 @@ import Listing from "../models/ListModel.js";
 import userModel from "../models/UserModel.js";
 import { errorHandler } from "../utils/error.js";
 import bcryptjs from 'bcryptjs';
+import validator from 'validator';
 
 export const updateUser = async (req, res, next) => {
     console.log("req.user:", req.user);
     console.log("req.params.id:", req.params.id);
-
+ 
     
  // Convert both IDs to strings for comparison
  if (!req.user || req.user.id !== req.params.id) {
     return next(errorHandler(401, "You can only update your own account!"));
   }
 
+  if (req.body.email && !validator.isEmail(req.body.email)) {
+    return res.status(400).json({ message: 'Invalid email address' });
+  }
+ 
     try {
         if (req.body.password) {
             req.body.password = bcryptjs.hashSync(req.body.password, 10);

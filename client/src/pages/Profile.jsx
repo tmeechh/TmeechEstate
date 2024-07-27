@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux';
 import { useRef, useState, useEffect } from 'react';
+
 import {
   getDownloadURL,
   getStorage,
@@ -17,7 +18,7 @@ import {
   updateUserSuccess,
 } from '../redux/user/userSlice';
 import { useDispatch } from 'react-redux';
-import { Link } from 'react-router-dom';
+import {useNavigate, Link } from 'react-router-dom';
 
 //firebase image storage
 // allow read;
@@ -36,6 +37,8 @@ const Profile = () => {
   const [updateSuccess, setUpdateSuccess] = useState(false);
   const [userListings, setUserListings] = useState([]);
   const dispatch = useDispatch();
+  const [loadingListing, setLoadingListing] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (file) {
@@ -109,6 +112,7 @@ const Profile = () => {
         return;
       }
       dispatch(deleteUserSuccess(data));
+      navigate('/');
     } catch (error) {
       dispatch(deleteUserFailure(error.message));
     }
@@ -124,6 +128,7 @@ const Profile = () => {
         return;
       }
       dispatch(deleteUserSuccess(data));
+      navigate('/');
     } catch (error) {
       dispatch(deleteUserFailure(data.message));
     }
@@ -226,8 +231,8 @@ const Profile = () => {
       <p className="text-green-700 mt-5">
         {updateSuccess ? 'Profile updated successfully' : ''}
       </p>
-      <button onClick={handleShowListings} className="text-green-700 w-full ">
-        Show Listings
+      <button disabled={loadingListing}onClick={handleShowListings} className="text-green-700 w-full ">
+      {loadingListing ? '...' : 'Show Listings'}
       </button>
       <p className="text-red-700 mt-5">
         {showListingError ? 'Error fetching listings' : ''}
