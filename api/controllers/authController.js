@@ -24,7 +24,7 @@ export const forgotPassword = async (req, res, next) => {
     user.otpExpires = Date.now() + 10 * 60 * 1000; // 10 minutes
     await user.save();
 
-  
+   
 
     await emailService.sendOTPByEmail(email, user.username, otp); // Use the new service
     res.status(200).json({ message: 'OTP sent to email' });

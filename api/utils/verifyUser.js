@@ -14,7 +14,7 @@ export const verifyToken = (req, res, next) => {
       return next(errorHandler(403, 'Forbidden'));
     } 
 
-    req.user = { id: user.id };
+    req.user = { id: user._id };
     console.log('Verified user:', req.user);
     next();
   });
