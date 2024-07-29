@@ -87,12 +87,12 @@ const SignIn = ({ onClose, swapModal }) => {
         <div className="flex flex-col justify-between items-center mt-5">
           <div className="flex gap-1 text-[12px] lg:text-[16px]">
             <p> Do not have an account?</p>
-            <span onClick={() => swapModal()} className="text-blue-700">
+            <span onClick={() => swapModal()} className="text-blue-700 cursor-pointer">
               Sign up
             </span>
           </div>
 
-          <div className="hover:underline hover:text-gray-600 text-[12px] lg:text-[16px]">
+          <div onClick={onClose} className="hover:underline hover:text-gray-600 text-[12px] lg:text-[16px]">
             <Link to={'/forgot-password'}>Forgot Password?</Link>
           </div>
         </div>

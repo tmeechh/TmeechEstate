@@ -12,7 +12,7 @@ export const verifyToken = (req, res, next) => {
     if (err) {
       console.log('Token verification failed', err);
       return next(errorHandler(403, 'Forbidden'));
-    }
+    } 
 
     req.user = { id: user.id };
     console.log('Verified user:', req.user);

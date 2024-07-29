@@ -6,8 +6,9 @@ const ForgotPassword = () => {
   const [otpSent, setOtpSent] = useState(false);
   const [otp, setOtp] = useState('');
   const [loading, setLoading] = useState(false);
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [Otploading, setOtpLoading] = useState(false);
+  // const [password, setPassword] = useState('');
+  // const [confirmPassword, setConfirmPassword] = useState('');
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
 
@@ -62,10 +63,11 @@ const ForgotPassword = () => {
         {!otpSent ? (
           <form onSubmit={handleEmailSubmit} className="flex flex-col gap-4">
             <h1 className="text-2xl md:text-3xl text-center font-semibold">Forgot Password</h1>
+            <p className='text-[14px] text-center'>Enter your email to receive an OTP <br />for password reset.</p>
             <input
               className="border p-2 lg:p-3 rounded-xl outline-none"
               type="email"
-              placeholder="Email"
+              placeholder="Enter Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -86,8 +88,8 @@ const ForgotPassword = () => {
               onChange={(e) => setOtp(e.target.value)}
               required
             />
-            <button className="cursor-pointer hover:opacity-90 bg-slate-900 text-white p-2 lg:p-3 text-sm lg:text-[16px] rounded-xl uppercase">
-              Verify OTP
+            <button disabled={Otploading} className="cursor-pointer hover:opacity-90 bg-slate-900 text-white p-2 lg:p-3 text-sm lg:text-[16px] rounded-xl uppercase">
+            {Otploading ? 'Verifying...' : 'Verify OTP'}
             </button>
             {message && <p className="text-red-500 mt-5">{message}</p>}
           </form>

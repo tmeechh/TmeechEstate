@@ -54,7 +54,7 @@ const Hamburger = ({ onSignIn }) => {
                         toggleMenu();
                         onSignIn();
                       }}
-                      className="text-sm bg-slate-700 px-3 py-1 rounded-lg"
+                      className="text-sm cursor-pointer bg-slate-700 px-3 py-1 rounded-lg"
                     >
                       Sign In
                     </p>

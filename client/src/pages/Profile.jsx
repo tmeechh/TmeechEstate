@@ -137,9 +137,10 @@ const Profile = () => {
   const handleShowListings = async () => {
     try {
       setShowListingError(false);
+      setLoadingListing(true);
       const res = await fetch(`/api/user/listings/${currentUser._id}`);
       const data = await res.json();
-      if (data.success === false) {
+      if (data.success === false ) {
         setShowListingError(true);
         return;
       }
@@ -147,8 +148,28 @@ const Profile = () => {
       setUserListings(data);
     } catch (error) {
       setShowListingError(true);
+    } finally {
+      setLoadingListing(false); 
     }
   };
+
+  const handleListingDelete = async (listingId) => {
+    try {
+      const res = await fetch(`/api/listing/delete/${listingId}`, {
+        method: 'DELETE',
+      });
+      const data = await res.json();
+      if (data.success === false) {
+        console.log(data.message);
+        return;
+      }
+
+      setUserListings((prev) =>
+        prev.filter((listing) => listing._id !== listingId));
+    } catch (error) {
+       console.log(error.message);
+    }
+  }
 
   return (
     <div className="p-3 max-w-lg mx-auto">
@@ -179,6 +200,9 @@ const Profile = () => {
             ''
           )}
         </p>
+        <p className="text-green-700 mt-5 text-center">
+        {updateSuccess ? 'Profile updated successfully' : ''}
+      </p>
         <input
           type="text"
           id="username"
@@ -228,11 +252,9 @@ const Profile = () => {
         </span>
       </div>
       <p className="text-red-700 mt-5">{error ? error : ''}</p>
-      <p className="text-green-700 mt-5">
-        {updateSuccess ? 'Profile updated successfully' : ''}
-      </p>
-      <button disabled={loadingListing}onClick={handleShowListings} className="text-green-700 w-full ">
-      {loadingListing ? '...' : 'Show Listings'}
+     
+      <button disabled={loadingListing} onClick={handleShowListings} className="text-green-700 w-full ">
+      {loadingListing ? 'Loading...' : 'Show Listings'}
       </button>
       <p className="text-red-700 mt-5">
         {showListingError ? 'Error fetching listings' : ''}
@@ -263,7 +285,7 @@ const Profile = () => {
               </Link>
 
               <div className="flex flex-col items-center ">
-                <button className="text-red-700 uppercase">Delete</button>
+                <button onClick={()=>handleListingDelete(listing._id)} className="text-red-700 uppercase">Delete</button>
                 <button className="text-green-700 uppercase">Edit</button>
               </div>
             </div>

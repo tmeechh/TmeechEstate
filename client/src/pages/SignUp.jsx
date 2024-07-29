@@ -92,7 +92,7 @@ const SignUp = ({ onClose, swapModal, handleShowSignIn }) => {
         </form>
         <div className="flex gap-2 mt-5 text-[12px] lg:text-[16px]">
           <p>Have an account?</p>
-          <span onClick={() => swapModal()} className="text-blue-700">
+          <span onClick={() => swapModal()} className="text-blue-700 cursor-pointer">
             Sign in
           </span>
         </div>
