@@ -60,7 +60,7 @@ const listingSchema = new mongoose.Schema(
         },
         yearBuilt: {
             type: Number,
-            required: true,
+            required:true,
             validate: {
               validator: function (value) {
                 const currentYear = new Date().getFullYear();

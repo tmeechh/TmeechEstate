@@ -171,7 +171,7 @@ const CreatingListing = () => {
             className="outline-[#cbd5e1]   p-3 rounded-[6%]"
             id="name"
             maxLength={'62'}
-            minLength={'10'}
+            minLength={'7'}
             required
             onChange={handleChange}
             value={formData.name}
@@ -288,9 +288,8 @@ const CreatingListing = () => {
               <input
                 type="number"
                 id="bathrooms"
-                min="1"
+                min="0"
                 max="50"
-                required
                 className="outline-dashed outline-1 p-3 border border-gray-300 rounded-[15%]"
                 onChange={handleChange}
                 value={formData.bathrooms}
