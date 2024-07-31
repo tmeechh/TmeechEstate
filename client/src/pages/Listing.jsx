@@ -5,6 +5,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import SwiperCore from 'swiper';
 import { Navigation } from 'swiper/modules';
 import 'swiper/css/bundle';
+import { useSelector } from 'react-redux';
 import {
   FaBath,
   FaBed,
@@ -12,10 +13,11 @@ import {
   FaMapMarkedAlt,
   FaMapMarkerAlt,
   FaParking,
-    FaShare,
-    FaRulerCombined,
-    FaMap,
+  FaShare,
+  FaRulerCombined,
+  FaMap,
 } from 'react-icons/fa';
+import Contact from '../component/Contact.jsx';
 
 const Listing = () => {
   SwiperCore.use([Navigation]);
@@ -23,11 +25,14 @@ const Listing = () => {
   const [listing, setListing] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
-    const [copied, setCopied] = useState(false);
-    const formattedPriceDifference = listing && listing.regularPrice && listing.discountPrice !== undefined
-    ? (listing.regularPrice - listing.discountPrice).toLocaleString('en-US')
-    : 'N/A';
-  
+    const {currentUser} = useSelector((state) => state.user);
+  const [copied, setCopied] = useState(false);
+  const [contact, setContact] = useState(false);
+    
+  const formattedPriceDifference =
+    listing && listing.regularPrice && listing.discountPrice !== undefined
+      ? (listing.regularPrice - listing.discountPrice).toLocaleString('en-US')
+      : 'N/A';
 
   useEffect(() => {
     const fetchListing = async () => {
@@ -108,30 +113,67 @@ const Listing = () => {
             <p className="flex items-center mt-6 gap-2 text-slate-600  text-sm">
               <FaMapMarkerAlt className="text-green-700" />
               {listing.address}
-                      </p>
-                      
+            </p>
+
             <div className=" flex gap-4">
-            <p className="bg-red-900 w-full max-w-[200px] text-white text-center p-1 rounded-md">
-                   {listing.type === 'rent' ? 'For Rent' : 'For Sale'}            
-                          </p>
-                          {
-                              listing.offer && (
-                                  <p className='bg-green-900 w-full max-w-[200px] text-white text-center p-1 rounded-md'>{`$${formattedPriceDifference}`} Discount</p>
-                              )
-                          }
-                      </div>
-                      <p className='text-slate-800'> <span className='font-semibold text-black'>Description - {' '}</span> {listing.description}</p>
-                      <ul className='text-green-900 font-semibold text-sm flex flex-wrap gap-4 sm:gap-6 items-center'>
-                          <li className='flex items-center gap-1 whitespace-nowrap '><FaBed className='text-lg' />{listing.bedrooms > 1 ? `${listing.bedrooms} Bedrooms` : '1 Bedroom'}</li>
-                          <li  className='flex items-center gap-1 whitespace-nowrap '><FaBath className='text-lg' />{listing.bathrooms > 1 ? `${listing.bedrooms} Bathrooms` : '1 Bathroom'}</li>
-                          <li className='flex items-center gap-1 whitespace-nowrap '><FaParking className='text-lg' />{listing.parking ? 'Parking spot' : 'No Parking'}</li>
-                          <li className='flex items-center gap-1 whitespace-nowrap '><FaChair className='text-lg' />{listing.furnished ? 'Furnished' : 'Not furnished'}</li>
-                          <li className='flex items-center gap-1 whitespace-nowrap '><FaRulerCombined className='text-lg' />{listing.squareFootage.toLocaleString('en-US')} Sq Ft</li>
-                          <li className='flex items-center gap-1 whitespace-nowrap '><FaMap className='text-lg' />{listing.acre} Acre(s)</li>
-                      </ul>
-                      <p className='text-center text-[14px] whitespace-nowrap gap-1 flex font-[1000]  '> <span className=' font-semibold '>Year Built : {''}</span> {listing.yearBuilt }</p>
-                  </div>
-                  
+              <p className="bg-red-900 w-full max-w-[200px] text-white text-center p-1 rounded-md">
+                {listing.type === 'rent' ? 'For Rent' : 'For Sale'}
+              </p>
+              {listing.offer && (
+                <p className="bg-green-900 w-full max-w-[200px] text-white text-center p-1 rounded-md">
+                  {`$${formattedPriceDifference}`} Discount
+                </p>
+              )}
+            </div>
+            <p className="text-slate-800">
+              {' '}
+              <span className="font-semibold text-black">
+                Description -{' '}
+              </span>{' '}
+              {listing.description}
+            </p>
+            <ul className="text-green-900 font-semibold text-sm flex flex-wrap gap-4 sm:gap-6 items-center">
+              <li className="flex items-center gap-1 whitespace-nowrap ">
+                <FaBed className="text-lg" />
+                {listing.bedrooms > 1
+                  ? `${listing.bedrooms} Bedrooms`
+                  : '1 Bedroom'}
+              </li>
+              <li className="flex items-center gap-1 whitespace-nowrap ">
+                <FaBath className="text-lg" />
+                {listing.bathrooms > 1
+                  ? `${listing.bedrooms} Bathrooms`
+                  : '1 Bathroom'}
+              </li>
+              <li className="flex items-center gap-1 whitespace-nowrap ">
+                <FaParking className="text-lg" />
+                {listing.parking ? 'Parking spot' : 'No Parking'}
+              </li>
+              <li className="flex items-center gap-1 whitespace-nowrap ">
+                <FaChair className="text-lg" />
+                {listing.furnished ? 'Furnished' : 'Not furnished'}
+              </li>
+              <li className="flex items-center gap-1 whitespace-nowrap ">
+                <FaRulerCombined className="text-lg" />
+                {listing.squareFootage.toLocaleString('en-US')} Sq Ft
+              </li>
+              <li className="flex items-center gap-1 whitespace-nowrap ">
+                <FaMap className="text-lg" />
+                {listing.acre} Acre(s)
+              </li>
+            </ul>
+            <p className="text-center text-[14px] whitespace-nowrap gap-1 flex font-[1000]  ">
+              {' '}
+              <span className=" font-semibold ">Year Built : {''}</span>{' '}
+              {listing.yearBuilt}
+            </p>
+            {currentUser && listing.userRef !== currentUser._id && !contact &&  (
+              <button onClick={()=>setContact(true)} className="text-white bg-slate-800 rounded-lg uppercase p-2 hover:opacity-75">
+                Contact Landlord
+              </button>
+                      )}
+                      {contact && <Contact listing={listing} />}    
+          </div>
         </div>
       )}
     </main>

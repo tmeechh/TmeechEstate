@@ -1,4 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
+@import '@fortawesome/fontawesome-free/css/all.min.css';
+
 
 @tailwind base;
 @tailwind components;
@@ -14,31 +16,57 @@ body{
     font-family: "Nunito", sans-serif;
 }
 
-/* For navigation buttons */
+
+
+
+/* Swiper navigation buttons with Font Awesome icons */
 .swiper-button-next,
 .swiper-button-prev {
-  @apply text-gray-700 bg-white p-2 rounded h-auto shadow-lg mx-[1rem] sm:mx-[2rem] lg:mx-[5rem] ;
-  /* Add any additional styles you want */
+  background: none;
+  color: white; /* Change this to the desired color */
+  width: 40px;
+  height: 40px;
+  margin-left: 1rem;
+  margin-right: 1rem;
 }
 
-/* Adjust the size of the navigation icons */
 .swiper-button-next::after,
 .swiper-button-prev::after {
-  font-size: 20px; /* Adjust this value to change the size */
+  font-family: "Font Awesome 5 Free";
   font-weight: 900;
+  font-size: 24px; /* Change this to adjust the size */
 }
 
+.swiper-button-next::after {
+  content: "\f30b"; /* Font Awesome 'chevron-right' icon */
+  font-family: "Font Awesome 5 Free";
+}
+
+.swiper-button-prev::after {
+  font-family: "Font Awesome 5 Free";
+  content: "\f30a"; /* Font Awesome 'chevron-left' icon */
+}
+
+/* Additional styles for hover effects */
 .swiper-button-next:hover,
 .swiper-button-prev:hover {
-  @apply bg-gray-200;
-  /* Add any additional hover styles you want */
+  color: #555; /* Change this to the desired hover color */
 }
 
-/* For pagination dots */
-.swiper-pagination-bullet {
-  @apply bg-gray-700 ;
+/* Small screens and up */
+@media (min-width: 640px) {
+  .swiper-button-next,
+  .swiper-button-prev {
+    margin-left: 2rem;
+    margin-right: 2rem;
+  }
 }
 
-.swiper-pagination-bullet-active {
-  @apply bg-blue-500;
+/* Large screens and up */
+@media (min-width: 1024px) {
+  .swiper-button-next,
+  .swiper-button-prev {
+    margin-left: 5rem;
+    margin-right: 5rem;
+  }
 }

@@ -5,6 +5,7 @@ import {
   ref,
   uploadBytesResumable,
 } from 'firebase/storage';
+import { getAuth} from "firebase/auth";
 import { app } from '../firebase';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -34,6 +35,7 @@ const CreatingListing = () => {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
+  const auth = getAuth(app);
 
  
 
