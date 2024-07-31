@@ -68,7 +68,11 @@ const listingSchema = new mongoose.Schema(
               },
               message: props => `${props.value} is not a valid year!`
             } 
-          }
+        },
+        acre:{
+            type: String,
+            required:true,
+        },
         },
      {timestamps: true}
 )

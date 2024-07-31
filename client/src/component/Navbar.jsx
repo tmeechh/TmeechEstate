@@ -8,7 +8,7 @@ const Header = ({ onSignIn }) => {
   // console.log('currentUser:', currentUser);
 
   return (
-    <div className="bg-slate-400 shadow-md ">
+    <div className="bg-slate-600 shadow-md ">
       <nav className="flex items-center justify-between px-8 py-3 md:hidden">
         <Link to="/">
           <h1 className="font-bold text-sm sm:text-xl flex flex-wrap">

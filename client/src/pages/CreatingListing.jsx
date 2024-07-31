@@ -28,6 +28,7 @@ const CreatingListing = () => {
     furnished: false,
     squareFootage: 0,
     yearBuilt: 0,
+    acre:'',
   });
   const [imageUploadError, setImageUploadError] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -272,6 +273,17 @@ const CreatingListing = () => {
               />
               <p>Sq Ft</p>
             </div>
+            <div className="flex  items-center gap-2">
+              <input
+                type="text"
+                id="acre"
+                min="1"
+                className="outline-dashed outline-1 p-3 w-[40%]  border border-gray-300 rounded-[15%]"
+                onChange={handleChange}
+                value={formData.acre}
+              />
+              <p>Acre(s)</p>
+            </div>
             <div className="flex items-center gap-2">
               <input
                 type="number"
@@ -309,15 +321,18 @@ const CreatingListing = () => {
               />
               <div className="flex flex-col items-center">
                 <p>Regular price </p>
-                <span className="tex-xs text-gray-600">($/Month)</span>
+               
+                {formData.type === 'rent' && (
+                  <span className='text-xs'>($/month)</span>
+                )}
               </div>
             </div>
-            {formData.offer && (
+            {formData.offer &&  (
               <div className="flex items-center gap-2">
                 <input
                   type="number"
                   id="discountPrice"
-                  min="0"
+                  min="50"
                   max="100000000"
                   required
                   onChange={handleChange}
@@ -326,7 +341,9 @@ const CreatingListing = () => {
                 />
                 <div className="flex flex-col items-center">
                   <p>Discounted price </p>
-                  <span className="tex-xs text-gray-600">($/Month)</span>
+                  {formData.type === 'rent' && (
+                    <span className='text-xs'>($/month)</span>
+                  )}
                 </div>
               </div>
             )}

@@ -13,7 +13,7 @@ import { useEffect } from 'react';
 const UpdateListing = () => {
   const { currentUser } = useSelector((state) => state.user);
   const navigate = useNavigate();
-    const params = useParams();
+  const params = useParams();
   const [files, setFiles] = useState([]);
   const [formData, setFormData] = useState({
     imageUrls: [],
@@ -30,28 +30,27 @@ const UpdateListing = () => {
     furnished: false,
     squareFootage: 0,
     yearBuilt: 0,
+    acre: '',
   });
   const [imageUploadError, setImageUploadError] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
 
-
-    useEffect(() => {
-        const fetchListing = async () => {
-            const listingId = params.listingId;
-            const res = await fetch(`/api/listing/get/${listingId}`);
-            const data = await res.json();
-            if (data.success === false) {
-                console.log();(data.message);
-                return;
-            }
-            setFormData(data);
-        }
-        fetchListing();
-    }, []);
-    
- 
+  useEffect(() => {
+    const fetchListing = async () => {
+      const listingId = params.listingId;
+      const res = await fetch(`/api/listing/get/${listingId}`);
+      const data = await res.json();
+      if (data.success === false) {
+        console.log();
+        data.message;
+        return;
+      }
+      setFormData(data);
+    };
+    fetchListing();
+  }, []);
 
   const handleImageSubmit = (e) => {
     if (files.length > 0 && files.length + formData.imageUrls.length < 7) {
@@ -168,7 +167,7 @@ const UpdateListing = () => {
       if (data.success === false) {
         setError(data.message);
       }
-      navigate(`/listing/${data._id}`)
+      navigate(`/listing/${data._id}`);
     } catch (error) {
       setError(error.message);
       setLoading(false);
@@ -289,12 +288,23 @@ const UpdateListing = () => {
               />
               <p>Sq Ft</p>
             </div>
+            <div className="flex  items-center gap-2">
+              <input
+                type="text"
+                id="acre"
+                min="1"
+                required
+                className="outline-dashed outline-1 p-3 w-[40%] border border-gray-300 rounded-[15%]"
+                onChange={handleChange}
+                value={formData.acre}
+              />
+              <p>Acre(s)</p>
+            </div>
             <div className="flex items-center gap-2">
               <input
                 type="number"
                 id="yearBuilt"
                 min="1"
-                
                 className="outline-dashed outline-1 w-[40%]   p-3 border border-gray-300 rounded-[15%]"
                 onChange={handleChange}
                 value={formData.yearBuilt}
@@ -327,7 +337,10 @@ const UpdateListing = () => {
               />
               <div className="flex flex-col items-center">
                 <p>Regular price </p>
-                <span className="tex-xs text-gray-600">($/Month)</span>
+
+                {formData.type === 'rent' && (
+                  <span className="text-xs">($/month)</span>
+                )}
               </div>
             </div>
             {formData.offer && (
@@ -344,7 +357,9 @@ const UpdateListing = () => {
                 />
                 <div className="flex flex-col items-center">
                   <p>Discounted price </p>
-                  <span className="tex-xs text-gray-600">($/Month)</span>
+                  {formData.type === 'rent' && (
+                    <span className="text-xs">($/month)</span>
+                  )}
                 </div>
               </div>
             )}
@@ -398,7 +413,10 @@ const UpdateListing = () => {
                 </button>
               </div>
             ))}
-          <button disabled={loading || uploading} className="p-3 bg-slate-700 text-white rounded-lg uppercase hover:opacity-95 disabled:opacity-80">
+          <button
+            disabled={loading || uploading}
+            className="p-3 bg-slate-700 text-white rounded-lg uppercase hover:opacity-95 disabled:opacity-80"
+          >
             {loading ? 'Updating...' : 'Update listing'}
           </button>
           {error && <p className="text-red-700 text-sm">{error}</p>}
