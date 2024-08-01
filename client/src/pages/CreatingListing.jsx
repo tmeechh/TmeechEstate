@@ -185,12 +185,12 @@ const CreatingListing = () => {
       <h1 className="text-3xl font-semibold text-center my-7 ">
         Create a Listing
       </h1>
-      <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-4">
+      <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-5">
         <div className="flex flex-col gap-4 flex-1">
           <input
             type="text"
             placeholder="Name"
-            className="outline-[#cbd5e1]   p-3 rounded-[6%]"
+            className="outline-[#cbd5e1]   p-3 rounded-lg"
             id="name"
             maxLength={'62'}
             minLength={'7'}
@@ -201,7 +201,7 @@ const CreatingListing = () => {
           <textarea
             type="text"
             placeholder="Description"
-            className="outline-[#cbd5e1] border p-3 rounded-[6%]"
+            className="outline-[#cbd5e1] border p-3 rounded-lg"
             id="description"
             required
             onChange={handleChange}
@@ -210,75 +210,75 @@ const CreatingListing = () => {
           <input
             type="text"
             placeholder="Address"
-            className="outline-[#cbd5e1] border p-3 rounded-[6%]"
+            className="outline-[#cbd5e1] border p-3 rounded-lg"
             id="address"
             required
             onChange={handleChange}
             value={formData.address}
           />
           <div className="flex gap-6 flex-wrap">
-            <div className="flex gap-2">
+            <div className="items-center flex gap-2">
               <input
                 type="checkbox"
                 id="sale"
-                className="w-5 cursor-pointer"
+                className="custom-checkbox cursor-pointer"
                 onChange={handleChange}
                 checked={formData.type === 'sale'}
               />{' '}
               <span>Sell</span>
             </div>
-            <div className="flex gap-2">
+            <div className="items-center flex gap-2">
               <input
                 type="checkbox"
                 id="rent"
-                className="w-5 cursor-pointer"
+                className="custom-checkbox cursor-pointer"
                 onChange={handleChange}
                 checked={formData.type === 'rent'}
               />{' '}
               <span>Rent</span>
             </div>
-            <div className="flex gap-2">
+            <div className="items-center flex gap-2">
               <input
                 type="checkbox"
                 id="parking"
-                className="w-5 cursor-pointer"
+                className="custom-checkbox cursor-pointer"
                 onChange={handleChange}
                 checked={formData.parking}
               />{' '}
               <span>Parking spot</span>
             </div>
-            <div className="flex gap-2">
+            <div className="items-center flex gap-2">
               <input
                 type="checkbox"
                 id="furnished"
-                className="w-5 cursor-pointer"
+                className="custom-checkbox cursor-pointer"
                 onChange={handleChange}
                 checked={formData.furnished}
               />{' '}
               <span>Furnished</span>
             </div>
-            <div className="flex gap-2">
+            <div className="items-center flex gap-2">
               <input
                 type="checkbox"
                 id="offer"
-                className="w-5 cursor-pointer"
+                className="custom-checkbox cursor-pointer"
                 onChange={handleChange}
                 checked={formData.offer}
               />{' '}
               <span>Offer</span>
             </div>
-            <div className="flex gap-2">
+            <div className="flex items-center gap-2">
               <input
                 type="checkbox"
                    id="priceUponRequest"
-                className="w-5 cursor-pointer"
+                className="custom-checkbox cursor-pointer"
                 onChange={handleChange}
                 checked={priceUponRequest}
               />{' '}
               <span>Price Upon Request</span>
             </div>
           </div>
-          <div className="flex   flex-wrap gap-6">
+          <div className="grid grid-cols-[3fr,2fr] gap-6">
             <div className="flex   items-center gap-2">
               <input
                 type="number"
@@ -292,13 +292,25 @@ const CreatingListing = () => {
               />
               <p>Beds</p>
             </div>
+            <div className="flex items-center gap-2">
+              <input
+                type="number"
+                id="bathrooms"
+                min="0"
+                max="50"
+                className="outline-dashed outline-1 p-3 border border-gray-300 rounded-[15%]"
+                onChange={handleChange}
+                value={formData.bathrooms}
+              />
+              <p>Baths</p>
+            </div>
             <div className="flex  items-center gap-2">
               <input
                 type="number"
                 id="squareFootage"
                 min="1"
                
-                className="outline-dashed outline-1 p-3 w-[40%] border border-gray-300 rounded-[15%]"
+                className="outline-dashed outline-1 p-3 w-[50%] border border-gray-300 rounded-[15%]"
                 onChange={handleChange}
                 value={formData.squareFootage}
               />
@@ -327,18 +339,7 @@ const CreatingListing = () => {
               />
               <p>Year Built</p>
             </div>
-            <div className="flex items-center gap-2">
-              <input
-                type="number"
-                id="bathrooms"
-                min="0"
-                max="50"
-                className="outline-dashed outline-1 p-3 border border-gray-300 rounded-[15%]"
-                onChange={handleChange}
-                value={formData.bathrooms}
-              />
-              <p>Baths</p>
-            </div>
+           
             {!priceUponRequest && (
   <div className="flex flex-wrap gap-6">
     <div className="flex items-center gap-2">
@@ -348,12 +349,12 @@ const CreatingListing = () => {
         min="50"
         max="1000000000"
         required
-        className="outline-dashed outline-1 py-3 px-[10px] border border-gray-300 rounded-[15%]"
+        className="outline-dashed outline-1 py-3 px-[10px] border border-gray-300 rounded-[15%] "
         onChange={handleChange}
         value={formData.regularPrice}
       />
       <div className="flex flex-col items-center">
-        <p>Regular price </p>
+        <p className='whitespace-nowrap'>Regular price </p>
         {formData.type === 'rent' && (
           <span className="text-xs">($/Annual)</span>
         )}
@@ -372,7 +373,7 @@ const CreatingListing = () => {
           className="outline-dashed outline-1 py-3 px-[10px] border border-gray-300 rounded-[15%]"
         />
         <div className="flex flex-col items-center">
-          <p>Discounted price </p>
+          <p className='whitespace-nowrap'>Discounted price </p>
           {formData.type === 'rent' && (
             <span className="text-xs">($/Annual)</span>
           )}
@@ -393,7 +394,7 @@ const CreatingListing = () => {
           <div className="flex gap-4">
             <input
               onChange={(e) => setFiles(e.target.files)}
-              className="cursor-pointer p-3 border border-gray-400 rounded-[6%] w-full"
+              className="cursor-pointer p-3 border border-gray-400 rounded-lg w-full"
               type="file"
               id="images"
               accept="images/*"
@@ -431,7 +432,7 @@ const CreatingListing = () => {
                 </button>
               </div>
             ))}
-          <button disabled={loading || uploading} className="p-3 bg-slate-700 text-white rounded-lg uppercase hover:opacity-95 disabled:opacity-80">
+          <button disabled={loading || uploading} className="p-3 bg-slate-700 text-white rounded-lg uppercase hover:opacity-75 disabled:opacity-80">
             {loading ? 'Creating...' : 'Create listing'}
           </button>
           {error && <p className="text-red-700 text-sm">{error}</p>}

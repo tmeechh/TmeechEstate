@@ -231,68 +231,68 @@ const UpdateListing = () => {
             value={formData.address}
           />
           <div className="flex gap-6 flex-wrap">
-            <div className="flex gap-2">
+            <div className="items-center flex gap-2">
               <input
                 type="checkbox"
                 id="sale"
-                className="w-5 cursor-pointer"
+               className="custom-checkbox cursor-pointer"
                 onChange={handleChange}
                 checked={formData.type === 'sale'}
               />{' '}
               <span>Sell</span>
             </div>
-            <div className="flex gap-2">
+            <div className="items-center flex gap-2">
               <input
                 type="checkbox"
                 id="rent"
-                className="w-5 cursor-pointer"
+               className="custom-checkbox cursor-pointer"
                 onChange={handleChange}
                 checked={formData.type === 'rent'}
               />{' '}
               <span>Rent</span>
             </div>
-            <div className="flex gap-2">
+            <div className="items-center flex gap-2">
               <input
                 type="checkbox"
                 id="parking"
-                className="w-5 cursor-pointer"
+               className="custom-checkbox cursor-pointer"
                 onChange={handleChange}
                 checked={formData.parking}
               />{' '}
               <span>Parking spot</span>
             </div>
-            <div className="flex gap-2">
+            <div className="items-center flex gap-2">
               <input
                 type="checkbox"
                 id="furnished"
-                className="w-5 cursor-pointer"
+                className="custom-checkbox cursor-pointer"
                 onChange={handleChange}
                 checked={formData.furnished}
               />{' '}
               <span>Furnished</span>
             </div>
-            <div className="flex gap-2">
+            <div className="items-center flex gap-2">
               <input
                 type="checkbox"
                 id="offer"
-                className="w-5 cursor-pointer"
+                className="custom-checkbox cursor-pointer"
                 onChange={handleChange}
                 checked={formData.offer}
               />{' '}
               <span>Offer</span>
             </div>
-            <div className="flex gap-2">
+            <div className="items-center flex gap-2">
               <input
                 type="checkbox"
                    id="priceUponRequest"
-                className="w-5 cursor-pointer"
+                className="custom-checkbox cursor-pointer"
                 onChange={handleChange}
                 checked={priceUponRequest}
               />{' '}
               <span>Price Upon Request</span>
             </div>
           </div>
-          <div className="flex   flex-wrap gap-6">
+          <div className="grid grid-cols-[2fr,3fr] gap-6">
             <div className="flex   items-center gap-2">
               <input
                 type="number"
@@ -306,13 +306,26 @@ const UpdateListing = () => {
               />
               <p>Beds</p>
             </div>
+            <div className="flex items-center gap-2">
+              <input
+                type="number"
+                id="bathrooms"
+                min="1"
+                max="50"
+                required
+                className="outline-dashed outline-1 p-3 border border-gray-300 rounded-[15%]"
+                onChange={handleChange}
+                value={formData.bathrooms}
+              />
+              <p>Baths</p>
+            </div>
             <div className="flex  items-center gap-2">
               <input
                 type="number"
                 id="squareFootage"
                 min="1"
                 
-                className="outline-dashed outline-1 p-3 w-[40%] border border-gray-300 rounded-[15%]"
+                className="outline-dashed outline-1 p-3 w-[50%] border border-gray-300 rounded-[15%]"
                 onChange={handleChange}
                 value={formData.squareFootage}
               />
@@ -341,19 +354,7 @@ const UpdateListing = () => {
               />
               <p>Year Built</p>
             </div>
-            <div className="flex items-center gap-2">
-              <input
-                type="number"
-                id="bathrooms"
-                min="1"
-                max="50"
-                required
-                className="outline-dashed outline-1 p-3 border border-gray-300 rounded-[15%]"
-                onChange={handleChange}
-                value={formData.bathrooms}
-              />
-              <p>Baths</p>
-            </div>
+           
             {!priceUponRequest && (
   <div className="flex flex-wrap gap-6">
     <div className="flex items-center gap-2">
@@ -368,7 +369,7 @@ const UpdateListing = () => {
         value={formData.regularPrice}
       />
       <div className="flex flex-col items-center">
-        <p>Regular price </p>
+        <p className='whitespace-nowrap'>Regular price </p>
         {formData.type === 'rent' && (
           <span className="text-xs">($/Annual)</span>
         )}
@@ -387,7 +388,7 @@ const UpdateListing = () => {
           className="outline-dashed outline-1 py-3 px-[10px] border border-gray-300 rounded-[15%]"
         />
         <div className="flex flex-col items-center">
-          <p>Discounted price </p>
+          <p className='whitespace-nowrap'>Discounted price </p>
           {formData.type === 'rent' && (
             <span className="text-xs">($/Annual)</span>
           )}

@@ -12,6 +12,7 @@ import ResetPassword from './pages/ResetPassword.jsx';
 import { useState } from 'react';
 import UpdateListing from './pages/UpdateListing.jsx';
 import Listing from './pages/Listing.jsx';
+import Search from './pages/Search.jsx';
 
 const App = () => {
   const [showSignIn, setShowSignIn] = useState(false);
@@ -48,6 +49,7 @@ const App = () => {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/about" element={<About />} />
+        <Route path="/search" element={<Search />} />
         <Route path="/listing/:listingId" element={<Listing />} />
 
 

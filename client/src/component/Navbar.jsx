@@ -48,7 +48,7 @@ const Navbar = ({ onSignIn }) => {
         </Link>
         <form
           onSubmit={handleSubmit}
-          className="bg-slate-200 p-[10px] rounded-lg flex   items-center "
+          className="bg-slate-100 p-[12px] rounded-lg flex   items-center "
         >
           <input
             type="text"
