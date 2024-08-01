@@ -27,15 +27,16 @@ const CreatingListing = () => {
     offer: false,
     parking: false,
     furnished: false,
-    squareFootage: 0,
-    yearBuilt: 0,
-    acre:'',
+    squareFootage: null,
+    yearBuilt: null,
+    acre:null,
   });
   const [imageUploadError, setImageUploadError] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
   const auth = getAuth(app);
+  const [priceUponRequest, setPriceUponRequest] = useState(false);
 
  
 
@@ -110,12 +111,23 @@ const CreatingListing = () => {
     if (
       e.target.id === 'parking' ||
       e.target.id === 'furnished' ||
-      e.target.id === 'offer'
+      e.target.id === 'offer'||
+      e.target.id === 'priceUponRequest'
     ) {
       setFormData({
         ...formData,
         [e.target.id]: e.target.checked,
       });
+      if (e.target.id === 'priceUponRequest') {
+        setPriceUponRequest(e.target.checked);
+        if (e.target.checked) {
+          setFormData({
+            ...formData,
+            regularPrice: null,
+            discountPrice: null,
+          });
+        }
+      }
     }
 
     if (
@@ -135,10 +147,13 @@ const CreatingListing = () => {
     try {
       if (formData.imageUrls.length < 1)
         return setError('you must upload at least one image');
-      if (+formData.regularPrice < +formData.discountPrice)
+      if (!priceUponRequest && +formData.regularPrice < +formData.discountPrice)
         return setError('Discount Price must be lower than regular price');
       setLoading(true);
       setError(false);
+
+
+
       const res = await fetch('/api/listing/create', {
         method: 'POST',
         headers: {
@@ -147,6 +162,10 @@ const CreatingListing = () => {
         body: JSON.stringify({
           ...formData,
           userRef: currentUser._id,
+          priceUponRequest,
+          squareFootage: formData.squareFootage || null,
+          yearBuilt: formData.yearBuilt || null,
+          acre: formData.acre || null,
         }),
       });
       const data = await res.json();
@@ -248,6 +267,16 @@ const CreatingListing = () => {
               />{' '}
               <span>Offer</span>
             </div>
+            <div className="flex gap-2">
+              <input
+                type="checkbox"
+                   id="priceUponRequest"
+                className="w-5 cursor-pointer"
+                onChange={handleChange}
+                checked={priceUponRequest}
+              />{' '}
+              <span>Price Upon Request</span>
+            </div>
           </div>
           <div className="flex   flex-wrap gap-6">
             <div className="flex   items-center gap-2">
@@ -268,7 +297,7 @@ const CreatingListing = () => {
                 type="number"
                 id="squareFootage"
                 min="1"
-                required
+               
                 className="outline-dashed outline-1 p-3 w-[40%] border border-gray-300 rounded-[15%]"
                 onChange={handleChange}
                 value={formData.squareFootage}
@@ -291,7 +320,7 @@ const CreatingListing = () => {
                 type="number"
                 id="yearBuilt"
                 min="1"
-                required
+                
                 className="outline-dashed outline-1 w-[40%]   p-3 border border-gray-300 rounded-[15%]"
                 onChange={handleChange}
                 value={formData.yearBuilt}
@@ -310,45 +339,48 @@ const CreatingListing = () => {
               />
               <p>Baths</p>
             </div>
-            <div className="flex items-center gap-2">
-              <input
-                type="number"
-                id="regularPrice"
-                min="50"
-                max="1000000000"
-                required
-                className="outline-dashed outline-1 py-3 px-[10px] border border-gray-300 rounded-[15%]"
-                onChange={handleChange}
-                value={formData.regularPrice}
-              />
-              <div className="flex flex-col items-center">
-                <p>Regular price </p>
-               
-                {formData.type === 'rent' && (
-                  <span className='text-xs'>($/month)</span>
-                )}
-              </div>
-            </div>
-            {formData.offer &&  (
-              <div className="flex items-center gap-2">
-                <input
-                  type="number"
-                  id="discountPrice"
-                  min="50"
-                  max="100000000"
-                  required
-                  onChange={handleChange}
-                  value={formData.discountPrice}
-                  className="outline-dashed outline-1 py-3 px-[10px] border border-gray-300 rounded-[15%]"
-                />
-                <div className="flex flex-col items-center">
-                  <p>Discounted price </p>
-                  {formData.type === 'rent' && (
-                    <span className='text-xs'>($/month)</span>
-                  )}
-                </div>
-              </div>
-            )}
+            {!priceUponRequest && (
+  <div className="flex flex-wrap gap-6">
+    <div className="flex items-center gap-2">
+      <input
+        type="number"
+        id="regularPrice"
+        min="50"
+        max="1000000000"
+        required
+        className="outline-dashed outline-1 py-3 px-[10px] border border-gray-300 rounded-[15%]"
+        onChange={handleChange}
+        value={formData.regularPrice}
+      />
+      <div className="flex flex-col items-center">
+        <p>Regular price </p>
+        {formData.type === 'rent' && (
+          <span className="text-xs">($/Annual)</span>
+        )}
+      </div>
+    </div>
+    {formData.offer && (
+      <div className="flex items-center gap-2">
+        <input
+          type="number"
+          id="discountPrice"
+          min="50"
+          max="100000000"
+          required
+          onChange={handleChange}
+          value={formData.discountPrice}
+          className="outline-dashed outline-1 py-3 px-[10px] border border-gray-300 rounded-[15%]"
+        />
+        <div className="flex flex-col items-center">
+          <p>Discounted price </p>
+          {formData.type === 'rent' && (
+            <span className="text-xs">($/Annual)</span>
+          )}
+        </div>
+      </div>
+    )}
+  </div>
+)}
           </div>
         </div>
         <div className="flex flex-col flex-1 gap-4">

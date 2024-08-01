@@ -4,6 +4,16 @@ import mongoose from 'mongoose';
 
 export const createListing = async (req, res, next) => {
   try {
+    const createData = { ...req.body };
+
+    if (createData.priceUponRequest) {
+      createData.regularPrice = null;
+      createData.discountPrice = null;
+    }
+
+
+
+
       const listing = await Listing.create(req.body);
       return res.status(201).json(listing);
   } catch (error) {
@@ -48,6 +58,13 @@ export const updateListing = async (req, res, next) => {
       return next(errorHandler(401, 'You can only update your own listing'));
     }
 
+    const updateData = { ...req.body };
+
+    if (updateData.priceUponRequest) {
+      updateData.regularPrice = null;
+      updateData.discountPrice = null;
+    }
+
     const updatedListing = await Listing.findByIdAndUpdate(
       req.params.id,
       req.body,
@@ -75,7 +92,7 @@ export const getListings = async(req, res, next) => {
    try {
      const limit = parseInt(req.query.limit) || 9;
      const startIndex = parseInt(req.query.startIndex) || 0;
-     
+
      let offer = req.query.offer;
 
      if (offer === undefined || offer === 'false') {
@@ -93,7 +110,7 @@ export const getListings = async(req, res, next) => {
 
      if (parking === undefined || parking === 'false') {
        parking = {$in : [false, true]}
-     }
+     } 
 
      let type = req.query.type;
 

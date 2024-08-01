@@ -14,14 +14,24 @@ const listingSchema = new mongoose.Schema(
             type: String,
             required:true,
         },
+        priceUponRequest: {
+            type: Boolean,
+            default: false,
+        },
         regularPrice: {
             type: Number,
-            required:true,
-        },
-        discountPrice: {
+            required: function() {
+              return !this.priceUponRequest;
+            },
+            default: null,
+          },
+          discountPrice: {
             type: Number,
-            required:true,
-        },
+            required: function() {
+              return this.offer && !this.priceUponRequest;
+            },
+            default: null,
+          },
         bathrooms: {
             type: Number,
             required:true,
@@ -56,22 +66,23 @@ const listingSchema = new mongoose.Schema(
         },
         squareFootage: {
             type: Number,
-            required:true,
+            default: null,
         },
         yearBuilt: {
             type: Number,
-            required:true,
+            default: null,
             validate: {
-              validator: function (value) {
-                const currentYear = new Date().getFullYear();
-                return value >= 1800 && value <= currentYear;
+                validator: function (value) {
+                  if (value === null || value === undefined) return true;
+                  const currentYear = new Date().getFullYear();
+                  return value >= 1800 && value <= currentYear;
+                },
+                message: props => `${props.value} is not a valid year!`,
               },
-              message: props => `${props.value} is not a valid year!`
-            } 
         },
         acre:{
             type: String,
-            required:true,
+            default: null,
         },
         },
      {timestamps: true}
@@ -81,3 +92,12 @@ const listingSchema = new mongoose.Schema(
 const Listing = mongoose.model('Listing', listingSchema);
 
 export default Listing;
+
+
+// validate: {
+//     validator: function (value) {
+//       const currentYear = new Date().getFullYear();
+//       return value >= 1800 && value <= currentYear;
+//     },
+//     message: props => `${props.value} is not a valid year!`
+//   } 

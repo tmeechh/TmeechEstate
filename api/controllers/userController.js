@@ -17,7 +17,7 @@ export const updateUser = async (req, res, next) => {
   if (req.body.email && !validator.isEmail(req.body.email)) {
     return res.status(400).json({ message: 'Invalid email address' });
   }
- 
+  
     try {
         if (req.body.password) {
             req.body.password = bcryptjs.hashSync(req.body.password, 10);

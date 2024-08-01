@@ -25,10 +25,10 @@ const Listing = () => {
   const [listing, setListing] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
-    const {currentUser} = useSelector((state) => state.user);
+  const { currentUser } = useSelector((state) => state.user);
   const [copied, setCopied] = useState(false);
   const [contact, setContact] = useState(false);
-    
+
   const formattedPriceDifference =
     listing && listing.regularPrice && listing.discountPrice !== undefined
       ? (listing.regularPrice - listing.discountPrice).toLocaleString('en-US')
@@ -105,10 +105,12 @@ const Listing = () => {
           <div className="flex flex-col max-w-4xl mx-auto p-3 my-7 gap-4">
             <p className="text-2xl font-semibold">
               {listing.name} - ${' '}
-              {listing.offer
+              {listing.priceUponRequest
+                ? 'Price Upon Request'
+                : listing.offer
                 ? listing.discountPrice.toLocaleString('en-US')
                 : listing.regularPrice.toLocaleString('en-US')}
-              {listing.type === 'rent' && ' / month'}
+              {listing.type === 'rent' && ' / Annual'}
             </p>
             <p className="flex items-center mt-6 gap-2 text-slate-600  text-sm">
               <FaMapMarkerAlt className="text-green-700" />
@@ -119,7 +121,7 @@ const Listing = () => {
               <p className="bg-red-900 w-full max-w-[200px] text-white text-center p-1 rounded-md">
                 {listing.type === 'rent' ? 'For Rent' : 'For Sale'}
               </p>
-              {listing.offer && (
+              {!listing.priceUponRequest && listing.offer && (
                 <p className="bg-green-900 w-full max-w-[200px] text-white text-center p-1 rounded-md">
                   {`$${formattedPriceDifference}`} Discount
                 </p>
@@ -153,26 +155,34 @@ const Listing = () => {
                 <FaChair className="text-lg" />
                 {listing.furnished ? 'Furnished' : 'Not furnished'}
               </li>
-              <li className="flex items-center gap-1 whitespace-nowrap ">
-                <FaRulerCombined className="text-lg" />
-                {listing.squareFootage.toLocaleString('en-US')} Sq Ft
-              </li>
-              <li className="flex items-center gap-1 whitespace-nowrap ">
-                <FaMap className="text-lg" />
-                {listing.acre} Acre(s)
-              </li>
+              {listing.squareFootage && (
+                <li className="flex items-center gap-1 whitespace-nowrap ">
+                  <FaRulerCombined className="text-lg" />
+                  {listing.squareFootage.toLocaleString('en-US')} Sq Ft
+                </li>
+              )}
+              {listing.acre && (
+                <li className="flex items-center gap-1 whitespace-nowrap ">
+                  <FaMap className="text-lg" />
+                  {listing.acre} Acre(s)
+                </li>
+              )}
             </ul>
-            <p className="text-center text-[14px] whitespace-nowrap gap-1 flex font-[1000]  ">
-              {' '}
-              <span className=" font-semibold ">Year Built : {''}</span>{' '}
-              {listing.yearBuilt}
-            </p>
-            {currentUser && listing.userRef !== currentUser._id && !contact &&  (
-              <button onClick={()=>setContact(true)} className="text-white bg-slate-800 rounded-lg uppercase p-2 hover:opacity-75">
+            {listing.yearBuilt && (
+              <p className="text-center text-[14px] whitespace-nowrap gap-1 flex font-[1000]  ">
+                <span className=" font-semibold ">Year Built : {''}</span>{' '}
+                {listing.yearBuilt}
+              </p>
+            )}
+            {currentUser && listing.userRef !== currentUser._id && !contact && (
+              <button
+                onClick={() => setContact(true)}
+                className="text-white bg-slate-800 rounded-lg uppercase p-2 hover:opacity-75"
+              >
                 Contact Landlord
               </button>
-                      )}
-                      {contact && <Contact listing={listing} />}    
+            )}
+            {contact && <Contact listing={listing} />}
           </div>
         </div>
       )}
