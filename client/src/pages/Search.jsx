@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Spinner from '../Spinner';
+import ListingItem from '../component/ListingItem';
 
 const Search = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
   const [sidebardata, setSidebardata] = useState({
     searchTerm: '',
     type: 'all',
@@ -12,55 +14,52 @@ const Search = () => {
     sort_order: 'created_at',
     order: 'desc',
   });
+  //   const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [listings, setListings] = useState([]);
+  console.log(listings);
 
-    const [loading, setLoading] = useState(false);
-    const [listings, setListings] = useState([]);
-    console.log(listings);
+  useEffect(() => {
+    const urlParams = new URLSearchParams(location.search);
+    const searchTermFromUrl = urlParams.get('searchTerm');
+    const typeFromUrl = urlParams.get('type');
+    const parkingFromUrl = urlParams.get('parking');
+    const furnishedFromUrl = urlParams.get('furnished');
+    const offerFromUrl = urlParams.get('offer');
+    const sortFromUrl = urlParams.get('sort');
+    const orderFromUrl = urlParams.get('order');
 
-    useEffect(() => {
-        const urlParams = new URLSearchParams(location.search);
-        const searchTermFromUrl = urlParams.get('searchTerm');
-        const typeFromUrl = urlParams.get('type');
-        const parkingFromUrl = urlParams.get('parking');
-        const furnishedFromUrl = urlParams.get('furnished');
-        const offerFromUrl = urlParams.get('offer');
-        const sortFromUrl = urlParams.get('sort');
-        const orderFromUrl = urlParams.get('order');
+    if (
+      searchTermFromUrl ||
+      typeFromUrl ||
+      parkingFromUrl ||
+      furnishedFromUrl ||
+      offerFromUrl ||
+      sortFromUrl ||
+      orderFromUrl
+    ) {
+      setSidebardata({
+        searchTerm: searchTermFromUrl || '',
+        type: typeFromUrl || 'all',
+        parking: parkingFromUrl === 'true' ? true : false,
+        furnished: furnishedFromUrl === 'true' ? true : false,
+        offer: offerFromUrl === 'true' ? true : false,
+        sort: sortFromUrl || 'created_at',
+        order: orderFromUrl || 'desc',
+      });
+    }
 
+    const fetchListing = async () => {
+      setLoading(true);
+      const searchQuery = urlParams.toString();
+      const res = await fetch(`/api/listing/get?${searchQuery}`);
+      const data = await res.json();
+      setListings(data);
+      setLoading(false);
+    };
 
-        if (
-            searchTermFromUrl ||
-            typeFromUrl ||
-            parkingFromUrl ||
-            furnishedFromUrl ||
-            offerFromUrl ||
-            sortFromUrl ||
-            orderFromUrl
-        ) {
-            setSidebardata({
-                searchTerm: searchTermFromUrl || '',
-                type: typeFromUrl || 'all',
-                parking: parkingFromUrl === 'true' ? true : false,
-                furnished: furnishedFromUrl === 'true' ? true : false,
-                offer: offerFromUrl === 'true' ? true : false,
-                sort: sortFromUrl || 'created_at',
-                order: orderFromUrl || 'desc',
-            })
-        }
-
-
-        const fetchListing = async () => {
-            setLoading(true);
-            const searchQuery = urlParams.toString();
-            const res = await fetch (`/api/listing/get?${searchQuery}`);
-            const data = await res.json();
-            setListings(data);
-            setLoading(false);
-        };
-
-        fetchListing();
-        }, [location.search])
- 
+    fetchListing();
+  }, [location.search]);
 
   const handleChange = (e) => {
     if (
@@ -94,26 +93,22 @@ const Search = () => {
 
       setSidebardata({ ...sidebardata, sort, order });
     }
-    };
-    
+  };
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-
-        const urlParams = new URLSearchParams()
-        urlParams.set('searchTerm', sidebardata.searchTerm)
-        urlParams.set('type', sidebardata.type)
-        urlParams.set('parking', sidebardata.parking)
-        urlParams.set('furnished', sidebardata.furnished)
-        urlParams.set('offer', sidebardata.offer)
-        urlParams.set('sort', sidebardata.sort)
-        urlParams.set('order', sidebardata.order)
-        const searchQuery = urlParams.toString()
-        navigate(`/search?${searchQuery}`)
-    }
-
-
+    const urlParams = new URLSearchParams();
+    urlParams.set('searchTerm', sidebardata.searchTerm);
+    urlParams.set('type', sidebardata.type);
+    urlParams.set('parking', sidebardata.parking);
+    urlParams.set('furnished', sidebardata.furnished);
+    urlParams.set('offer', sidebardata.offer);
+    urlParams.set('sort', sidebardata.sort);
+    urlParams.set('order', sidebardata.order);
+    const searchQuery = urlParams.toString();
+    navigate(`/search?${searchQuery}`);
+  };
 
   return (
     <>
@@ -228,10 +223,25 @@ const Search = () => {
           </form>
         </div>
         {/* RIGHT */}
-        <div className=" ">
-          <h1 className="text-2xl flex items-center font-semibold border-b p-3 text-slate-900 mt-5">
+        <div className=" flex-1">
+          <h1 className="text-2xl flex items-center font-semibold border-b border-slate-300 p-3 text-slate-900 mt-5">
             Search Results:
           </h1>
+          <div className="p-7 flex flex-wrap gap-4">
+            {!loading && listings.length === 0 && (
+              <p className="text-xl text-slate-700">No listing found!</p>
+            )}
+            {loading && (
+              <div className="flex items-center justify-center flex-1">
+                <Spinner />
+              </div>
+            )}
+            {!loading &&
+              listings &&
+              listings.map((listing) => (
+                <ListingItem key={listing._id} listing={listing} />
+              ))}
+          </div>
         </div>
       </div>
     </>

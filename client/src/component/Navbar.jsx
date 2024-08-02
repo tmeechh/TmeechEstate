@@ -6,29 +6,32 @@ import { useEffect, useState } from 'react';
 
 const Navbar = ({ onSignIn }) => {
   const { currentUser } = useSelector((state) => state.user);
-  const [ searchTerm, setSearchTerm ] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const urlParams = new URLSearchParams(window.location.search);
-    urlParams.set('searchTerm', searchTerm);
-    const searchQuery = urlParams.toString();
-    navigate(`/search?${searchQuery}`);
-  };
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
+  //   const urlParams = new URLSearchParams(window.location.search);
+  //   urlParams.set('searchTerm', searchTerm);
+  //   const searchQuery = urlParams.toString();
+  //   navigate(`/search?${searchQuery}`);
+  // };
 
-  useEffect(() => {
-    const urlParams = new URLSearchParams(location.search);
-    const searchTermFromUrl = urlParams.get('searchTerm');
-    if (searchTermFromUrl) {
-      setSearchTerm(searchTermFromUrl);
-    }
-  }, [location.search])
+  // useEffect(() => {
+  //   const urlParams = new URLSearchParams(location.search);
+  //   const searchTermFromUrl = urlParams.get('searchTerm');
+  //   if (searchTermFromUrl) {
+  //     setSearchTerm(searchTermFromUrl);
+  //   }
+  // }, [location.search])
 
   return (
     <div className="bg-slate-600 shadow-md ">
       <nav className="flex items-center justify-between px-8 py-3 md:hidden">
-       <Link to='/search'> <FaSearch  className=" text-slate-100 w-6" /></Link>
+        <Link to="/search">
+          {' '}
+          <FaSearch className=" text-slate-100 w-6" />
+        </Link>
         <Link to="/">
           <h1 className="font-bold text-sm sm:text-xl flex flex-wrap">
             <span className="text-slate-200">Tmeech</span>
@@ -46,7 +49,7 @@ const Navbar = ({ onSignIn }) => {
             <span className="text-slate-500">Estate</span>
           </h1>
         </Link>
-        <form
+        {/* <form
           onSubmit={handleSubmit}
           className="bg-slate-100 p-[12px] rounded-lg flex   items-center "
         >
@@ -60,17 +63,25 @@ const Navbar = ({ onSignIn }) => {
           <button type="">
             <FaSearch className="text-slate-500 w-4" />
           </button>
-        </form>
+        </form> */}
+
         <ul className="flex gap-4 text-white items-center">
+          <Link
+            to={'/search'}
+            className="text-white flex gap-1 hover:text-slate-300 relative link-hover-effect"
+          >
+            <FaSearch className=" w-5" />
+            <p>Search</p>
+          </Link>
           <Link to="/">
             {' '}
-            <li className="hidden sm:inline cursor-pointer  rounded px-[6px] py-[5px] border-slate-900  hover:text-slate-500 hover:opacity-90">
+            <li className="hidden sm:inline cursor-pointer  rounded px-[6px] py-[5px] border-slate-900  relative link-hover-effect   hover:text-slate-300">
               Home
             </li>{' '}
           </Link>
           <Link to="/about">
             {' '}
-            <li className="hidden sm:inline cursor-pointer  rounded px-[6px] py-[5px]  border-slate-900 hover:text-slate-500 hover:opacity-90">
+            <li className="hidden sm:inline cursor-pointer  rounded px-[6px] py-[5px]  border-slate-900 relative link-hover-effect  hover:text-slate-300">
               About
             </li>{' '}
           </Link>

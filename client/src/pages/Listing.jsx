@@ -118,7 +118,7 @@ const Listing = () => {
             </p>
 
             <div className=" flex gap-4">
-              <p className="bg-red-900 w-full max-w-[200px] text-white text-center p-1 rounded-md">
+              <p className="bg-red-900 w-full max-w-[200px] text-white text-center p-1 rounded-md flex items-center justify-center">
                 {listing.type === 'rent' ? 'For Rent' : 'For Sale'}
               </p>
               {!listing.priceUponRequest && listing.offer && (
