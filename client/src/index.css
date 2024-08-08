@@ -1,76 +1,121 @@
-@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
+/* @import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap'); */
+
+/* @import url('https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,400..900;1,400..900&display=swap'); */
+
 @import '@fortawesome/fontawesome-free/css/all.min.css';
 
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@font-face {
+  font-family: 'Josefin Sans';
+  src: url('../Fonts/JosefinSans-VariableFont_wght.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
 
+@font-face {
+  font-family: 'Bitter';
+  src: url('../Fonts/Bitter-Italic-VariableFont_wght.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
 
+h1, p, ul{
+  font-family: 'Josefin Sans', sans-serif;
+}
 
+a{
+  font-family: 'Bitter', sans-serif;
+}
 
+body, * {
+  font-family: 'Bitter', sans-serif;
+  scroll-behavior: smooth;
+}
 
-body{
-    --tw-bg-opacity: 1;
-    background-color: rgb(231 240 240 / var(--tw-bg-opacity)) ;
-    font-family: "Nunito", sans-serif;
+/* navbar */
+.sticky-navbar {
+  position: -webkit-sticky; /* For Safari */
+  position: sticky;
+  top: 0; /* Adjust as needed */
+  z-index: 1000; /* Ensure it stays on top of other content */
+  --tw-bg-opacity: 1;
+  background-color: rgb(71 85 105 / var(--tw-bg-opacity)) 
+}
+  
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 1s ease-in-out 1s forwards; /* 1s delay, 1s duration */
 }
 
 
 
 
-/* Swiper navigation buttons with Font Awesome icons */
-.swiper-button-next,
+
+/* swiper */
+
+ .swiper-button-next,
 .swiper-button-prev {
   background: none;
-  color: white; /* Change this to the desired color */
-  width: 40px;
-  height: 40px;
-  margin-left: 1rem;
-  margin-right: 1rem;
+  color: white; 
+  width: 7px;
+  height: 7px;
+ 
 }
 
 .swiper-button-next::after,
 .swiper-button-prev::after {
-  font-family: "Font Awesome 5 Free";
+ 
   font-weight: 900;
-  font-size: 24px; /* Change this to adjust the size */
+  font-size: 24px; 
 }
 
-.swiper-button-next::after {
-  content: "\f30b"; /* Font Awesome 'chevron-right' icon */
-  font-family: "Font Awesome 5 Free";
+.swiper-container {
+  padding-bottom: 40px; 
 }
 
-.swiper-button-prev::after {
-  font-family: "Font Awesome 5 Free";
-  content: "\f30a"; /* Font Awesome 'chevron-left' icon */
+.swiper-pagination {
+  bottom: -0px !important; 
 }
 
-/* Additional styles for hover effects */
+
+
 .swiper-button-next:hover,
 .swiper-button-prev:hover {
-  color: #555; /* Change this to the desired hover color */
+  color: #555; 
 }
 
-/* Small screens and up */
-@media (min-width: 640px) {
-  .swiper-button-next,
-  .swiper-button-prev {
-    margin-left: 2rem;
-    margin-right: 2rem;
-  }
+
+
+
+
+
+
+.custom-swiper .swiper-button-next,
+.custom-swiper .swiper-button-prev {
+display:none;
 }
 
-/* Large screens and up */
-@media (min-width: 1024px) {
-  .swiper-button-next,
-  .swiper-button-prev {
-    margin-left: 5rem;
-    margin-right: 5rem;
-  }
-}
 
+
+
+
+
+
+  /* checkbox */
 .custom-checkbox {
   height: 1rem; /* equivalent to h-4 */
   width: 1rem; /* equivalent to w-4 */
@@ -104,7 +149,7 @@ body{
   outline: none;
 }
 
-
+/* link hover effect */
 .link-hover-effect::after {
   content: '';
   position: absolute;
@@ -122,4 +167,11 @@ body{
   transform: translateX(-55%) scaleX(1);
 }
 
-
+/* line clamp */
+.line-clamp-12 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 10;
+  line-clamp: 10;
+}

@@ -28,11 +28,11 @@ const Hamburger = ({ onSignIn }) => {
           <div className="flex ">
             <div className="flex   gap-4 items-start p-4">
               <ul className="flex  flex-col-reverse gap-4 text-[18px]">
-                <Link className="hover:underline" to="/" onClick={toggleMenu}>
+                <Link className="hover:underline text-[14px] " to="/" onClick={toggleMenu}>
                   Home
                 </Link>
                 <Link
-                  className="hover:underline"
+                  className="hover:underline text-[14px] "
                   to="/about"
                   onClick={toggleMenu}
                 >
@@ -40,6 +40,8 @@ const Hamburger = ({ onSignIn }) => {
                 </Link>
                 <div onClick={toggleMenu}>
                   {currentUser ? (
+                    <div className='flex flex-col gap-3'>
+                     
                     <Link to="/profile" className="flex  items-center gap-2">
                       <img
                         className="rounded-full h-7 w-7 object-cover"
@@ -47,7 +49,9 @@ const Hamburger = ({ onSignIn }) => {
                         alt="profile"
                       />
                       <p className="text-sm">{currentUser.username}</p>
-                    </Link>
+                      </Link>
+                  
+                      </div>
                   ) : (
                     <p
                       onClick={() => {

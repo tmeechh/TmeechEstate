@@ -23,17 +23,17 @@ const ListingItem = ({ listing }) => {
               {listing.address}
             </p>
           </div>
-          <p className="text-sm text-gray-600 line-clamp-2">
+          <p className="font-sans text-sm w-full text-gray-600 line-clamp-2">
             {listing.description}
           </p>
           <p className="text-slate-500 mt-2 font-semibold">
-            ${' '}
+         
             {listing.priceUponRequest
-              ? 'Price Upon Request'
-              : listing.offer
-              ? listing.discountPrice.toLocaleString('en-US')
-              : listing.regularPrice.toLocaleString('en-US')}
-            {listing.type === 'rent' && ' / Annual'}
+    ? 'Price Upon Request'
+    : listing.offer
+    ? `$${listing.discountPrice.toLocaleString('en-US')}`
+    : `$${listing.regularPrice.toLocaleString('en-US')}`}
+  {listing.type === 'rent' && ` / ${listing.rentDuration}`}
                   </p>
                   <div className='text-slate-700 flex items-center gap-4'>
                       <div className="font-bold text-xs">
@@ -44,7 +44,7 @@ const ListingItem = ({ listing }) => {
 
                       <div className='font-bold text-xs'>
                       {listing.bathrooms > 1
-                  ? `${listing.bedrooms} Baths`
+                  ? `${listing.bathrooms} Baths`
                   : '1 Bath'}
                       </div>
                   </div>

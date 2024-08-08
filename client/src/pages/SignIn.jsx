@@ -9,6 +9,8 @@ import {
   signInFailure,
 } from '../redux/user/userSlice';
 import OAuth from '../component/OAuth';
+import Spinner from '../Spinner';
+import { toast } from 'sonner';
 
 
 const SignIn = ({ onClose, swapModal }) => {
@@ -41,20 +43,23 @@ const SignIn = ({ onClose, swapModal }) => {
         return;
       }
       dispatch(signInSuccess(data));
+      
       onClose();
       navigate('/');
+      toast.success('Welcome Back');
       console.log(data);
     } catch (error) {
-      dispatch(signInFailure(error.message)); // max-w-lg
+      dispatch(signInFailure(error.message));
+      toast.error(error.message);// max-w-lg
     }
   };
 
   // console.log(formData);
   return (
-    <div className=" fixed top-0 left-0 bottom-0 z-10 bg-opacity-90 w-screen   bg-black/80 shadow-lg  flex  p-12 mx-auto">
+    <div className=" fixed top-0 left-0 bottom-0 z-[3000] bg-opacity-90 w-screen   bg-black/80 shadow-lg  flex  p-12 mx-auto">
       <div className=" mx-auto bg-slate-200 my-auto rounded-xl px-7 py-10 md:px-12 lg:px-16  flex flex-col items-center ">
         <div className="flex justify-between gap-28 md:gap-20 lg:gap-[165px]  pb-7">
-          <h1 className="text-2xl md:text-3xl text-center font-semibold ">
+          <h1 className="text-2xl md:text-3xl text-center font-semibold whitespace-nowrap">
             Sign In
           </h1>
           <button onClick={onClose} className="">
@@ -80,13 +85,13 @@ const SignIn = ({ onClose, swapModal }) => {
             disabled={loading}
             className="cursor-pointer hover:opacity-90 disabled:opacity-80  bg-slate-900 text-white p-2 lg:p-3 text-sm lg:text-[16px] rounded-xl uppercase"
           >
-            {loading ? 'loading...' : 'sign in'}
+            {loading ?  <Spinner className="w-6 h-6 mt-0 mb-0 mx-auto " /> : 'sign in'}
           </button>
           <OAuth onClose={onClose} />
         </form>
         <div className="flex flex-col justify-between items-center mt-5">
           <div className="flex gap-1 text-[12px] lg:text-[16px]">
-            <p> Do not have an account?</p>
+            <p className='font-sans'> Do not have an account?</p>
             <span onClick={() => swapModal()} className="text-blue-700 cursor-pointer">
               Sign up
             </span>
@@ -96,7 +101,7 @@ const SignIn = ({ onClose, swapModal }) => {
             <Link to={'/forgot-password'}>Forgot Password?</Link>
           </div>
         </div>
-        {error && <p className="text-red-500 mt-5">{error}</p>}
+        {/* {error && <p className="text-red-500 mt-5">{error}</p>} */}
       </div>
     </div>
   );

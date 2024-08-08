@@ -21,6 +21,27 @@ export const createListing = async (req, res, next) => {
   }
 };
 
+
+// const updateListingsWithMissingPropertyId = async () => {
+//   try {
+//     const listings = await Listing.find({ propertyId: { $exists: false } });
+
+//     for (const listing of listings) {
+//       listing.propertyId = Math.random().toString(36).substring(2, 7).toUpperCase();
+//       await listing.save();
+//       console.log(`Updated listing ${listing._id} with propertyId ${listing.propertyId}`);
+//     }
+
+//     console.log('Update complete.');
+//   } catch (error) {
+//     console.error('Error updating listings:', error);
+//   } finally {
+//     mongoose.connection.close();
+//   }
+// };
+
+// updateListingsWithMissingPropertyId();
+
 export const deleteListing = async (req, res, next) => {
   const listing = await Listing.findById(req.params.id);
 
@@ -124,8 +145,14 @@ export const getListings = async(req, res, next) => {
 
      const order = req.query.order || 'desc';
 
+     // Constructing regex for search term to match both name and address
+    const searchRegex = new RegExp(searchTerm, 'i');
+
      const listings = await Listing.find({
-       name: { $regex: searchTerm, $options: 'i' },
+      $or: [
+        { name: { $regex: searchRegex } },
+        { address: { $regex: searchRegex } },
+      ],
        offer,
        furnished,
        parking,

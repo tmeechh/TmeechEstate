@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import OAuth from '../component/OAuth';
 import { CgCloseR } from 'react-icons/cg';
+import Spinner from '../Spinner';
+import { toast } from 'sonner';
 
 
 const SignUp = ({ onClose, swapModal, handleShowSignIn }) => {
@@ -37,19 +39,21 @@ const SignUp = ({ onClose, swapModal, handleShowSignIn }) => {
       }
       setLoading(false);
       setError(null);
+      toast.success('Sign up successful');
       onClose(); 
       handleShowSignIn(); 
       console.log(data);
     } catch (error) {
       setLoading(false);
-      setError(error.message);
+      toast.error(error.message)
+      // setError(error.message);
     }
   };
   //flex justify-between items-center
 
   // console.log(formData);
   return (
-    <div className="fixed top-0 left-0 bottom-0 z-10 bg-opacity-90 w-screen   bg-black/80 shadow-lg  flex  p-12 mx-auto">
+    <div className="fixed top-0 left-0 bottom-0 z-[3000] bg-opacity-90 w-screen   bg-black/80 shadow-lg  flex  p-12 mx-auto">
       <div className=" mx-auto bg-slate-200 my-auto rounded-xl px-7 py-10 md:px-12 lg:px-16  flex flex-col items-center">
         <div className="flex justify-between gap-24 lg:gap-[165px] md:gap-20 pb-7">
           <h1 className="text-2xl md:text-[28px] lg:text-3xl text-center font-semibold ">
@@ -86,7 +90,7 @@ const SignUp = ({ onClose, swapModal, handleShowSignIn }) => {
             disabled={loading}
             className="cursor-pointer hover:opacity-90 disabled:opacity-80  bg-slate-900 text-white p-2 lg:p-3 text-sm lg:text-[16px] rounded-xl   uppercase"
           >
-            {loading ? 'loading...' : 'sign up'}
+            {loading ?  <Spinner className="w-6 h-6 mt-0 mb-0 mx-auto " /> : 'sign up'}
           </button>
           <OAuth onClose={onClose} />
         </form>
@@ -96,7 +100,7 @@ const SignUp = ({ onClose, swapModal, handleShowSignIn }) => {
             Sign in
           </span>
         </div>
-        {error && <p className="text-red-500 mt-5">{error}</p>}
+        {/* {error && <p className="text-red-500 mt-5">{error}</p>} */}
       </div>
     </div>
   );

@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import Spinner from '../Spinner';
 import ListingItem from '../component/ListingItem';
 
+import { MagnifyingGlassIcon as FaSearch, ArrowLongRightIcon } from '@heroicons/react/24/solid';
+
 const Search = () => {
   const navigate = useNavigate();
   const [sidebardata, setSidebardata] = useState({
@@ -11,15 +13,15 @@ const Search = () => {
     parking: false,
     furnished: false,
     offer: false,
-    sort_order: 'created_at',
+    sort: 'createdAt',
     order: 'desc',
   });
-  //   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
   const [listings, setListings] = useState([]);
-  console.log(listings);
+  const [loadingSearch, setLoadingSearch] = useState(false);
 
   useEffect(() => {
+    // Extract URL parameters
     const urlParams = new URLSearchParams(location.search);
     const searchTermFromUrl = urlParams.get('searchTerm');
     const typeFromUrl = urlParams.get('type');
@@ -41,199 +43,245 @@ const Search = () => {
       setSidebardata({
         searchTerm: searchTermFromUrl || '',
         type: typeFromUrl || 'all',
-        parking: parkingFromUrl === 'true' ? true : false,
-        furnished: furnishedFromUrl === 'true' ? true : false,
-        offer: offerFromUrl === 'true' ? true : false,
-        sort: sortFromUrl || 'created_at',
+        parking: parkingFromUrl === 'true',
+        furnished: furnishedFromUrl === 'true',
+        offer: offerFromUrl === 'true',
+        sort: sortFromUrl || 'createdAt',
         order: orderFromUrl || 'desc',
       });
     }
-
-    const fetchListing = async () => {
-      setLoading(true);
-      const searchQuery = urlParams.toString();
-      const res = await fetch(`/api/listing/get?${searchQuery}`);
-      const data = await res.json();
-      setListings(data);
-      setLoading(false);
-    };
-
-    fetchListing();
   }, [location.search]);
 
+  // Function to fetch listings based on sidebardata
+  const fetchListing = async () => {
+    setLoadingSearch(true);
+    setLoading(true);
+    const searchQuery = new URLSearchParams(sidebardata).toString();
+    const res = await fetch(`/api/listing/get?${searchQuery}`);
+    const data = await res.json();
+    setListings(data);
+    setLoadingSearch(false);
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    // Fetch listings only if filters are set or search term is changed via form submission
+    if (
+      Object.values(sidebardata).some(
+        (value) => value !== '' && value !== false
+      )
+    ) {
+      fetchListing();
+    }
+  }, [
+    sidebardata.type,
+    sidebardata.parking,
+    sidebardata.furnished,
+    sidebardata.offer,
+    sidebardata.sort,
+    sidebardata.order,
+  ]);
+
+  // Handle form input changes
   const handleChange = (e) => {
-    if (
-      e.target.id === 'all' ||
-      e.target.id === 'rent' ||
-      e.target.id === 'sale'
-    ) {
-      setSidebardata({ ...sidebardata, type: e.target.id });
+    const { id, value, checked } = e.target;
+
+    if (id === 'all' || id === 'rent' || id === 'sale') {
+      setSidebardata({ ...sidebardata, type: id });
     }
 
-    if (e.target.id === 'searchTerm') {
-      setSidebardata({ ...sidebardata, searchTerm: e.target.value });
+    if (id === 'searchTerm') {
+      setSidebardata({ ...sidebardata, searchTerm: value });
     }
 
-    if (
-      e.target.id === 'parking' ||
-      e.target.id === 'furnished' ||
-      e.target.id === 'offer'
-    ) {
+    if (id === 'parking' || id === 'furnished' || id === 'offer') {
       setSidebardata({
         ...sidebardata,
-        [e.target.id]:
-          e.target.checked || e.target.checked === 'true' ? true : false,
+        [id]: checked || checked === 'true' ? true : false,
       });
     }
 
-    if (e.target.id === 'sort_order') {
-      const sort = e.target.value.split('_')[0] || 'created_at';
-
-      const order = e.target.value.split('_')[1] || 'desc';
-
-      setSidebardata({ ...sidebardata, sort, order });
+    if (id === 'sort_order') {
+      const [sort, order] = value.split('_');
+      setSidebardata({
+        ...sidebardata,
+        sort: sort || 'createdAt',
+        order: order || 'desc',
+      });
     }
   };
 
+  // Handle search submission
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    const urlParams = new URLSearchParams();
-    urlParams.set('searchTerm', sidebardata.searchTerm);
-    urlParams.set('type', sidebardata.type);
-    urlParams.set('parking', sidebardata.parking);
-    urlParams.set('furnished', sidebardata.furnished);
-    urlParams.set('offer', sidebardata.offer);
-    urlParams.set('sort', sidebardata.sort);
-    urlParams.set('order', sidebardata.order);
-    const searchQuery = urlParams.toString();
-    navigate(`/search?${searchQuery}`);
+    fetchListing();
+    const urlParams = new URLSearchParams(sidebardata).toString();
+    navigate(`/search?${urlParams}`);
   };
 
   return (
     <>
-      <div className="flex flex-col md:flex-row">
-        {/* LEFT */}
-        <div className=" p-7 border-slate-500 border-b-2 md:border-r-2 md:min-h-screen">
+      <div className="flex flex-col">
+        <div className="p-7 border-slate-300 border-b">
           <form onSubmit={handleSubmit} className="flex flex-col gap-8">
-            <div className="flex items-center gap-2">
-              <label className="whitespace-nowrap font-[700]">
-                Search Term:{' '}
-              </label>
+            <div className="flex flex-col gap-5 sm:flex-row justify-between">
+              <div className="flex flex-col gap-4">
+                <div className="flex gap-2 flex-wrap items-center">
+                  {/* Rent & Sell Buttons */}
+                  <button
+                    id="all"
+                    className={`p-2 rounded border cursor-pointer shadow-md ${
+                      sidebardata.type === 'all'
+                        ? 'bg-slate-500 text-white shadow-md'
+                        : 'bg-transparent '
+                    }`}
+                    onClick={() =>
+                      setSidebardata({ ...sidebardata, type: 'all' })
+                    }
+                  >
+                    <p className="font-sans text-[15px]">Rent & Sell</p>
+                  </button>
+
+                  <div className="flex border rounded">
+                    <button
+                      id="rent"
+                      className={`p-2 rounded-l  cursor-pointer shadow-md ${
+                        sidebardata.type === 'rent'
+                          ? 'bg-slate-500 text-white shadow-md'
+                          : 'bg-transparent'
+                      }`}
+                      onClick={() =>
+                        setSidebardata({ ...sidebardata, type: 'rent' })
+                      }
+                    >
+                      <p className="font-sans text-[15px]">Rent</p>
+                    </button>
+                    <div className=' <div className="cursor-text  border-r border-gray-300 h-10"></div>'></div>
+                    <button
+                      id="sale"
+                      className={`p-2 rounded-l  cursor-pointer shadow-md ${
+                        sidebardata.type === 'sale'
+                          ? 'bg-slate-500 text-white shadow-md'
+                          : 'bg-transparent'
+                      }`}
+                      onClick={() =>
+                        setSidebardata({ ...sidebardata, type: 'sale' })
+                      }
+                    >
+                      <p className="font-sans text-[15px]">Sale</p>
+                    </button>
+                  </div>
+
+                  {/* Offer Button */}
+                  <button
+                    id="offer"
+                    className={`p-2 border rounded cursor-pointer shadow-md ${
+                      sidebardata.offer
+                        ? 'bg-slate-500 text-white shadow-md'
+                        : 'bg-transparent'
+                    }`}
+                    onClick={() =>
+                      setSidebardata({
+                        ...sidebardata,
+                        offer: !sidebardata.offer,
+                      })
+                    }
+                  >
+                    <p className="font-sans text-[15px]">Offer</p>
+                  </button>
+                </div>
+
+                <div className="flex gap-2 flex-wrap items-center">
+                  {/* Amenities Buttons */}
+                  <button
+                    id="parking"
+                    className={`p-2 border rounded cursor-pointer shadow-md ${
+                      sidebardata.parking
+                        ? 'bg-slate-500 text-white'
+                        : 'bg-transparent'
+                    }`}
+                    onClick={() =>
+                      setSidebardata({
+                        ...sidebardata,
+                        parking: !sidebardata.parking,
+                      })
+                    }
+                  >
+                    <p className="font-sans text-[15px]">Parking</p>
+                  </button>
+
+                  <button
+                    id="furnished"
+                    className={`p-2 border rounded cursor-pointer shadow-md ${
+                      sidebardata.furnished
+                        ? 'bg-slate-500 text-white shadow-md'
+                        : 'bg-transparent'
+                    }`}
+                    onClick={() =>
+                      setSidebardata({
+                        ...sidebardata,
+                        furnished: !sidebardata.furnished,
+                      })
+                    }
+                  >
+                    <p className="font-sans text-[15px]">Furnished</p>
+                  </button>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <label className="font-[700]">Sort: </label>
+                <div className="relative">
+                  <select
+                    className="border rounded-lg p-3 pr-8 outline-none appearance-none cursor-pointer"
+                    id="sort_order"
+                    onChange={handleChange}
+                    defaultValue={'createdAt_desc'}
+                  >
+                     <option value="createdAt_desc">Exclusive(Default)</option>
+                    <option value="createdAt_desc">Latest</option>
+                    <option value="createdAt_asc">Oldest</option>
+                    <option value="regularPrice_desc">Price high to low</option>
+                    <option value="regularPrice_asc">Price low to high</option>
+                  </select>
+                  <span className="absolute text-[0.7rem] right-2 top-1/2 transform -translate-y-1/2 pointer-events-none text-slate-800">
+                    ▼
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-center border-slate-600 border-b sm:w-[40%] lg:w-[30%] gap-2">
+              <FaSearch className="w-6 h-6 text-gray-600 cursor-pointer" />
               <input
                 type="text"
                 id="searchTerm"
-                placeholder="Search..."
-                className=" outline-none border rounded-lg p-[10px] w-full"
+                className="outline-none flex-1"
                 value={sidebardata.searchTerm}
                 onChange={handleChange}
               />
-            </div>
+             <button
+  type="submit"
+  className="relative overflow-hidden p-1 transition-transform duration-300 ease-in-out hover:translate-x-3 hover:scale-110"
+>
+  <ArrowLongRightIcon className="text-slate-600 w-4 md:w-7 h-8" />
+</button>
 
-            <div className="flex gap-2 flex-wrap items-center">
-              <label className="font-[700]">Type: </label>
-              <div className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  id="all"
-                  className="custom-checkbox cursor-pointer"
-                  onChange={handleChange}
-                  checked={sidebardata.type === 'all'}
-                />
-                <span>Rent & Sell</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  id="rent"
-                  className="custom-checkbox cursor-pointer"
-                  onChange={handleChange}
-                  checked={sidebardata.type === 'rent'}
-                />
-                <span>Rent</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  id="sale"
-                  className="custom-checkbox cursor-pointer"
-                  onChange={handleChange}
-                  checked={sidebardata.type === 'sale'}
-                />
-                <span>Sale</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  id="offer"
-                  className="custom-checkbox cursor-pointer"
-                  onChange={handleChange}
-                  checked={sidebardata.offer}
-                />
-                <span>Offer</span>
-              </div>
             </div>
-
-            <div className="flex gap-2 flex-wrap items-center">
-              <label className="font-[700]">Amenities: </label>
-              <div className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  id="parking"
-                  className="custom-checkbox cursor-pointer"
-                  onChange={handleChange}
-                  checked={sidebardata.parking}
-                />
-                <span>Parking</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  id="furnished"
-                  className="custom-checkbox cursor-pointer"
-                  onChange={handleChange}
-                  checked={sidebardata.furnished}
-                />
-                <span>Furnished</span>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <label className="font-[700]">Sort: </label>
-              <div className="relative  ">
-                <select
-                  className="border rounded-lg p-3 pr-8 outline-none appearance-none"
-                  id="sort_order"
-                  onChange={handleChange}
-                  defaultValue={'created_at_desc'}
-                >
-                  <option value="regularPrice_desc">Price high to low</option>
-                  <option value="regularPrice_asc">Price Low to high</option>
-                  <option value="createdAt_desc">Latest</option>
-                  <option value="createdAt_asc">Oldest</option>
-                </select>
-                <span className="absolute text-[0.7rem] right-2 top-1/2 transform -translate-y-1/2 pointer-events-none text-slate-800 ">
-                  ▼
-                </span>
-              </div>
-            </div>
-            <button className="bg-slate-900 text-white p-3 rounded-lg hover:opacity-75 uppercase">
-              Search
-            </button>
           </form>
         </div>
         {/* RIGHT */}
-        <div className=" flex-1">
-          <h1 className="text-2xl flex items-center font-semibold border-b border-slate-300 p-3 text-slate-900 mt-5">
+        <div className=" ">
+          <h1 className="text-2xl flex items-center font-semibold  border-slate-300 p-3 text-slate-900 mt-5">
             Search Results:
           </h1>
-          <div className="p-7 flex flex-wrap gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 p-4">
             {!loading && listings.length === 0 && (
               <p className="text-xl text-slate-700">No listing found!</p>
             )}
             {loading && (
-              <div className="flex items-center justify-center flex-1">
-                <Spinner />
+              <div className="flex justify-center items-center col-span-3 xl:col-span-4">
+                <Spinner className="mx-auto" />
               </div>
             )}
             {!loading &&

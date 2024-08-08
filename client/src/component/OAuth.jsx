@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import { signInSuccess } from '../redux/user/userSlice';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 const OAuth = ({ onClose }) => {
   const dispatch = useDispatch();
@@ -30,10 +31,11 @@ const OAuth = ({ onClose }) => {
       });
       const data = await res.json();
       dispatch(signInSuccess(data));
-      navigate('/');
       onClose();
+      navigate('/');
+      toast.success('Welcome Back');
     } catch (error) {
-      console.log('Could not sign in with google'), error;
+      toast.error('Could not sign in with google'), error;
     } finally {
       setIsLoading(false);
     }
