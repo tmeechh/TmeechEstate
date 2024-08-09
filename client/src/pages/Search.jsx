@@ -3,7 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import Spinner from '../Spinner';
 import ListingItem from '../component/ListingItem';
 
-import { MagnifyingGlassIcon as FaSearch, ArrowLongRightIcon } from '@heroicons/react/24/solid';
+import {
+  MagnifyingGlassIcon as FaSearch,
+  ArrowLongRightIcon,
+} from '@heroicons/react/24/solid';
 
 const Search = () => {
   const navigate = useNavigate();
@@ -19,6 +22,7 @@ const Search = () => {
   const [loading, setLoading] = useState(false);
   const [listings, setListings] = useState([]);
   const [loadingSearch, setLoadingSearch] = useState(false);
+  const [showMore, setShowMore] = useState(false);
 
   useEffect(() => {
     // Extract URL parameters
@@ -56,9 +60,15 @@ const Search = () => {
   const fetchListing = async () => {
     setLoadingSearch(true);
     setLoading(true);
+    setShowMore(false);
     const searchQuery = new URLSearchParams(sidebardata).toString();
     const res = await fetch(`/api/listing/get?${searchQuery}`);
     const data = await res.json();
+    if (data.length > 8) {
+      setShowMore(true);
+    } else {
+      setShowMore(false);
+    }
     setListings(data);
     setLoadingSearch(false);
     setLoading(false);
@@ -119,6 +129,20 @@ const Search = () => {
     navigate(`/search?${urlParams}`);
   };
 
+  const onShowMoreClick = async () => {
+    const numberOfListings = listings.length;
+    const startIndex = numberOfListings;
+    const urlParams = new URLSearchParams(location.search);
+    urlParams.set('startIndex', startIndex);
+    const searchQuery = urlParams.toString();
+    const res = await fetch(`/api/listing/get?${searchQuery}`);
+    const data = await res.json();
+    if (data.length < 9) { 
+      setShowMore(false);
+    }
+    setListings([...listings, ...data]);
+  } 
+
   return (
     <>
       <div className="flex flex-col">
@@ -126,14 +150,12 @@ const Search = () => {
           <form onSubmit={handleSubmit} className="flex flex-col gap-8">
             <div className="flex flex-col gap-5 sm:flex-row justify-between">
               <div className="flex flex-col gap-4">
-                <div className="flex gap-2 flex-wrap items-center">
+                <div className="flex gap-5 flex-wrap items-center">
                   {/* Rent & Sell Buttons */}
                   <button
                     id="all"
-                    className={`p-2 rounded border cursor-pointer shadow-md ${
-                      sidebardata.type === 'all'
-                        ? 'bg-slate-500 text-white shadow-md'
-                        : 'bg-transparent '
+                    className={`relative p-2  cursor-pointer link-active-effect ${
+                      sidebardata.type === 'all' ? 'active' : 'bg-transparent '
                     }`}
                     onClick={() =>
                       setSidebardata({ ...sidebardata, type: 'all' })
@@ -142,43 +164,35 @@ const Search = () => {
                     <p className="font-sans text-[15px]">Rent & Sell</p>
                   </button>
 
-                  <div className="flex border rounded">
-                    <button
-                      id="rent"
-                      className={`p-2 rounded-l  cursor-pointer shadow-md ${
-                        sidebardata.type === 'rent'
-                          ? 'bg-slate-500 text-white shadow-md'
-                          : 'bg-transparent'
-                      }`}
-                      onClick={() =>
-                        setSidebardata({ ...sidebardata, type: 'rent' })
-                      }
-                    >
-                      <p className="font-sans text-[15px]">Rent</p>
-                    </button>
-                    <div className=' <div className="cursor-text  border-r border-gray-300 h-10"></div>'></div>
-                    <button
-                      id="sale"
-                      className={`p-2 rounded-l  cursor-pointer shadow-md ${
-                        sidebardata.type === 'sale'
-                          ? 'bg-slate-500 text-white shadow-md'
-                          : 'bg-transparent'
-                      }`}
-                      onClick={() =>
-                        setSidebardata({ ...sidebardata, type: 'sale' })
-                      }
-                    >
-                      <p className="font-sans text-[15px]">Sale</p>
-                    </button>
-                  </div>
+                  <button
+                    id="rent"
+                    className={`relative p-2  cursor-pointer link-active-effect ${
+                      sidebardata.type === 'rent' ? 'active' : 'bg-transparent'
+                    }`}
+                    onClick={() =>
+                      setSidebardata({ ...sidebardata, type: 'rent' })
+                    }
+                  >
+                    <p className="font-sans text-[15px]">Rent</p>
+                  </button>
+
+                  <button
+                    id="sale"
+                    className={`relative p-2  cursor-pointer link-active-effect ${
+                      sidebardata.type === 'sale' ? 'active' : 'bg-transparent'
+                    }`}
+                    onClick={() =>
+                      setSidebardata({ ...sidebardata, type: 'sale' })
+                    }
+                  >
+                    <p className="font-sans text-[15px]">Sale</p>
+                  </button>
 
                   {/* Offer Button */}
                   <button
                     id="offer"
-                    className={`p-2 border rounded cursor-pointer shadow-md ${
-                      sidebardata.offer
-                        ? 'bg-slate-500 text-white shadow-md'
-                        : 'bg-transparent'
+                    className={`relative p-2  cursor-pointer link-active-effect ${
+                      sidebardata.offer ? 'active ' : 'bg-transparent'
                     }`}
                     onClick={() =>
                       setSidebardata({
@@ -190,42 +204,40 @@ const Search = () => {
                     <p className="font-sans text-[15px]">Offer</p>
                   </button>
                 </div>
+                <div>
+                  <h1 className="text-xl mb-3">Amenities</h1>
+                  <div className="flex gap-5 flex-wrap items-center">
+                    {/* Amenities Buttons */}
+                    <button
+                      id="parking"
+                      className={`relative p-2  cursor-pointer link-active-effect ${
+                        sidebardata.parking ? '  active ' : 'bg-transparent'
+                      }`}
+                      onClick={() =>
+                        setSidebardata({
+                          ...sidebardata,
+                          parking: !sidebardata.parking,
+                        })
+                      }
+                    >
+                      <p className="font-sans text-[15px]">Parking</p>
+                    </button>
 
-                <div className="flex gap-2 flex-wrap items-center">
-                  {/* Amenities Buttons */}
-                  <button
-                    id="parking"
-                    className={`p-2 border rounded cursor-pointer shadow-md ${
-                      sidebardata.parking
-                        ? 'bg-slate-500 text-white'
-                        : 'bg-transparent'
-                    }`}
-                    onClick={() =>
-                      setSidebardata({
-                        ...sidebardata,
-                        parking: !sidebardata.parking,
-                      })
-                    }
-                  >
-                    <p className="font-sans text-[15px]">Parking</p>
-                  </button>
-
-                  <button
-                    id="furnished"
-                    className={`p-2 border rounded cursor-pointer shadow-md ${
-                      sidebardata.furnished
-                        ? 'bg-slate-500 text-white shadow-md'
-                        : 'bg-transparent'
-                    }`}
-                    onClick={() =>
-                      setSidebardata({
-                        ...sidebardata,
-                        furnished: !sidebardata.furnished,
-                      })
-                    }
-                  >
-                    <p className="font-sans text-[15px]">Furnished</p>
-                  </button>
+                    <button
+                      id="furnished"
+                      className={`relative p-2  cursor-pointer link-active-effect ${
+                        sidebardata.furnished ? 'active' : 'bg-transparent'
+                      }`}
+                      onClick={() =>
+                        setSidebardata({
+                          ...sidebardata,
+                          furnished: !sidebardata.furnished,
+                        })
+                      }
+                    >
+                      <p className="font-sans text-[15px]">Furnished</p>
+                    </button>
+                  </div>
                 </div>
               </div>
 
@@ -238,7 +250,7 @@ const Search = () => {
                     onChange={handleChange}
                     defaultValue={'createdAt_desc'}
                   >
-                     <option value="createdAt_desc">Exclusive(Default)</option>
+                    <option value="createdAt_desc">Exclusive(Default)</option>
                     <option value="createdAt_desc">Latest</option>
                     <option value="createdAt_asc">Oldest</option>
                     <option value="regularPrice_desc">Price high to low</option>
@@ -260,13 +272,12 @@ const Search = () => {
                 value={sidebardata.searchTerm}
                 onChange={handleChange}
               />
-             <button
-  type="submit"
-  className="relative overflow-hidden p-1 transition-transform duration-300 ease-in-out hover:translate-x-3 hover:scale-110"
->
-  <ArrowLongRightIcon className="text-slate-600 w-4 md:w-7 h-8" />
-</button>
-
+              <button
+                type="submit"
+                className="relative overflow-hidden p-1 transition-transform duration-300 ease-in-out hover:translate-x-3 hover:scale-110"
+              >
+                <ArrowLongRightIcon className="text-slate-600 w-4 md:w-7 h-8" />
+              </button>
             </div>
           </form>
         </div>
@@ -275,7 +286,7 @@ const Search = () => {
           <h1 className="text-2xl flex items-center font-semibold  border-slate-300 p-3 text-slate-900 mt-5">
             Search Results:
           </h1>
-          <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 p-4">
+          <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3   2xl:grid-cols-5 gap-4 p-4">
             {!loading && listings.length === 0 && (
               <p className="text-xl text-slate-700">No listing found!</p>
             )}
@@ -289,7 +300,17 @@ const Search = () => {
               listings.map((listing) => (
                 <ListingItem key={listing._id} listing={listing} />
               ))}
+
+           
           </div>
+          {!loading && showMore && (
+              <button
+                onClick={onShowMoreClick}
+                className=" text-green-700 hover:underline p-7 text-center w-full"
+              >
+                Show More
+              </button>
+            )}
         </div>
       </div>
     </>
