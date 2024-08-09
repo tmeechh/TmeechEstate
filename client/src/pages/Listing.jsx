@@ -69,7 +69,7 @@ const Listing = ({ handleShowPhotos }) => {
     const fetchListings = async () => {
       setLoadingMore(true);
       try {
-        const res = await fetch('/api/listing/get');
+        const res = await fetch('/api/listing/getmoresearch');
         const data = await res.json();
         setListings(data);
       } catch (error) {
@@ -119,7 +119,9 @@ const Listing = ({ handleShowPhotos }) => {
               >
                 <PhotoIcon className="w-5" />
                 <p className="text-[17px]"> {listing.imageUrls.length}</p>
-                <p className="uppercase">photos</p>
+                <p className="uppercase">
+                  {listing.imageUrls.length === 1 ? 'photo' : 'photos'}
+                </p>
               </button>
             </div>
           </div>
@@ -152,10 +154,10 @@ const Listing = ({ handleShowPhotos }) => {
                   <PhotoIcon className="w-5" />
                   <p className="text-[17px]">{listing.imageUrls.length}</p>
                 </div>
-
-                <p className="uppercase lg:hidden">photos</p>
-              </button>
-
+              </button>{' '}
+              <p className="uppercase lg:hidden">
+                {listing.imageUrls.length === 1 ? 'photo' : 'photos'}
+              </p>
               <p className="sm:text-2xl text-[22px] font-semibold">
                 {listing.address}
               </p>
@@ -535,7 +537,7 @@ const Listing = ({ handleShowPhotos }) => {
                   Continue Your Search{' '}
                 </h1>
                 <div className="h-[4rem] mb-[2rem] border-r  border-amber-700"></div>
-                <div className="hidden xl:block w-full mx-64 mb-12">
+                <div className="hidden xl:block w-full mx-72 mb-12">
                   <Swiper
                     spaceBetween={20}
                     slidesPerView={3}

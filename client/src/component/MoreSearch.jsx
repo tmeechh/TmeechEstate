@@ -15,7 +15,7 @@ const MoreSearch = ({ listing }) => {
       }`}
     >
       {/* <h1 className='text-2xl my-12'>Continue Your Search</h1> */}
-      <div className="bg-white shadow-md hover:shadow-xl transition-shadow overflow-hidden rounded-lg w-[300px] sm:w-[400px] xl:w-[300px]">
+      <div className="bg-white shadow-md hover:shadow-xl transition-shadow overflow-hidden rounded-lg w-[300px] sm:w-[400px] xl:w-[350px]">
         <Link to={`/listing/${listing._id}`}>
           <div>
             <img
@@ -28,25 +28,27 @@ const MoreSearch = ({ listing }) => {
             </div>
           </div>
           <div className="p-3 flex flex-col gap-2 w-full">
-            <p className="truncate text-lg font-semibold text-slate-700 ">
-              {listing.address}
-            </p>
+            <div className="h-[90px] ">
+              <p className="text-lg font-semibold text-slate-700">
+                {listing.address}
+              </p>
+            </div>
 
-            <p className="text-slate-500 mt-2 font-semibold">
            
-              {listing.priceUponRequest
-    ? 'Price Upon Request'
-    : listing.offer
-    ? `$${listing.discountPrice.toLocaleString('en-US')}`
-    : `$${listing.regularPrice.toLocaleString('en-US')}`}
-  {listing.type === 'rent' && ` / ${listing.rentDuration}`}
-            </p>
             <div className="text-slate-700 flex items-center gap-4">
-              <div className="font-bold text-xs">
+            <p className="text-slate-500 mt-2 font-semibold">
+              {listing.priceUponRequest
+                ? 'Price Upon Request'
+                : listing.offer
+                ? `$${listing.discountPrice.toLocaleString('en-US')}`
+                : `$${listing.regularPrice.toLocaleString('en-US')}`}
+              {listing.type === 'rent' && ` / ${listing.rentDuration}`}
+            </p>
+              <div className="text-slate-500 mt-2 font-semibold">
                 {listing.bedrooms > 1 ? `${listing.bedrooms} Beds` : '1 Bed'}
               </div>
 
-              <div className="font-bold text-xs">
+              <div className="text-slate-500 mt-2 font-semibold">
                 {listing.bathrooms > 1
                   ? `${listing.bathrooms} Baths`
                   : '1 Bath'}
