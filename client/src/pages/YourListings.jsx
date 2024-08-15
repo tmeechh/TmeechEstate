@@ -60,6 +60,11 @@ const YourListings = () => {
           <p className="mb-4 text-2xl">Something went wrong!!</p>
         </div>
       )}
+      {!loading && !error && userListings.length === 0 && (
+        <div className="text-center my-7">
+          <p className="text-2xl">No listings found</p>
+        </div>
+      )}
       {userListings && userListings.length > 0 && (
         <div className="flex flex-col gap-4 mx-24 mb-12">
           <h1 className="text-center mt-7 text-3xl font-semibold">

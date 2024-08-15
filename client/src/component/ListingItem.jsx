@@ -13,7 +13,7 @@ const ListingItem = ({ listing }) => {
         />
 
         <div className="p-3 flex flex-col gap-2 w-full">
-          <p className="truncate text-lg font-semibold text-slate-700 ">
+          <p className="truncate text-lg font-semibold text-[#333333] ">
             {listing.name}
           </p>
           <div className="flex gap-1 items-center ">
@@ -26,7 +26,7 @@ const ListingItem = ({ listing }) => {
           <p className="font-sans text-sm w-full text-gray-600 line-clamp-2">
             {listing.description}
           </p>
-          <p className="text-slate-500 mt-2 font-semibold">
+          <p className="text-gray-500 mt-2 font-semibold">
          
             {listing.priceUponRequest
     ? 'Price Upon Request'

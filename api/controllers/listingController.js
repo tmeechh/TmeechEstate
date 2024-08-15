@@ -109,61 +109,81 @@ export const getListing = async (req, res, next) => {
   }
 }
 
-export const getListings = async(req, res, next) => {
-   try {
-     const limit = parseInt(req.query.limit) || 9;
-     const startIndex = parseInt(req.query.startIndex) || 0;
+export const getListings = async (req, res, next) => {
+  try {
+    const limit = parseInt(req.query.limit) || 9;
+    const startIndex = parseInt(req.query.startIndex) || 0;
 
-     let offer = req.query.offer;
+    // Handle offer filter
+    let offer = req.query.offer === 'true' ? true : undefined;
 
-     if (offer === undefined || offer === 'false') {
-       offer = { $in: [false, true] };
-     }
+    // Handle furnished filter
+    let furnished = req.query.furnished === 'true' ? true : undefined;
 
+    // Handle parking filter
+    let parking = req.query.parking === 'true' ? true : undefined;
 
-     let furnished = req.query.furnished;
+    // Handle type filter
+    let typeFilter = req.query.type === 'all' ? undefined : req.query.type;
 
-     if (furnished === undefined || furnished === 'false') {
-       furnished = {$in : [false, true]}
-     }
-
-     let parking = req.query.parking;
-
-     if (parking === undefined || parking === 'false') {
-       parking = {$in : [false, true]}
-     } 
-
-     let type = req.query.type;
-
-     if (type === undefined || type === 'all') {
-       type = { $in: ['sale', 'rent'] };
-     }
-
-     const searchTerm = req.query.searchTerm || '';
-
-     const sort = req.query.sort || 'createdAt';
-
-     const order = req.query.order || 'desc';
-
-     // Constructing regex for search term to match both name and address
+    const searchTerm = req.query.searchTerm || '';
     const searchRegex = new RegExp(searchTerm, 'i');
 
-     const listings = await Listing.find({
-      $or: [
-        { name: { $regex: searchRegex } },
-        { address: { $regex: searchRegex } },
+    let sort = req.query.sort || 'createdAt';
+    const order = req.query.order || 'desc';
+
+    const filterConditions = {
+      $and: [
+        {
+          $or: [
+            { name: { $regex: searchRegex } },
+            { address: { $regex: searchRegex } },
+          ],
+        },
+        offer !== undefined ? { offer } : {},
+        furnished !== undefined ? { furnished } : {},
+        parking !== undefined ? { parking } : {},
+        typeFilter !== undefined ? { type: typeFilter } : {},
       ],
-       offer,
-       furnished,
-       parking,
-       type,
-     }).sort(
-       { [sort]: order }
-     ).limit(limit).skip(startIndex);
+    };
 
-     return res.status(200).json(listings);
+    let listings;
 
-   }  catch (error) {
-     next(error);
-   }
-}
+    if (sort === 'random') {
+      listings = await Listing.aggregate([
+        { $match: filterConditions },
+        { $sample: { size: limit + startIndex } },
+      ]);
+      listings = listings.slice(startIndex, startIndex + limit);
+    } else {
+      listings = await Listing.find(filterConditions)
+        .sort({ [sort]: order })
+        .limit(limit)
+        .skip(startIndex);
+    }
+
+    return res.status(200).json(listings);
+
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+
+
+
+
+export const getMoreSearch = async (req, res, next) => {
+  try {
+    const limit = parseInt(req.query.limit) || 9; // Default limit to 9
+
+    const listings = await Listing.aggregate([
+      { $sample: { size: limit } } // Get 'limit' number of random listings
+    ]);
+
+    return res.status(200).json(listings);
+  } catch (error) {
+    next(error);
+  }
+};

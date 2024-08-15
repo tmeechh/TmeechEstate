@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import OAuth from '../component/OAuth';
 import { CgCloseR } from 'react-icons/cg';
@@ -12,6 +12,18 @@ const SignUp = ({ onClose, swapModal, handleShowSignIn }) => {
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
+
+  
+  useEffect(() => {
+    // Disable vertical scrolling
+    document.body.style.overflowY = 'hidden';
+    document.body.style.overflowX = 'hidden';
+
+    // Cleanup function to reset the overflow style
+    return () => {
+      document.body.style.overflowY = 'auto';
+    };
+  }, []);
 
   const handleChange = (e) => {
     setFormData({
@@ -56,11 +68,11 @@ const SignUp = ({ onClose, swapModal, handleShowSignIn }) => {
     <div className="fixed top-0 left-0 bottom-0 z-[3000] bg-opacity-90 w-screen   bg-black/80 shadow-lg  flex  p-12 mx-auto">
       <div className=" mx-auto bg-slate-200 my-auto rounded-xl px-7 py-10 md:px-12 lg:px-16  flex flex-col items-center">
         <div className="flex justify-between gap-24 lg:gap-[165px] md:gap-20 pb-7">
-          <h1 className="text-2xl md:text-[28px] lg:text-3xl text-center font-semibold ">
+          <h1 className="text-2xl text-[#333333] md:text-[28px] lg:text-3xl text-center font-semibold ">
             Sign Up
           </h1>
           <button onClick={() => onClose()} className="">
-            <CgCloseR className="text-[20px] " />
+            <CgCloseR className="text-[20px] text-[#333333]" />
           </button>
         </div>
 
@@ -88,14 +100,14 @@ const SignUp = ({ onClose, swapModal, handleShowSignIn }) => {
           />
           <button
             disabled={loading}
-            className="cursor-pointer hover:opacity-90 disabled:opacity-80  bg-slate-900 text-white p-2 lg:p-3 text-sm lg:text-[16px] rounded-xl   uppercase"
+            className="cursor-pointer hover:opacity-90 disabled:opacity-80  bg-[#081d57] text-white p-2 lg:p-3 text-sm lg:text-[16px] rounded-xl   uppercase"
           >
             {loading ?  <Spinner className="w-6 h-6 mt-0 mb-0 mx-auto " /> : 'sign up'}
           </button>
           <OAuth onClose={onClose} />
         </form>
         <div className="flex gap-2 mt-5 text-[12px] lg:text-[16px]">
-          <p>Have an account?</p>
+          <p className='text-[#333333]'>Have an account?</p>
           <span onClick={() => swapModal()} className="text-blue-700 cursor-pointer">
             Sign in
           </span>

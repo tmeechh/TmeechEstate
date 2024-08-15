@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { CgCloseR, CgMenuRight } from 'react-icons/cg';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 const Hamburger = ({ onSignIn }) => {
   const [isOpen, setIsOpen] = useState(false);
+
+
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -58,7 +60,7 @@ const Hamburger = ({ onSignIn }) => {
                         toggleMenu();
                         onSignIn();
                       }}
-                      className="text-sm cursor-pointer bg-slate-700 px-3 py-1 rounded-lg"
+                      className="text-sm cursor-pointer bg-[#081d57] px-3 py-1 rounded-lg"
                     >
                       Sign In
                     </p>

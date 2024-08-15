@@ -10,31 +10,41 @@ const Navbar = ({ onSignIn }) => {
  
   useEffect(() => {
     const handleScroll = () => {
+     
       const scrollPosition = window.scrollY;
-      const middleOfPage = document.documentElement.scrollHeight / 2;
-      if (scrollPosition < middleOfPage) {
-        setIsSticky(true);
+      const isLargeScreen = window.innerWidth >= 1280; // 1280px corresponds to 'xl' breakpoint in Tailwind
+  
+      if (isLargeScreen) {
+        const threshold = window.innerHeight * 0.4; // 50% of the screen height
+        if (scrollPosition > threshold) {
+          setIsSticky(false); // Hide the navbar
+        } else {
+          setIsSticky(true); // Show the navbar
+        }
       } else {
-        setIsSticky(false);
+        setIsSticky(true); // Sticky all through on smaller screens
       }
     };
-
+  
     window.addEventListener('scroll', handleScroll);
+  
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
+  
 
 
   return (
-    <div className={`bg-slate-600 shadow-md ${isSticky ? 'sticky-navbar' : ''}`}>
-      <nav className="flex items-center justify-between px-4 py-3 md:hidden">
+<div className={`bg-[#021342] border-b border-slate-400 shadow-md ${isSticky ? 'sticky-navbar' : 'navbar-hidden'}`}>
+
+      <nav className="flex items-center justify-between px-4 py-3 xl:hidden">
         <Link  to="/search">
           {' '}
           <FaSearch className=" text-slate-100 w-6" />
         </Link>
         <Link to="/">
-          <h1 className="font-[900] text-xl sm:text-xl flex flex-wrap">
+          <h1 className="font-[900] text-xl sm:text-[24px] flex flex-wrap">
             <span className="font-josefin  text-slate-200">Tmeech</span>
             <span className="text-slate-500">Estate</span>
           </h1>
@@ -43,28 +53,14 @@ const Navbar = ({ onSignIn }) => {
         <Hamburger onSignIn={onSignIn} />
       </nav>
 
-      <div className="hidden md:flex justify-between items-center max-w-6xl mx-auto p-3">
+      <div className="hidden xl:flex justify-between items-center max-w-6xl mx-auto p-3">
         <Link to="/">
-          <h1 className="font-[900] text-md sm:text-xl flex flex-wrap">
-            <span className="font-josefin text-slate-200">Tmeech</span>
-            <span className="text-slate-500">Estate</span>
+          <h1 className="font-[900] text-md sm:text-[24px] flex flex-wrap">
+            <span className="font-josefin text-[#F5F5F5]">Tmeech</span>
+            <span className="text-gray-400">Estate</span>
           </h1>
         </Link>
-        {/* <form
-          onSubmit={handleSubmit}
-          className="bg-slate-100 p-[12px] rounded-lg flex   items-center "
-        >
-          <input
-            type="text"
-            placeholder="Search..."
-            className="bg-transparent search h-3 outline-none w-24 sm:w-52"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-          <button type="">
-            <FaSearch className="text-slate-500 w-4" />
-          </button>
-        </form> */}
+       
 
         <ul className="flex gap-4 text-white items-center">
           <Link
@@ -96,16 +92,16 @@ const Navbar = ({ onSignIn }) => {
                   src={currentUser.avatar}
                   alt="profile"
                 />
-                <h3 className="text-sm text-slate-200">{currentUser.username}</h3>
+                <h3 className="text-sm text-[#F5F5F5]">{currentUser.username}</h3>
                 </Link>
                 </div>
               
             ) : (
               <li
                 onClick={onSignIn}
-                className="cursor-pointer bg-gray-500  rounded-xl  px-[10px] py-[4px] border border-slate-500  "
+                className="cursor-pointer     px-[10px] py-[4px]   "
               >
-                Sign in
+                Join {''} / Log in
               </li>
             )}
           </div>

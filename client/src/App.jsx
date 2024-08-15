@@ -55,7 +55,7 @@ const App = () => {
   // }, [showPhotos]);
 
   return (
-    <BrowserRouter>
+    <BrowserRouter >
       <Toaster position="top-right" />
       {showSignIn ? (
         <SignIn onClose={handleCloseSignIn} swapModal={swapModal} />
@@ -80,7 +80,7 @@ const App = () => {
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/about" element={<About />} />
         <Route path="/search" element={<Search />} />
-        <Route path="/listing/:listingId" element={<Listing handleShowPhotos={handleShowPhotos}/>} />
+        <Route path="/listing/:listingId" element={<Listing onSignIn={handleShowSignIn} handleShowPhotos={handleShowPhotos}/>} />
 
 
         <Route element={<PrivateRoute handleShowSignIn={handleShowSignIn} />}>

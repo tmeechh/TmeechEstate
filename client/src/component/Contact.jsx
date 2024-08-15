@@ -24,6 +24,7 @@ const Contact = ({ listing }) => {
     <>
       {landlord && (
         <div className=" flex flex-col gap-3 mt-5">
+          
           <p>
             Contact <span className="font-extrabold">{landlord.username}</span>{' '}
             for{' '}
