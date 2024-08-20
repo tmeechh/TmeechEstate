@@ -4,8 +4,8 @@ import { errorHandler } from '../utils/error.js';
 import jwt from 'jsonwebtoken';
 import validator from 'validator';
 import emailService from '../utils/mailer.js';
-import passport from 'passport';
-import {Strategy as FacebookStrategy } from 'passport-facebook';  
+// import passport from 'passport';
+// import {Strategy as FacebookStrategy } from 'passport-facebook';  
 
 
 
@@ -183,14 +183,14 @@ export const signOut = async (req, res, next) => {
 
 
 
-passport.use(new FacebookStrategy({
-  clientID: process.env.FACEBOOK_APP_ID,
-  clientSecret: process.env.FACEBOOK_APP_SECRET,
-  callbackURL: "/auth/facebook/callback",
-  // profileFields: ['id', 'emails', 'name', 'photos']
-},
-  function (accessToken, refreshToken, profile, done)  {
-    done(null, profile);
+// passport.use(new FacebookStrategy({
+//   clientID: process.env.FACEBOOK_APP_ID,
+//   clientSecret: process.env.FACEBOOK_APP_SECRET,
+//   callbackURL: "/auth/facebook/callback",
+//   // profileFields: ['id', 'emails', 'name', 'photos']
+// },
+//   function (accessToken, refreshToken, profile, done)  {
+//     done(null, profile);
 
 
     
@@ -220,14 +220,14 @@ passport.use(new FacebookStrategy({
   // } catch (error) {
   //   done(error, false);
   // }
-}));
+// }));
 
 
-passport.serializeUser((user, done) => {
-  done(null, user);
-});
+// passport.serializeUser((user, done) => {
+//   done(null, user);
+// });
 
-passport.deserializeUser((user, done) => {
-  done(null, user);
-});
+// passport.deserializeUser((user, done) => {
+//   done(null, user);
+// });
 

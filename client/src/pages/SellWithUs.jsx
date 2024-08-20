@@ -10,6 +10,7 @@ import globe from '../assets/globe.png';
 import Footer from '../component/Footer';
 import Spinner from '../Spinner';
 import { useState } from 'react';
+import { toast } from 'sonner';
 // import { Link } from 'react-router-dom';
 
 const SellWithUs = () => {
@@ -33,6 +34,10 @@ const SellWithUs = () => {
       message: false,
     },
   });
+  const [isSubmitted, setIsSubmitted] = useState(false);
+
+
+
 
   function handleInputChange(e) {
     const { name, value } = e.target;
@@ -59,7 +64,7 @@ const SellWithUs = () => {
         Message: ${formData.message}
       `;
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
 
     // Validate all required fields
@@ -84,10 +89,45 @@ const SellWithUs = () => {
     const hasErrors = Object.values(errors).some((error) => error);
 
     if (!hasErrors) {
-      const mailtoLink = `mailto:esantaiwo77@gmail.com?subject=Regarding Listing a Home&body=${encodeURIComponent(
-        `Name: ${formData.firstName} ${formData.lastName}\nEmail: ${formData.email}\nPhone: ${formData.phone}\n\nMessage: ${formData.message}`
-      )}`;
-      window.location.href = mailtoLink;
+      // const mailtoLink = `mailto:esantaiwo77@gmail.com?subject=Regarding Listing a Home&body=${encodeURIComponent(
+      //   `Name: ${formData.firstName} ${formData.lastName}\nEmail: ${formData.email}\nPhone: ${formData.phone}\n\nMessage: ${formData.message}`
+      // )}`;
+      // window.location.href = mailtoLink;
+      setLoading(true);
+      try {
+        const response = await fetch('/api/contact/message', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
+        });
+      
+        if (response.ok) {
+          setIsSubmitted(true);
+          setLoading(false);
+          // Optionally reset the form here if you want to clear it after successful submission
+          setFormData({
+            firstName: '',
+            lastName: '',
+            email: '',
+            phone: '',
+            message: '',
+            errors: {},
+            isTouched: {},
+          });
+  
+        } else {
+          const errorData = await response.json();
+          toast.error(` ${errorData.message}`);
+          setLoading(false);
+        }
+      } catch (error) {
+        console.error('Error submitting form:', error);
+        toast.error('There was an error submitting the form.');
+        setLoading(false);
+      }
+      
     }
   }
 
@@ -345,115 +385,110 @@ const SellWithUs = () => {
             </p>
           </div>
           <div className="xl:w-fit w-full flex flex-col gap-8">
-            <h1 className="lg:text-3xl text-2xl">Lets get in touch</h1>
-            <form className="grid grid-cols-2 gap-12" onSubmit={handleSubmit}>
-              <div>
-                {formData.errors.firstName && formData.isTouched.firstName && (
-                  <p className="text-red-500 text-sm ">
-                    This field is required.
-                  </p>
-                )}
-                <input
-                  name="firstName"
-                  type="text"
-                  placeholder="First Name"
-                  value={formData.firstName}
-                  onChange={handleInputChange}
-                  className={`border-b xl:w-56 placeholder-slate-600 outline-none bg-transparent text-[#333333] ${
-                    formData.errors.firstName
-                      ? 'border-red-500'
-                      : 'border-[#333333]'
-                  }`}
-                />
-              </div>
-              <div>
-                {formData.errors.lastName && formData.isTouched.lastName && (
-                  <p className="text-red-500 text-sm ">
-                    This field is required.
-                  </p>
-                )}
-
-                <input
-                  name="lastName"
-                  type="text"
-                  placeholder="Last Name"
-                  value={formData.lastName}
-                  onChange={handleInputChange}
-                  className={`border-b xl:w-56 placeholder-slate-600 outline-none bg-transparent text-[#333333] ${
-                    formData.errors.lastName
-                      ? 'border-red-500'
-                      : 'border-[#333333]'
-                  }`}
-                />
-              </div>
-              <div>
-                {formData.errors.email && formData.isTouched.email && (
-                <p className="text-red-500 text-sm col-span-2">
-                  This field is required.
-                </p>
-              )}
-              
-              <input
-                name="email"
-                
-                type="text"
-                placeholder="Email Address"
-                value={formData.email}
-                onChange={handleInputChange}
-                className={`border-b xl:w-56 placeholder-slate-600 outline-none bg-transparent text-[#333333] ${
-                  formData.errors.email ? 'border-red-500' : 'border-[#333333]'
-                }`}
-              />
-              </div>
-             
-           
-
-              <input
-                type="number"
-                name="phone"
-                placeholder="Phone Number (Optional)"
-                value={formData.phone}
-                onChange={handleInputChange}
-                className="border-b outline-none xl:w-56 placeholder-slate-600 border-[#333333] bg-transparent text-[#333333]"
-              />
-
-              <div className="col-span-2">
-              {formData.errors.message && formData.isTouched.message ? (
-    <p className="text-red-500 text-sm">This field is required.</p>
-  ) : (
-    <p className="text-slate-600 font-sans pb-3">Message</p>
-  )}
-               
-                <textarea
-                  name="message"
-                  
-                  value={formData.message}
-                  onChange={handleInputChange}
-                  className={`w-full h-28 p-3 placeholder-slate-600 outline-none border bg-transparent text-[#333333] ${
-                    formData.errors.message
-                      ? 'border-red-500'
-                      : 'border-[#333333]'
-                  }`}
-                  placeholder="I'd like to discuss selling with you"
-                ></textarea>
-               
-              </div>
-
-              <button
-                type="submit"
-                disabled={loading}
-                className="uppercase flex items-center disabled:opacity-75 hover:opacity-75 md:w-[50%] w-[65%] gap-4 bg-[#0b1636] text-white p-5 col-span-2"
-              >
-                {loading ? (
-                  <Spinner className="w-7 h-7 border-white mt-0 mb-0 mx-auto" />
-                ) : (
-                  <>
-                    Send Message
-                    <ArrowLongRightIcon className="w-8 h-6 mb-[-20px] transform text-white -translate-y-1/2 transition-transform duration-300 ease-in-out hover:translate-x-2 hover:scale-110 flex items-center justify-center" />
-                  </>
-                )}
-              </button>
-            </form>
+            
+            <div>
+    {isSubmitted ? (
+      <div className="xl:  flex flex-col ">
+        <p className='text-xl lg:text-3xl text-[#333333]'>Thanks for your interest, We will <br className='hidden'/> get back to you shortly.</p>
+        <button
+          onClick={() => setIsSubmitted(false)}
+          className="mt-4 uppercase text-[#333333] font-josefin  p-2 flex gap-2 items-center text-[12px] lg:text-[15px]"
+        >
+                    Send Another Message
+                    <ArrowLongRightIcon className="w-8 text-[#333333] h-6 mb-[-20px] transform  -translate-y-1/2 transition-transform duration-300 ease-in-out hover:translate-x-2 hover:scale-110 flex items-center justify-center" />
+        </button>
+      </div>
+              ) : (
+                  <div>
+                    <h1 className="lg:text-3xl text-[#333333] mb-8 text-2xl">Lets get in touch</h1>
+      <form className="grid grid-cols-2 gap-12" onSubmit={handleSubmit}>
+        <div>
+          {formData.errors.firstName && formData.isTouched.firstName && (
+            <p className="text-red-500 text-sm">This field is required.</p>
+          )}
+          <input
+            name="firstName"
+            type="text"
+            placeholder="First Name"
+            value={formData.firstName}
+            onChange={handleInputChange}
+            className={`border-b xl:w-56 placeholder-slate-600 outline-none bg-transparent text-[#333333] ${
+              formData.errors.firstName ? 'border-red-500' : 'border-[#333333]'
+            }`}
+          />
+        </div>
+        <div>
+          {formData.errors.lastName && formData.isTouched.lastName && (
+            <p className="text-red-500 text-sm">This field is required.</p>
+          )}
+          <input
+            name="lastName"
+            type="text"
+            placeholder="Last Name"
+            value={formData.lastName}
+            onChange={handleInputChange}
+            className={`border-b xl:w-56 placeholder-slate-600 outline-none bg-transparent text-[#333333] ${
+              formData.errors.lastName ? 'border-red-500' : 'border-[#333333]'
+            }`}
+          />
+        </div>
+        <div>
+          {formData.errors.email && formData.isTouched.email && (
+            <p className="text-red-500 text-sm col-span-2">This field is required.</p>
+          )}
+          <input
+            name="email"
+            type="text"
+            placeholder="Email Address"
+            value={formData.email}
+            onChange={handleInputChange}
+            className={`border-b xl:w-56 placeholder-slate-600 outline-none bg-transparent text-[#333333] ${
+              formData.errors.email ? 'border-red-500' : 'border-[#333333]'
+            }`}
+          />
+        </div>
+        <input
+          type="number"
+          name="phone"
+          placeholder="Phone Number (Optional)"
+          value={formData.phone}
+          onChange={handleInputChange}
+          className="border-b outline-none xl:w-56 placeholder-slate-600 border-[#333333] bg-transparent text-[#333333]"
+        />
+        <div className="col-span-2">
+          {formData.errors.message && formData.isTouched.message ? (
+            <p className="text-red-500 text-sm">This field is required.</p>
+          ) : (
+            <p className="text-slate-600 font-sans pb-3">Message</p>
+          )}
+          <textarea
+            name="message"
+            value={formData.message}
+            onChange={handleInputChange}
+            className={`w-full h-28 p-3 placeholder-slate-600 outline-none border bg-transparent text-[#333333] ${
+              formData.errors.message ? 'border-red-500' : 'border-[#333333]'
+            }`}
+            placeholder="I'd like to discuss selling with you"
+          ></textarea>
+        </div>
+        <button
+          type="submit"
+          disabled={loading}
+          className="uppercase flex items-center disabled:opacity-75 hover:opacity-75 md:w-[50%] w-[65%] gap-4 bg-[#0b1636] text-white p-5 col-span-2"
+        >
+          {loading ? (
+            <Spinner className="w-7 h-7 border-white mt-0 mb-0 mx-auto" />
+          ) : (
+            <>
+              Send Message
+              <ArrowLongRightIcon className="w-8 h-6 mb-[-20px] transform text-white -translate-y-1/2 transition-transform duration-300 ease-in-out hover:translate-x-2 hover:scale-110 flex items-center justify-center" />
+            </>
+          )}
+        </button>
+      </form>
+      </div>
+    )}
+  </div>
           </div>
         </div>
       </div>
