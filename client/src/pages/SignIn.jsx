@@ -13,7 +13,7 @@ import Spinner from '../Spinner';
 import { toast } from 'sonner';
 
 
-const SignIn = ({ onClose, swapModal }) => {
+const SignIn = ({ onClose, swapModal, onForgot }) => {
   const [formData, setFormData] = useState({});
   const { loading, error } = useSelector((state) => state.user);
   const navigate = useNavigate();
@@ -97,7 +97,7 @@ const SignIn = ({ onClose, swapModal }) => {
             disabled={loading}
             className="cursor-pointer hover:opacity-90 disabled:opacity-80  bg-[#081d57] text-white p-2 lg:p-3 text-sm lg:text-[16px] rounded-xl uppercase"
           >
-            {loading ?  <Spinner className="w-6 h-6 mt-0 mb-0 mx-auto " /> : 'sign in'}
+            {loading.signIn ?  <Spinner className="w-6 h-6 border-white mt-0 mb-0 mx-auto " /> : 'sign in'}
           </button>
           <OAuth onClose={onClose} />
         </form>
@@ -110,7 +110,7 @@ const SignIn = ({ onClose, swapModal }) => {
           </div>
 
           <div onClick={onClose} className="hover:underline text-[#333333] hover:text-gray-600 text-[12px] lg:text-[16px]">
-            <Link to={'/forgot-password'}>Forgot Password?</Link>
+            <Link onClick={onForgot}>Forgot Password?</Link>
           </div>
         </div>
         {/* {error && <p className="text-red-500 mt-5">{error}</p>} */}

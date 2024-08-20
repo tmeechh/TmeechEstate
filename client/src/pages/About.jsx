@@ -4,6 +4,7 @@ import about from '../assets/about.png';
 import house from '../assets/house.png';
 import lead from '../assets/lead.png';
 import sec from '../assets/sec.png';
+import people from '../assets/people.png';
 import Footer from '../component/Footer';
 import { Link } from 'react-router-dom';
 
@@ -90,14 +91,14 @@ const About = () => {
         <div className="mx-auto   flex-wrap   xl:mx-64 text-center flex flex-col items-center  gap-6 ">
           <h1 className="text-4xl">Raising the global excellence bar.</h1>
 
-          <p className='font-sans'>
+          <p className="font-sans">
             Established in 2024, TmeechEstate has become the world top-tier
             luxury residential real estate brokerage. Through our extensive
             global presence, local insight, and unmatched referral network, we
             guarantee that the properties we represent receive the comprehensive
             and extraordinary exposure they deserve.
           </p>
-          <Link to="/create-listing" className="flex flex-col  gap-5  ">
+          <Link to="/sell-with-us" className="flex flex-col  gap-5  ">
             <div className="uppercase text-[12px] lg:text-[14px] border border-amber-700 lg:p-4 p-2 flex items-center gap-2 font-josefin ">
               sell with us
               <ArrowLongRightIcon className="w-6 lg:w-8 h-6 mb-[-20px]  transform -translate-y-1/2 transition-transform duration-300 ease-in-out hover:translate-x-2 hover:scale-110 flex items-center justify-center" />
@@ -151,7 +152,9 @@ const About = () => {
                 <p className=" font-sans">Morocco</p>
               </div>
             </div>
-            <p className=" font-sans text-center text-xl text-[#333333]">And More....</p>
+            <p className=" font-sans text-center text-xl text-[#333333]">
+              And More....
+            </p>
           </div>
         </div>
       </div>
@@ -161,33 +164,32 @@ const About = () => {
         </h1>
         <div className="flex flex-col md:flex-row gap-10 mx-10 xl:mx-20">
           <div className="flex gap-4 flex-col">
-            <img src={lead} className='h-[60vh]' alt="" />
+            <img src={lead} className="h-[60vh]" alt="" />
             <h3 className="text-xl font-josefin">Experienced leadership.</h3>
             <p className="text-sm font-sans">
-              The TmeechEstate leadership team brings together a remarkable
-              depth and breadth of experience. Each of us is dedicated to
-              supporting our associates and serving our clients better than any
-              other real estate company possibly can.
+              The TmeechEstate leadership team offers a unique mix of expertise.
+              We are all committed to empowering our agents and assisting our
+              clients better than any other real estate firm could.
             </p>
           </div>
           <div className="flex gap-4 flex-col">
-            <img src={lead} className='h-[60vh]' alt="" />
-            <h3 className="text-xl font-josefin">Local expertise. Global connections.</h3>
+            <img src={people} className="h-[60vh]" alt="" />
+            <h3 className="text-xl font-josefin">
+              Local expertise. Global connections.
+            </h3>
             <p className="text-sm font-sans">
-              The culture of the TmeechEstate brand is defined
-              by its people; our exceptional sales associates, who range from
-              Tokyo to Telluride, and Paris to Palm Beach, provide personalized
-              service and local expertise that help clients achieve their
-              dreams.
+              The TmeechEstate brand culture is shaped by its people; our
+              outstanding sales associates, from Tokyo to Telluride and Paris to
+              Palm Beach, offer tailored service and local knowledge that
+              fulfill clients dreams.
             </p>
           </div>
         </div>
       </div>
 
-      
       <div className="flex flex-col items-center sm:mx-auto mx-12 gap-5 my-16 mb-24">
         <h1 className="text-3xl pb-16 pt-10">Lets get in touch</h1>
-        <Link to="/create-listing" className="flex flex-col  gap-5  ">
+        <Link to="/sell-with-us" className="flex flex-col  gap-5  ">
           <img src={sec} alt="sell" />
           <p className="text-[#081d57] sm:text-[20px]">
             Do you want to list your home?

@@ -24,7 +24,6 @@ const Contact = ({ listing }) => {
     <>
       {landlord && (
         <div className=" flex flex-col gap-3 mt-5">
-          
           <p>
             Contact <span className="font-extrabold">{landlord.username}</span>{' '}
             for{' '}
@@ -35,11 +34,16 @@ const Contact = ({ listing }) => {
             id="message"
             rows="2"
             value={message}
-                      onChange={onChange}
-                      placeholder='Enter your message here...'
-            className="w-full border p-3 rounded-lg outline-none "
-                  ></textarea>
-                  <Link to={`mailto:${landlord.email}?subject=Regarding${listing.name}&body=${message}`} className='bg-slate-900 text-white text-center p-3 uppercase rounded-lg hover:opacity-75'>Send Message</Link>
+            onChange={onChange}
+            placeholder="Enter your message here..."
+            className="lg:w-[70vh] border p-3 rounded-lg outline-none "
+          ></textarea>
+          <Link
+            to={`mailto:${landlord.email}?subject=Regarding${listing.name}&body=${message}`}
+            className="bg-[#021342]  text-white text-center p-3 uppercase rounded-lg hover:opacity-75"
+          >
+            Send Message
+          </Link>
         </div>
       )}
     </>

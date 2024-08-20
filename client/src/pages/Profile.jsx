@@ -134,46 +134,11 @@ const Profile = () => {
       dispatch(deleteUserSuccess(data));
       navigate('/');
     } catch (error) {
-      dispatch(deleteUserFailure(data.message));
+      dispatch(deleteUserFailure(error.message));
     }
   };
 
-  // const handleShowListings = async () => {
-  //   try {
-  //     setShowListingError(false);
-  //     setLoadingListing(true);
-  //     const res = await fetch(`/api/user/listings/${currentUser._id}`);
-  //     const data = await res.json();
-  //     if (data.success === false ) {
-  //       setShowListingError(true);
-  //       return;
-  //     }
-
-  //     setUserListings(data);
-  //   } catch (error) {
-  //     setShowListingError(true);
-  //   } finally {
-  //     setLoadingListing(false); 
-  //   }
-  // };
-
-  // const handleListingDelete = async (listingId) => {
-  //   try {
-  //     const res = await fetch(`/api/listing/delete/${listingId}`, {
-  //       method: 'DELETE',
-  //     });
-  //     const data = await res.json();
-  //     if (data.success === false) {
-  //       console.log(data.message);
-  //       return;
-  //     }
-
-  //     setUserListings((prev) =>
-  //       prev.filter((listing) => listing._id !== listingId));
-  //   } catch (error) {
-  //      console.log(error.message);
-  //   }
-  // }
+ 
 
   return (
     <div className="p-3 max-w-lg mx-auto ">
@@ -204,9 +169,7 @@ const Profile = () => {
             ''
           )}
         </p>
-        {/* <p className="text-green-700 mt-5 text-center">
-        {updateSuccess ? 'Profile updated successfully' : ''}
-      </p> */}
+
         <input
           type="text"
           id="username"
@@ -231,10 +194,10 @@ const Profile = () => {
           className="border p-3 rounded-lg outline-none"
         />
         <button
-          disabled={loading}
-          className="bg-slate-900 text-white rounded-lg p-3 uppercase hover:opacity-85 disabled:opacity-80"
+          disabled={loading.updateUser}
+          className="bg-[#081d57] text-white rounded-lg p-3 uppercase hover:opacity-85 disabled:opacity-80"
         >
-          {loading ?  <Spinner className="w-6 h-6 mt-0 mb-0 mx-auto " /> : 'update'}
+          {loading ?  <Spinner className="w-6 h-6 mt-0 mb-0 border-white mx-auto " /> : 'update'}
         </button>
 
         <Link

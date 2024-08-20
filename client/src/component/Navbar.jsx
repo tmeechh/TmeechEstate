@@ -65,23 +65,24 @@ const Navbar = ({ onSignIn }) => {
         <ul className="flex gap-4 text-white items-center">
           <Link
             to={'/search'}
-            className="text-white text-[14px] lg:text-[16px] flex gap-1 hover:text-slate-300 relative link-hover-effect"
+            className="text-white uppercase pt-1 cursor-pointer  text-[12px] lg:text-[14px] flex gap-1 hover:text-slate-300 relative link-hover-effect"
           >
             <FaSearch className=" w-4 lg:w-5" />
-            <h3>Search</h3>
+            <h3 className='font-josefin '>Search</h3>
           </Link>
-          <Link to="/">
+          {/* <Link to="/">
             {' '}
-            <li className="hidden sm:inline cursor-pointer  text-[14px] lg:text-[16px]  rounded px-[6px] py-[5px] border-slate-900  relative link-hover-effect   hover:text-slate-300">
+            <li className="hidden sm:inline font-josefin uppercase cursor-pointer  text-[12px] lg:text-[14px]    relative link-hover-effect   hover:text-slate-300">
               Home
             </li>{' '}
-          </Link>
+          </Link> */}
           <Link to="/about">
             {' '}
-            <li className="hidden sm:inline cursor-pointer  text-[14px] lg:text-[16px]  rounded px-[6px] py-[5px]  border-slate-900 relative link-hover-effect  hover:text-slate-300">
+            <li className="hidden sm:inline font-josefin uppercase cursor-pointer  text-[12px] lg:text-[14px]   relative link-hover-effect  hover:text-slate-300">
               About
             </li>{' '}
           </Link>
+         
           <div>
             {currentUser ? (
               <div className='flex  items-center gap-4 '>
@@ -92,19 +93,24 @@ const Navbar = ({ onSignIn }) => {
                   src={currentUser.avatar}
                   alt="profile"
                 />
-                <h3 className="text-sm text-[#F5F5F5]">{currentUser.username}</h3>
+                <h3 className="text-sm font-josefin text-[#F5F5F5]">{currentUser.username}</h3>
                 </Link>
                 </div>
               
             ) : (
               <li
                 onClick={onSignIn}
-                className="cursor-pointer     px-[10px] py-[4px]   "
+                className="cursor-pointer  font-josefin uppercase text-[14px]    px-[10px] py-[4px]   "
               >
                 Join {''} / Log in
               </li>
             )}
           </div>
+          <Link to="/sell-with-us">
+            <li className='hidden sm:inline border border-amber-700 p-3 rounded font-josefin uppercase cursor-pointer  text-[12px] lg:text-[14px]    hover:text-slate-300'>
+           sell with us 
+            </li>
+          </Link>
         </ul>
       </div>
     </div>

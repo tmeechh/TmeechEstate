@@ -5,6 +5,8 @@ import { signInSuccess } from '../redux/user/userSlice';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import Spinner from '../Spinner';
+
 
 const OAuth = ({ onClose }) => {
   const dispatch = useDispatch();
@@ -41,7 +43,16 @@ const OAuth = ({ onClose }) => {
     }
   };
 
-  const btnText = isLoading ? 'Loading...' : ' Continue with google';
+  const btnText = isLoading ? <Spinner className="w-6 h-6 border-white mt-0 mb-0 mx-auto " />  : ' Continue with google';
+
+
+
+
+
+  // const handleFacebookLogin = () => {
+  //   window.open('/api/auth/facebook', '_self');
+  // };
+
 
   return (
     <>
@@ -53,6 +64,12 @@ const OAuth = ({ onClose }) => {
       >
         {btnText}
       </button>
+      {/* <button
+        onClick={handleFacebookLogin}
+        className="bg-[#4267B2] text-white p-2 lg:p-3 text-sm lg:text-[16px] rounded-xl uppercase w-full text-center"
+      >
+        Continue with Facebook
+      </button> */}
     </>
   );
 };

@@ -544,23 +544,30 @@ const Listing = ({ handleShowPhotos, onSignIn }) => {
                 </div>
               </div>
             </div>
-      <div className='mt-24 flex flex-col gap-5 items-center mx-auto'>
-            <h1 className=' text-3xl'>Get In Touch </h1>
-            {!contact && (
-              <button
-                onClick={() => {
-                  if (currentUser) {
-                    setContact(true);
-                  } else {
-                    onSignIn(); // Trigger the sign-in modal if the user is not logged in
-                  }
-                }}
-                className="text-white  bg-[#081d57] w-full rounded-lg uppercase py-2 px-12 hover:opacity-75"
-              >
-                Contact Landlord
-              </button>
-            )}
-            {contact && <Contact listing={listing} />}
+            <div className="mt-24 flex flex-col gap-5 items-center">
+              {!contact &&
+                listing &&
+                currentUser &&
+                currentUser._id !== listing.userRef && (
+                  <div>
+                    {' '}
+                    <h1 className=" text-3xl">Get In Touch </h1>
+                    <button
+                      onClick={() => {
+                        if (currentUser) {
+                          setContact(true);
+                        } else {
+                          onSignIn(); // Trigger the sign-in modal if the user is not logged in
+                        }
+                      }}
+                      className="text-white bg-[#081d57] rounded-lg uppercase py-2 px-12 hover:opacity-75"
+                    >
+                      Contact Landlord
+                    </button>
+                  </div>
+                )}
+
+              {contact && <Contact listing={listing} />}
             </div>
           </div>
 
@@ -622,7 +629,7 @@ const Listing = ({ handleShowPhotos, onSignIn }) => {
           </div>
         </div>
       )}
-       <Footer />
+      <Footer />
     </main>
   );
 };

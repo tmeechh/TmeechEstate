@@ -51,8 +51,9 @@ const SignUp = ({ onClose, swapModal, handleShowSignIn }) => {
       }
       setLoading(false);
       setError(null);
-      toast.success('Sign up successful');
-      onClose(); 
+      
+      onClose();
+      toast.success('Sign up successful'); 
       handleShowSignIn(); 
       console.log(data);
     } catch (error) {
@@ -102,7 +103,7 @@ const SignUp = ({ onClose, swapModal, handleShowSignIn }) => {
             disabled={loading}
             className="cursor-pointer hover:opacity-90 disabled:opacity-80  bg-[#081d57] text-white p-2 lg:p-3 text-sm lg:text-[16px] rounded-xl   uppercase"
           >
-            {loading ?  <Spinner className="w-6 h-6 mt-0 mb-0 mx-auto " /> : 'sign up'}
+            {loading ?  <Spinner className="w-6 h-6 border-white mt-0 mb-0 mx-auto " />  : 'sign up'}
           </button>
           <OAuth onClose={onClose} />
         </form>

@@ -39,7 +39,7 @@ const Photos = ({ onClose, images }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-slate-700 flex flex-col justify-center text-white z-[3000] w-[100vw] h-[100vh] overflow-hidden">
+    <div className="fixed inset-0 bg-[#021342] flex flex-col justify-center text-white z-[3000] w-[100vw] h-[100vh] overflow-hidden">
       <button className="absolute top-2 right-5" onClick={onClose}>
         <XMarkIcon className="w-8" />
       </button>

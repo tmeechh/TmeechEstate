@@ -4,6 +4,10 @@ import { errorHandler } from '../utils/error.js';
 import jwt from 'jsonwebtoken';
 import validator from 'validator';
 import emailService from '../utils/mailer.js';
+import passport from 'passport';
+import {Strategy as FacebookStrategy } from 'passport-facebook';  
+
+
 
 const generateOTP = () => Math.floor(1000 + Math.random() * 9000).toString();
 
@@ -21,7 +25,7 @@ export const forgotPassword = async (req, res, next) => {
 
     const otp = generateOTP();
     user.otp = otp;
-    user.otpExpires = Date.now() + 10 * 60 * 1000; // 10 minutes
+    user.otpExpires = Date.now() + 5 * 60 * 1000;  // 5 minutes
     await user.save();
 
    
@@ -84,9 +88,8 @@ export const resetPassword = async (req, res, next) => {
 
 export const signup = async (req, res, next) => {
   const { username, email, password } = req.body;
-
-  if (!validator.isEmail(email)) {
-    return res.status(400).json({ message: 'Invalid email address' });
+  if (!email || !validator.isEmail(email)) {
+    return res.status(400).json({ message: 'Invalid or missing email address' });
   }
 
   const hashedPassword = bcryptjs.hashSync(password, 10);
@@ -98,6 +101,9 @@ export const signup = async (req, res, next) => {
     next(error);
   }
 };
+
+
+
 
 export const signin = async (req, res, next) => {
   const { email, password } = req.body;
@@ -163,41 +169,7 @@ export const google = async (req, res, next) => {
 };
 
 
-// export const facebook = async (req, res, next) => {
-//   try {
-//     const user = await userModel.findOne({ email: req.body.email });
-//     if (user) {
-//       const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
-//       const { password: pass, ...rest } = user._doc;
-//       res
-//         .cookie('access_token', token, { httpOnly: true })
-//         .status(200)
-//         .json(rest);
-//     } else {
-//       const generatedPassword =
-//         Math.random().toString(36).slice(-8) +
-//         Math.random().toString(36).slice(-8);
-//       const hashedPassword = bcryptjs.hashSync(generatedPassword, 10);
-//       const newUser = new userModel({
-//         username:
-//           req.body.name.split(' ').join('').toLowerCase() +
-//           Math.random().toString(36).slice(-4),
-//         email: req.body.email,
-//         password: hashedPassword,
-//         avatar: req.body.photo,
-//       });
-//       await newUser.save();
-//       const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET);
-//       const { password, ...rest } = newUser._doc;
-//       res
-//         .cookie('access_token', token, { httpOnly: true })
-//         .status(200)
-//         .json(rest);
-//     }
-//   } catch (error) {
-//     next(error);
-//   }
-// };
+
 
 
 export const signOut = async (req, res, next) => {
@@ -208,3 +180,54 @@ export const signOut = async (req, res, next) => {
     next(error);
   }
 };
+
+
+
+passport.use(new FacebookStrategy({
+  clientID: process.env.FACEBOOK_APP_ID,
+  clientSecret: process.env.FACEBOOK_APP_SECRET,
+  callbackURL: "/auth/facebook/callback",
+  // profileFields: ['id', 'emails', 'name', 'photos']
+},
+  function (accessToken, refreshToken, profile, done)  {
+    done(null, profile);
+
+
+    
+  // console.log(profile);  // Add this line to debug
+
+  // const { emails, first_name, last_name } = profile._json;
+  // const email = emails && emails[0] && emails[0].value;
+  // const username = `${first_name} ${last_name}`;
+
+  // try {
+  //   let user = await userModel.findOne({ email });
+
+  //   if (!user) {
+  //     const generatedPassword = Math.random().toString(36).slice(-8);
+  //     const hashedPassword = bcryptjs.hashSync(generatedPassword, 10);
+  //     user = new userModel({
+  //       username,
+  //       email,
+  //       password: hashedPassword,  // Use hashed password
+  //       avatar: profile.photos && profile.photos[0] && profile.photos[0].value
+  //     });
+  //     await user.save();
+  //   }
+
+  //   const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET);
+  //   done(null, { user, token });
+  // } catch (error) {
+  //   done(error, false);
+  // }
+}));
+
+
+passport.serializeUser((user, done) => {
+  done(null, user);
+});
+
+passport.deserializeUser((user, done) => {
+  done(null, user);
+});
+

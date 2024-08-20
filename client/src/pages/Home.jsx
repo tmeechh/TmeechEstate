@@ -85,7 +85,7 @@ const [order, setOrder] = useState('');
         throw new Error(`Error: ${res.statusText}`);
       }
       const data = await res.json();
-      console.log('Fetched Data:', data);
+      // console.log('Fetched Data:', data);
       // Handle the fetched data, e.g., update state
     } catch (error) {
       console.error('Error fetching listings:', error);
@@ -396,7 +396,7 @@ const [order, setOrder] = useState('');
 
       <div className="flex flex-col items-center sm:mx-auto mx-12 gap-5 my-16 mb-24">
         <h1 className="text-3xl pb-16 pt-10">Lets get in touch</h1>
-        <Link to="/create-listing" className="flex flex-col  gap-5  ">
+        <Link to="/sell-with-us" className="flex flex-col  gap-5  ">
           <img src={sec} alt="sell" />
           <p className="text-[#081d57] sm:text-[20px]">
             Do you want to list your home?

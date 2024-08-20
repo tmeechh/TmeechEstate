@@ -483,10 +483,10 @@ const CreatingListing = () => {
             ))}
           <button
             disabled={loading || uploading}
-            className="mt-5 p-3 bg-slate-700 text-white rounded-lg uppercase hover:opacity-75 disabled:opacity-80 w-[80%] self-center"
+            className="mt-5 p-3 bg-[#021342] text-white rounded-lg uppercase hover:opacity-75 disabled:opacity-80 w-[80%] self-center"
           >
             {loading ? (
-              <Spinner className="w-6 h-6 mt-0 mb-0 mx-auto " />
+             <Spinner className="w-6 h-6 border-white mt-0 mb-0 mx-auto " /> 
             ) : (
               'Create listing'
             )}

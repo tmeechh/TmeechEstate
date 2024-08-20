@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import  { useEffect, useState } from 'react';
+import {  useNavigate } from 'react-router-dom';
+import Spinner from '../Spinner';
+import { toast } from 'sonner';
 
-const ResetPassword = () => {
-  const { state } = useLocation();
-  const { email, otp } = state || {};
+const ResetPassword = ({email, otp, onClose}) => {
+  // const { state } = useLocation();
+  // const { email, otp } = state || {};
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -27,10 +29,11 @@ const ResetPassword = () => {
       });
       const data = await res.json();
       if (res.ok) {
-        setMessage('Password reset successful');
+        toast.success('Password reset successful');
+        onClose();
         navigate('/');
       } else {
-        setMessage(data.message);
+        toast.error(data.message);
       }
     } catch (error) {
       setMessage('Something went wrong. Please try again.');
@@ -39,8 +42,19 @@ const ResetPassword = () => {
     }
   };
 
+    useEffect(() => {
+    // Disable vertical scrolling
+    document.body.style.overflowY = 'hidden';
+    document.body.style.overflowX = 'hidden';
+
+    // Cleanup function to reset the overflow style
+    return () => {
+      document.body.style.overflowY = 'auto';
+    };
+  }, []);
+
   return (
-    <div className="fixed top-0 left-0 bottom-0 z-10 bg-opacity-90 w-screen bg-black/80 shadow-lg flex p-12 mx-auto">
+    <div className="fixed top-0 left-0 bottom-0 z-[3000] bg-opacity-90 w-screen bg-black/80 shadow-lg flex p-12 mx-auto">
       <div className="mx-auto bg-slate-200 my-auto rounded-xl px-7 py-10 md:px-12 lg:px-16 flex flex-col items-center">
         <form onSubmit={handlePasswordReset} className="flex flex-col gap-4">
           <h1 className="text-2xl md:text-3xl text-center font-semibold">Reset Password</h1>
@@ -60,10 +74,11 @@ const ResetPassword = () => {
             onChange={(e) => setConfirmPassword(e.target.value)}
             required
           />
-          <button   disabled={loading} className="cursor-pointer hover:opacity-90 bg-slate-900 text-white p-2 lg:p-3 text-sm lg:text-[16px] rounded-xl uppercase">
-          {loading ? 'Loading...' : 'Reset Password'}
+          <button   disabled={loading} className="cursor-pointer hover:opacity-90 bg-[#081d57] text-white p-2 lg:p-3 text-sm lg:text-[16px] rounded-xl uppercase">
+          {loading ?  <Spinner className="w-6 h-6 border-white mt-0 mb-0 mx-auto " />  : 'Reset Password'}
           </button>
-          {message && <p className="text-red-500 mt-5">{message}</p>}
+          
+          {/* {message && <p className="text-red-500 mt-5">{message}</p>} */}
         </form>
       </div>
     </div>

@@ -6,8 +6,6 @@ import { useSelector } from 'react-redux';
 const Hamburger = ({ onSignIn }) => {
   const [isOpen, setIsOpen] = useState(false);
 
-
-
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
@@ -30,11 +28,22 @@ const Hamburger = ({ onSignIn }) => {
           <div className="flex ">
             <div className="flex   gap-4 items-start p-4">
               <ul className="flex  flex-col-reverse gap-4 text-[18px]">
-                <Link className="hover:underline text-[14px] " to="/" onClick={toggleMenu}>
+                <Link
+                  to="/sell-with-us"
+                  onClick={toggleMenu}
+                  className="  border border-amber-700 p-2 rounded font-josefin uppercase cursor-pointer  text-[12px] lg:text-[14px]    hover:text-slate-300"
+                >
+                  sell with us
+                </Link>
+                <Link
+                  className="hover:underline font-josefin text-[14px] "
+                  to="/"
+                  onClick={toggleMenu}
+                >
                   Home
                 </Link>
                 <Link
-                  className="hover:underline text-[14px] "
+                  className="hover:underline font-josefin text-[14px]"
                   to="/about"
                   onClick={toggleMenu}
                 >
@@ -42,27 +51,22 @@ const Hamburger = ({ onSignIn }) => {
                 </Link>
                 <div onClick={toggleMenu}>
                   {currentUser ? (
-                    <div className='flex flex-col gap-3'>
-                     
-                    <Link to="/profile" className="flex  items-center gap-2">
-                      <img
-                        className="rounded-full h-7 w-7 object-cover"
-                        src={currentUser.avatar}
-                        alt="profile"
-                      />
-                      <p className="text-sm">{currentUser.username}</p>
+                    <div className="flex flex-col gap-3">
+                      <Link to="/profile" className="flex  items-center gap-2">
+                        <img
+                          className="rounded-full h-7 w-7 object-cover"
+                          src={currentUser.avatar}
+                          alt="profile"
+                        />
+                        <p className="text-sm">{currentUser.username}</p>
                       </Link>
-                  
-                      </div>
+                    </div>
                   ) : (
                     <p
-                      onClick={() => {
-                        toggleMenu();
-                        onSignIn();
-                      }}
-                      className="text-sm cursor-pointer bg-[#081d57] px-3 py-1 rounded-lg"
+                      onClick={onSignIn}
+                      className="hover:underline text-[14px]   "
                     >
-                      Sign In
+                      Join {''} / Log in
                     </p>
                   )}
                 </div>

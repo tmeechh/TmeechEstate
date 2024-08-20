@@ -1,16 +1,22 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 
-const ForgotPassword = () => {
+import  { useEffect, useState } from 'react';
+
+import Spinner from '../Spinner';
+import { toast } from 'sonner';
+
+
+const ForgotPassword = ({  swapPass, onClose, handleShowReset }) => {
   const [email, setEmail] = useState('');
   const [otpSent, setOtpSent] = useState(false);
   const [otp, setOtp] = useState('');
   const [loading, setLoading] = useState(false);
   const [Otploading, setOtpLoading] = useState(false);
-  // const [password, setPassword] = useState('');
-  // const [confirmPassword, setConfirmPassword] = useState('');
+  const [resendLoading, setResendLoading] = useState(false);
+  const [cooldown, setCooldown] = useState(0); 
+
+
   const [message, setMessage] = useState('');
-  const navigate = useNavigate();
+
 
   const handleEmailSubmit = async (e) => {
     e.preventDefault();
@@ -27,14 +33,16 @@ const ForgotPassword = () => {
       if (res.ok) {
         setOtpSent(true);
       } else {
-        setMessage(data.message);
+        toast.error(data.message);
       }
     } catch (error) {
-      setMessage('Something went wrong. Please try again.');
+      toast.error('Something went wrong. Please try again.');
     } finally {
       setLoading(false);
     }
   };
+
+
 
   const handleOtpSubmit = async (e) => {
     e.preventDefault();
@@ -48,38 +56,121 @@ const ForgotPassword = () => {
       });
       const data = await res.json();
       if (res.ok) {
-        navigate('/reset-password', { state: { email, otp } });
+        onClose();
+        handleShowReset(email, otp);
+        // navigate('/reset-password', { state: { email, otp } });
       } else {
         setMessage(data.message);
       }
     } catch (error) {
-      setMessage('Something went wrong. Please try again.');
+      toast.error('Something went wrong. Please try again.');
     }
   };
 
+
+  const handleResendOtp = async () => {
+    setResendLoading(true);
+    try {
+      const res = await fetch('/api/auth/forgot-password', { // Reuse the same endpoint
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }), // Pass the email to resend the OTP
+      });
+      const data = await res.json();
+      if (res.ok) {
+        toast.success('OTP has been resent.');
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error('Something went wrong. Please try again.');
+    } finally {
+      setResendLoading(false);
+    }
+  };
+
+
+  
+    // Effect to handle cooldown timer
+    useEffect(() => {
+      if (cooldown > 0) {
+        const timer = setInterval(() => {
+          setCooldown((prevCooldown) => prevCooldown - 1);
+        }, 1000);
+  
+        // Clear the timer when cooldown reaches 0 or when component unmounts
+        return () => clearInterval(timer);
+      }
+    }, [cooldown]);
+  
+    // Function to format cooldown time in MM:SS format
+    const formatCooldown = () => {
+      const minutes = Math.floor(cooldown / 60);
+      const seconds = cooldown % 60;
+      return `${minutes}:${seconds < 10 ? `0${seconds}` : seconds}`;
+    };
+
+  useEffect(() => {
+    // Disable vertical scrolling
+    document.body.style.overflowY = 'hidden';
+    document.body.style.overflowX = 'hidden';
+
+    // Cleanup function to reset the overflow style
+    return () => {
+      document.body.style.overflowY = 'auto';
+    };
+  }, []);
+
   return (
-    <div className="fixed top-0 left-0 bottom-0 z-10 bg-opacity-90 w-screen bg-black/80 shadow-lg flex p-12 mx-auto">
+    <div className="fixed top-0 left-0 bottom-0 z-[3000] bg-opacity-90 w-screen bg-black/80 shadow-lg flex p-12 mx-auto">
       <div className="mx-auto bg-slate-200 my-auto rounded-xl px-7 py-10 md:px-12 lg:px-16 flex flex-col items-center">
         {!otpSent ? (
           <form onSubmit={handleEmailSubmit} className="flex flex-col gap-4">
-            <h1 className="text-2xl md:text-3xl text-center font-semibold">Forgot Password</h1>
-            <p className='text-[14px] text-center'>Enter your email to receive an OTP <br />for password reset.</p>
+            <h1 className="text-2xl md:text-3xl text-center font-semibold">
+              Forgot Password
+            </h1>
+
+            <p className="text-[14px] text-center whitespace-nowrap">
+              Enter your email to receive an OTP. 
+             
+            </p>
             <input
-              className="border p-2 lg:p-3 rounded-xl outline-none"
+              className="border p-2 lg:p-3 rounded-xl outline-none text-[14px]"
               type="email"
               placeholder="Enter Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
             />
-            <button  disabled={loading} className="cursor-pointer hover:opacity-90 bg-slate-900 text-white p-2 lg:p-3 text-sm lg:text-[16px] rounded-xl uppercase">
-            {loading ? 'Loading...' : 'Send OTP'}
+            <button
+              disabled={loading}
+              className="cursor-pointer hover:opacity-90 bg-[#081d57] text-white p-2 lg:p-3 text-sm lg:text-[16px] rounded-xl uppercase"
+            >
+              {loading ? (
+                <Spinner className="w-6 h-6 border-white mt-0 mb-0 mx-auto " /> 
+              ) : (
+                'Send OTP'
+              )}
             </button>
-            {message && <p className="text-red-500 mt-5">{message}</p>}
+            <div className='flex gap-1 text-[14px]'>
+              {' '}
+              <p> Remember your password? </p>
+              <span
+                onClick={() => swapPass()}
+                className="text-blue-700 cursor-pointer"
+              >
+                Sign in
+              </span>
+            </div>
+ 
           </form>
         ) : (
           <form onSubmit={handleOtpSubmit} className="flex flex-col gap-4">
-            <h1 className="text-2xl md:text-3xl text-center font-semibold">Enter OTP</h1>
+            <h1 className="text-2xl md:text-3xl text-center font-semibold">
+              Enter OTP
+            </h1>
             <input
               className="border p-2 lg:p-3 rounded-xl outline-none"
               type="text"
@@ -88,10 +179,28 @@ const ForgotPassword = () => {
               onChange={(e) => setOtp(e.target.value)}
               required
             />
-            <button disabled={Otploading} className="cursor-pointer hover:opacity-90 bg-slate-900 text-white p-2 lg:p-3 text-sm lg:text-[16px] rounded-xl uppercase">
-            {Otploading ? 'Verifying...' : 'Verify OTP'}
-            </button>
-            {message && <p className="text-red-500 mt-5">{message}</p>}
+            <button
+              disabled={Otploading}
+              className="cursor-pointer hover:opacity-90 bg-[#081d57] text-white p-2 lg:p-3 text-sm lg:text-[16px] rounded-xl uppercase"
+            >
+              {Otploading ? (
+                <Spinner className="w-6 h-6 border-white mt-0 mb-0 mx-auto " /> 
+              ) : (
+                'Verify OTP'
+              )}
+              </button>
+              <div className="flex gap-1 text-center text-[12px] lg:text-[16px]">
+            <p className='font-sans text-[#333333]'> Do not receive an OTP?</p>
+            <button
+        onClick={cooldown > 0 || resendLoading ? null : handleResendOtp}
+        disabled={cooldown > 0 || resendLoading}
+        className={`text-blue-700 ${resendLoading || cooldown > 0 ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+      >
+        {resendLoading ? 'Resending...' : cooldown > 0 ? `Resend OTP (${formatCooldown()})` : 'Resend OTP'}
+      </button>
+        </div>
+
+          
           </form>
         )}
       </div>
