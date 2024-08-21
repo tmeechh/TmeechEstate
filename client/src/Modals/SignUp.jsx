@@ -1,19 +1,20 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+
 import OAuth from '../component/OAuth';
-import { CgCloseR } from 'react-icons/cg';
+
 import Spinner from '../Spinner';
 import { toast } from 'sonner';
-
+import {
+  XMarkIcon,
+} from '@heroicons/react/24/solid';
 
 const SignUp = ({ onClose, swapModal, handleShowSignIn }) => {
   const [formData, setFormData] = useState({});
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const navigate = useNavigate();
 
-  
+
   useEffect(() => {
     // Disable vertical scrolling
     document.body.style.overflowY = 'hidden';
@@ -51,14 +52,14 @@ const SignUp = ({ onClose, swapModal, handleShowSignIn }) => {
       }
       setLoading(false);
       setError(null);
-      
+
       onClose();
-      toast.success('Sign up successful'); 
-      handleShowSignIn(); 
+      // toast.success('Sign up successful');
+      handleShowSignIn();
       console.log(data);
     } catch (error) {
       setLoading(false);
-      toast.error(error.message)
+      toast.error(error.message);
       // setError(error.message);
     }
   };
@@ -66,34 +67,36 @@ const SignUp = ({ onClose, swapModal, handleShowSignIn }) => {
 
   // console.log(formData);
   return (
-    <div className="fixed top-0 left-0 bottom-0 z-[3000] bg-opacity-90 w-screen   bg-black/80 shadow-lg  flex  p-12 mx-auto">
-      <div className=" mx-auto bg-slate-200 my-auto rounded-xl px-7 py-10 md:px-12 lg:px-16  flex flex-col items-center">
-        <div className="flex justify-between gap-24 lg:gap-[165px] md:gap-20 pb-7">
-          <h1 className="text-2xl text-[#333333] md:text-[28px] lg:text-3xl text-center font-semibold ">
+    <div onClick={onClose} className=" fixed top-0 left-0 bottom-0 z-[3000] bg-opacity-90 w-screen   bg-black/80 shadow-lg  flex  lg:p-12 mx-auto">
+
+      <div onClick={(e) => e.stopPropagation()} className=" mx-auto overflow-y-auto sm:h-[70vh] h-[100vh] overflow-hidden bg-white my-auto w-full   lg:w-[40vw] sm:w-[60vh]">
+      <div className='lg:w-[90%] mx-auto p-12   flex flex-col items-center'>
+       <div className="flex justify-between  w-full  pb-7">
+       <h1 className="text-xl md:text-2xl text-center font-semibold whitespace-nowrap text-[#333333]">
             Sign Up
           </h1>
-          <button onClick={() => onClose()} className="">
-            <CgCloseR className="text-[20px] text-[#333333]" />
+          <button onClick={onClose} className="">
+           <XMarkIcon className='w-6 h-6'/>
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <form onSubmit={handleSubmit} className="flex w-full gap-6 flex-col ">
           <input
-            className="border p-2 lg:p-3 lg:w-[300px] rounded-xl outline-none"
+            className="border-b border-[#333333] bg-transparent   outline-none"
             id="username"
             type="text"
             placeholder="username"
             onChange={handleChange}
           />
           <input
-            className="border p-2 lg:p-3 rounded-lg outline-none"
+            className="border-b border-[#333333] bg-transparent   outline-none"
             id="email"
             type="email"
             placeholder="email"
             onChange={handleChange}
           />
           <input
-            className="border p-2 lg:p-3 rounded-lg outline-none"
+             className="border-b border-[#333333] bg-transparent   outline-none"
             id="password"
             type="password"
             placeholder="password"
@@ -101,18 +104,26 @@ const SignUp = ({ onClose, swapModal, handleShowSignIn }) => {
           />
           <button
             disabled={loading}
-            className="cursor-pointer hover:opacity-90 disabled:opacity-80  bg-[#081d57] text-white p-2 lg:p-3 text-sm lg:text-[16px] rounded-xl   uppercase"
+            className="cursor-pointer hover:opacity-90 disabled:opacity-80  bg-[#081d57] text-white p-2 lg:p-3 text-sm lg:text-[16px]    uppercase"
           >
-            {loading ?  <Spinner className="w-6 h-6 border-white mt-0 mb-0 mx-auto " />  : 'sign up'}
+            {loading ? (
+              <Spinner className="w-6 h-6 border-white mt-0 mb-0 mx-auto " />
+            ) : (
+              'sign up'
+            )}
           </button>
           <OAuth onClose={onClose} />
         </form>
         <div className="flex gap-2 mt-5 text-[12px] lg:text-[16px]">
-          <p className='text-[#333333]'>Have an account?</p>
-          <span onClick={() => swapModal()} className="text-blue-700 cursor-pointer">
+          <p className="text-[#333333]">Have an account?</p>
+          <span
+            onClick={() => swapModal()}
+            className="text-blue-700 cursor-pointer"
+          >
             Sign in
           </span>
-        </div>
+          </div>
+          </div>
         {/* {error && <p className="text-red-500 mt-5">{error}</p>} */}
       </div>
     </div>

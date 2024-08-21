@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useCallback, useEffect, useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css/bundle';
@@ -20,15 +20,6 @@ const Home = () => {
   const [offerListings, setOfferListings] = useState([]);
   const [saleListings, setSaleListings] = useState([]);
   const [rentListings, setRentListings] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [type, setType] = useState('all');
-const [parking, setParking] = useState('false');
-const [furnished, setFurnished] = useState('false');
-const [offer, setOffer] = useState('false');
-const [sort, setSort] = useState('random');
-const [order, setOrder] = useState('');
-
-  const navigate = useNavigate();
 
   SwiperCore.use([Autoplay, Pagination]);
   // console.log( saleListings);
@@ -69,65 +60,6 @@ const [order, setOrder] = useState('');
     fetchOfferListings();
   }, []);
 
-  const fetchListing = async () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const searchTerm = urlParams.get('searchTerm') || '';
-    const type = urlParams.get('type') || 'all';
-    const parking = urlParams.get('parking') || 'false';
-    const furnished = urlParams.get('furnished') || 'false';
-    const offer = urlParams.get('offer') || 'false';
-    const sort = urlParams.get('sort') || 'random';
-    const order = urlParams.get('order') || '';
-  
-    try {
-      const res = await fetch(`/api/listing/get?searchTerm=${encodeURIComponent(searchTerm)}&type=${encodeURIComponent(type)}&parking=${encodeURIComponent(parking)}&furnished=${encodeURIComponent(furnished)}&offer=${encodeURIComponent(offer)}&sort=${encodeURIComponent(sort)}&order=${encodeURIComponent(order)}`);
-      if (!res.ok) {
-        throw new Error(`Error: ${res.statusText}`);
-      }
-      const data = await res.json();
-      // console.log('Fetched Data:', data);
-      // Handle the fetched data, e.g., update state
-    } catch (error) {
-      console.error('Error fetching listings:', error);
-    }
-  };
-  
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const urlParams = new URLSearchParams();
-    urlParams.set('searchTerm', searchTerm);
-    urlParams.set('type', type); // Use state or constant value
-    urlParams.set('parking', parking);
-    urlParams.set('furnished', furnished);
-    urlParams.set('offer', offer);
-    urlParams.set('sort', sort);
-    urlParams.set('order', order);
-    
-    navigate(`/search?${urlParams.toString()}`);
-  };
-  
-  useEffect(() => {
-    const urlParams = new URLSearchParams(location.search);
-    const searchTermFromUrl = urlParams.get('searchTerm') || '';
-    const type = urlParams.get('type') || 'all';
-    const parking = urlParams.get('parking') || 'false';
-    const furnished = urlParams.get('furnished') || 'false';
-    const offer = urlParams.get('offer') || 'false';
-    const sort = urlParams.get('sort') || 'random';
-    const order = urlParams.get('order') || '';
-  
-    setSearchTerm(searchTermFromUrl);
-    setType(type);
-    setParking(parking);
-    setFurnished(furnished);
-    setOffer(offer);
-    setSort(sort);
-    setOrder(order);
-  
-    fetchListing(); // Call the fetch function with the parameters
-  }, [location.search]);
-  
-
   return (
     <div>
       {/* top  bg-[#F5F5F5] bg-[#021a5e]*/}
@@ -144,7 +76,7 @@ const [order, setOrder] = useState('');
             Explore a vast selection of properties waiting for you.
           </div>
           <div>
-            <form className='mt-12'  onSubmit={handleSubmit}>
+            <form className="mt-12">
               <div className="flex items-center border-b border-slate-200 sm:w-[60%]">
                 <FaSearch className="w-6 h-6 text-gray-200 cursor-pointer" />
 
@@ -153,8 +85,6 @@ const [order, setOrder] = useState('');
                     type="text"
                     id="searchTerm"
                     className="outline-none w-full pl-2 pr-10 text-white bg-transparent"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
                     placeholder="Country, City, or Address"
                   />
 
@@ -167,6 +97,7 @@ const [order, setOrder] = useState('');
                 </div>
               </div>
             </form>
+            {/* <TestComponent/> */}
           </div>
         </div>
         <div></div>
@@ -251,7 +182,7 @@ const [order, setOrder] = useState('');
             <img
               src={home}
               alt="img"
-              className="md:h-[20rem] sm:max-w-6xl mx-auto "
+              className="md:h-[20rem] w-[80vh] sm:max-w-6xl mx-auto "
             />
           </div>
         </div>
@@ -296,12 +227,12 @@ const [order, setOrder] = useState('');
           </div>
         </div>
 
-        <div className="flex flex-col lg:mx-12 mx-12 gap-7">
-          <div className="xl:w-[45%] md:w-[60%] ">
+        <div className="flex flex-col lg:mx-12  mx-12 gap-7">
+          <div className="xl:w-[45%]  md:w-[60%] ">
             <img
               src={meech}
               alt="about"
-              className="md:h-[26rem] sm:max-w-6xl   mx-auto"
+              className="md:h-[26rem] sm:max-w-6xl w-[100vh]  mx-auto"
             />
           </div>
           <div className="flex gap-3 items-center xl:ml-0 lg:ml-16 w-full">

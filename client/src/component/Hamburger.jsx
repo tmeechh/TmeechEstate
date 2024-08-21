@@ -3,7 +3,7 @@ import { CgCloseR, CgMenuRight } from 'react-icons/cg';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
-const Hamburger = ({ onSignIn }) => {
+const Hamburger = ({ onSignIn, onProfile }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleMenu = () => {
@@ -52,14 +52,14 @@ const Hamburger = ({ onSignIn }) => {
                 <div onClick={toggleMenu}>
                   {currentUser ? (
                     <div className="flex flex-col gap-3">
-                      <Link to="/profile" className="flex  items-center gap-2">
+                      <li onClick={onProfile} className="flex  items-center gap-2">
                         <img
                           className="rounded-full h-7 w-7 object-cover"
                           src={currentUser.avatar}
                           alt="profile"
                         />
                         <p className="text-sm">{currentUser.username}</p>
-                      </Link>
+                      </li>
                     </div>
                   ) : (
                     <p

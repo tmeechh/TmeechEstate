@@ -12,7 +12,7 @@ import { PhotoIcon } from '@heroicons/react/24/solid';
 import MoreSearch from '../component/MoreSearch.jsx';
 import Footer from '../component/Footer.jsx';
 
-const Listing = ({ handleShowPhotos, onSignIn }) => {
+const Listing = ({ handleShowPhotos}) => {
   SwiperCore.use([Navigation, Pagination]);
   const params = useParams();
 
@@ -21,7 +21,7 @@ const Listing = ({ handleShowPhotos, onSignIn }) => {
   const [error, setError] = useState(false);
   const { currentUser } = useSelector((state) => state.user);
   const [copied, setCopied] = useState(false);
-  const [contact, setContact] = useState(false);
+  // const [contact, setContact] = useState(false);
   const [isOpen, setIsOpen] = useState({
     details: false,
     utilities: false,
@@ -544,34 +544,14 @@ const Listing = ({ handleShowPhotos, onSignIn }) => {
                 </div>
               </div>
             </div>
-            <div className="mt-24 flex flex-col gap-5 items-center">
-              {!contact &&
-                listing &&
-                currentUser &&
-                currentUser._id !== listing.userRef && (
-                  <div>
-                    {' '}
-                    <h1 className=" text-3xl">Get In Touch </h1>
-                    <button
-                      onClick={() => {
-                        if (currentUser) {
-                          setContact(true);
-                        } else {
-                          onSignIn(); // Trigger the sign-in modal if the user is not logged in
-                        }
-                      }}
-                      className="text-white bg-[#081d57] rounded-lg uppercase py-2 px-12 hover:opacity-75"
-                    >
-                      Contact Landlord
-                    </button>
-                  </div>
-                )}
-
-              {contact && <Contact listing={listing} />}
+          </div> 
+          {(!currentUser || currentUser._id !== listing.userRef) && (
+            <div className="mt-24  px-20 py-32  bg-gray-100">
+              <Contact listing={listing} />
             </div>
-          </div>
+          )}
 
-          <div className="flex flex-col pb-12 pt-[5rem]  bg-[#081d57] items-center mt-20 text-white ">
+          <div className="flex flex-col pb-12 pt-[5rem]  bg-[#081d57] items-center  text-white ">
             {loadingMore ? (
               ''
             ) : (

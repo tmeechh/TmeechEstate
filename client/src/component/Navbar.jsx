@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import Hamburger from './Hamburger';
 import { useEffect, useState } from 'react';
 
-const Navbar = ({ onSignIn }) => {
+const Navbar = ({ onSignIn, onProfile }) => {
   const { currentUser } = useSelector((state) => state.user);
   const [isSticky, setIsSticky] = useState(false);
  
@@ -15,7 +15,7 @@ const Navbar = ({ onSignIn }) => {
       const isLargeScreen = window.innerWidth >= 1280; // 1280px corresponds to 'xl' breakpoint in Tailwind
   
       if (isLargeScreen) {
-        const threshold = window.innerHeight * 0.4; // 50% of the screen height
+        const threshold = window.innerHeight * 1.2; // 50% of the screen height
         if (scrollPosition > threshold) {
           setIsSticky(false); // Hide the navbar
         } else {
@@ -50,7 +50,7 @@ const Navbar = ({ onSignIn }) => {
           </h1>
         </Link>
 
-        <Hamburger onSignIn={onSignIn} />
+        <Hamburger onSignIn={onSignIn} onProfile={onProfile}/>
       </nav>
 
       <div className="hidden xl:flex justify-between items-center max-w-6xl mx-auto p-3">
@@ -85,16 +85,16 @@ const Navbar = ({ onSignIn }) => {
          
           <div>
             {currentUser ? (
-              <div className='flex  items-center gap-4 '>
+              <div className='flex cursor-pointer items-center gap-4 '>
 
-              <Link to="profile" className="flex gap-1 items-center">
+              <li  onClick={onProfile} className="flex gap-1 items-center">
                 <img
                   className="rounded-full h-7 w-7 object-cover"
                   src={currentUser.avatar}
                   alt="profile"
                 />
                 <h3 className="text-sm font-josefin text-[#F5F5F5]">{currentUser.username}</h3>
-                </Link>
+                </li>
                 </div>
               
             ) : (

@@ -35,7 +35,7 @@ const OAuth = ({ onClose }) => {
       dispatch(signInSuccess(data));
       onClose();
       navigate('/');
-      toast.success('Welcome Back');
+      // toast.success('Welcome Back');
     } catch (error) {
       toast.error('Could not sign in with google'), error;
     } finally {
@@ -60,7 +60,7 @@ const OAuth = ({ onClose }) => {
         disabled={isLoading}
         onClick={handleGoogleClick}
         type="button"
-        className="bg-red-700 text-white text-sm lg:text-[16px] p-2 lg:p-3 rounded-xl uppercase hover:opacity-95"
+        className="bg-red-700 text-white text-sm lg:text-[16px] p-2 lg:p-3  uppercase hover:opacity-95"
       >
         {btnText}
       </button>

@@ -1,12 +1,10 @@
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css/bundle';
 import {
-  ArrowLongLeftIcon,
-  ArrowLongRightIcon,
   XMarkIcon,
 } from '@heroicons/react/24/solid';
 import { useEffect, useState } from 'react';
-import useWindowSize from './UseWindowSize';
+import useWindowSize from '../component/UseWindowSize';
 import prev from '../assets/prev.png';
 import next from '../assets/next.png';
 

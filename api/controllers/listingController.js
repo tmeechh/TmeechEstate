@@ -3,7 +3,14 @@ import { errorHandler } from "../utils/error.js";
 import mongoose from 'mongoose';
 
 export const createListing = async (req, res, next) => {
+  const allowedUserIds = ['669c46c2c8a948365b5d87ac', '66a5868be14c9fc5faf9a2e1'];
+
   try {
+    // Check if the current user is allowed to create a listing
+    if (!allowedUserIds.includes(req.user.id)) {
+      return next(errorHandler(403, 'You do not have permission to create a listing'));
+    }
+
     const createData = { ...req.body };
 
     if (createData.priceUponRequest) {
@@ -11,15 +18,13 @@ export const createListing = async (req, res, next) => {
       createData.discountPrice = null;
     }
 
-
-
-
-      const listing = await Listing.create(req.body);
-      return res.status(201).json(listing);
+    const listing = await Listing.create(createData);
+    return res.status(201).json(listing);
   } catch (error) {
-    next(error) 
+    next(error);
   }
 };
+
 
 
 // const updateListingsWithMissingPropertyId = async () => {
@@ -64,6 +69,8 @@ export const deleteListing = async (req, res, next) => {
 
 
 export const updateListing = async (req, res, next) => {
+  const allowedUserIds = ['669c46c2c8a948365b5d87ac', '66a5868be14c9fc5faf9a2e1'];
+
   // Validate the ObjectId
   if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
     return next(errorHandler(400, 'Listing not found'));
@@ -75,7 +82,8 @@ export const updateListing = async (req, res, next) => {
       return next(errorHandler(404, 'Listing not found!'));
     }
 
-    if (req.user.id !== listing.userRef) {
+    // Check if the current user is allowed to update the listing
+    if (!allowedUserIds.includes(req.user.id) || req.user.id !== listing.userRef.toString()) {
       return next(errorHandler(401, 'You can only update your own listing'));
     }
 
@@ -86,16 +94,13 @@ export const updateListing = async (req, res, next) => {
       updateData.discountPrice = null;
     }
 
-    const updatedListing = await Listing.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true }
-    );
+    const updatedListing = await Listing.findByIdAndUpdate(req.params.id, updateData, { new: true });
     res.status(200).json(updatedListing);
   } catch (error) {
     next(error);
   }
 };
+
 
 export const getListing = async (req, res, next) => {
   try {
@@ -169,7 +174,7 @@ export const getListings = async (req, res, next) => {
   }
 };
 
-
+ 
 
 
 

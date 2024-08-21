@@ -58,6 +58,25 @@ body,
   transition: top 0.3s ease-in-out;
 }
 
+
+
+.fixed-bgsell {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: white;
+  z-index: 4000;
+ magin-bottom:14rem;
+  transition: top 0.3s ease-in-out;
+}
+
+@media (max-width: 768px) {
+.fixed-bgsell {
+   padding:10px;
+  }
+}
+
 .sticky-active {
   position: fixed;
   top: 60px;
@@ -199,6 +218,38 @@ body,
 .link-hover-effect:hover::after {
   transform: translateX(-55%) scaleX(1);
 }
+
+
+.link-hover-effect-sell {
+  position: relative;
+}
+
+.link-hover-effect-sell::after {
+  content: '';
+  position: absolute;
+  bottom: -10px; /* Adjust this value for the desired gap */
+  left: 0;
+  width: 100%; /* Full width of the link */
+  height: 1px; /* Thickness of the line */
+  background-color: #d97706;
+  border-radius: 20%;
+  transform: translateX(0);
+  transition: all 0.3s ease-in-out;
+  opacity: 0; /* Start with the underline hidden */
+}
+
+.link-hover-effect-sell.active::after,
+.link-hover-effect-sell:hover::after {
+  opacity: 1; /* Make underline visible */
+}
+
+.link-hover-effect-sell.active::after {
+  transform: translateX(0); /* No transformation */
+}
+
+
+
+
 
 /* line clamp */
 .line-clamp-12 {

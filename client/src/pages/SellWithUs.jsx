@@ -9,8 +9,9 @@ import people from '../assets/people.png';
 import globe from '../assets/globe.png';
 import Footer from '../component/Footer';
 import Spinner from '../Spinner';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
+import { Link } from 'react-router-dom';
 // import { Link } from 'react-router-dom';
 
 const SellWithUs = () => {
@@ -35,9 +36,6 @@ const SellWithUs = () => {
     },
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
-
-
-
 
   function handleInputChange(e) {
     const { name, value } = e.target;
@@ -102,7 +100,7 @@ const SellWithUs = () => {
           },
           body: JSON.stringify(formData),
         });
-      
+
         if (response.ok) {
           setIsSubmitted(true);
           setLoading(false);
@@ -116,7 +114,6 @@ const SellWithUs = () => {
             errors: {},
             isTouched: {},
           });
-  
         } else {
           const errorData = await response.json();
           toast.error(` ${errorData.message}`);
@@ -127,23 +124,109 @@ const SellWithUs = () => {
         toast.error('There was an error submitting the form.');
         setLoading(false);
       }
-      
     }
   }
 
+  const [isSticky, setIsSticky] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const navbarHeight = 60; // Adjust this based on your navbar height
+      const scrollPosition = window.scrollY;
+
+      if (scrollPosition >= navbarHeight) {
+        setIsSticky(true);
+      } else {
+        setIsSticky(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
+
+
+// Function to handle adding 'active' class based on scroll position
+function handleScroll() {
+  const links = document.querySelectorAll('.link-hover-effect-sell');
+  let activeFound = false;
+
+  links.forEach(link => {
+    const section = document.querySelector(link.getAttribute('href'));
+
+    if (section) {
+      const rect = section.getBoundingClientRect();
+      const inViewport = rect.top >= 0 && rect.top <= window.innerHeight * 0.5;
+
+      if (inViewport && !activeFound) {
+        links.forEach(link => link.classList.remove('active'));
+        link.classList.add('active');
+        activeFound = true; // Ensure only one link is active at a time
+      }
+    }
+  });
+}
+
+// Run the handleScroll function on page load and scroll
+window.addEventListener('scroll', handleScroll);
+window.addEventListener('load', handleScroll);
+
+
+
+
+  
   return (
     <>
-      <div className="bg-[#0b1636]  flex flex-col h-[400px] md:h-[90vh]  lg:h-[100vh] text-white items-center">
-        <h1 className=" lg:text-6xl text-5xl text-center mt-12 mb-6">
+      <div
+        className={`uppercase fixed  font-josefin bg-white hidden sm:inline-block w-[100%] py-1 left-0 right-0 ${
+          isSticky ? 'fixed-bgsell ' : ''
+        }`}
+      >
+        <div className="flex text-[10px] md:text-[12px] lg:text-[14px] sm:gap-7 gap-3 py-2 sm:px-7 px-2 items-center     justify-end">
+          <a
+            href="#overview"
+            className="link-hover-effect-sell  font-josefin"
+          >
+            Overview
+          </a>
+          <a
+            href="#expert"
+            className="link-hover-effect-sell   font-josefin whitespace-nowrap"
+          >
+            Find an expert
+          </a>
+          <a href="#market" className="link-hover-effect-sell  font-josefin">
+            Marketing
+          </a>
+          <a
+            href="#list"
+            className=" font-josefin sm:border sm:border-amber-700 w-fit p-2 whitespace-nowrap"
+          >
+            List your home
+          </a>
+        </div>
+      </div>
+      <div
+       
+        className="bg-[#0b1636]  flex flex-col h-[400px] md:h-[90vh]  lg:h-[110vh] text-white items-center"
+      >
+        <div  id="overview" className=' sm:mt-32'>
+        <h1 id="overview" className=" lg:text-6xl sm:text-5xl text-[40px] text-center mt-12 mb-6">
           {' '}
           Sell with us
         </h1>
-        <p className="sm:text-2xl  text-center font-sans">
+        <p id="overview" className="md:text-2xl text-[20px] text-center font-sans">
           Remarkable homes require outstanding promotion.
         </p>
+        </div>
+       
       </div>
       {/* image */}
-      <div className="relative flex flex-col items-center justify-center mt-[-10rem] md:mt-[-16rem] lg:mt-[-27rem] xl:mt-[-22rem]">
+      <div id="overview" className="relative flex flex-col items-center justify-center mt-[-10rem] md:mt-[-8rem] lg:mt-[-25rem] xl:mt-[-15rem]">
         <div className="absolute top-[-1%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[1px] h-20 bg-amber-700"></div>
         <img className="w-[90vw] rounded" src={sell} alt="" />
       </div>
@@ -151,28 +234,28 @@ const SellWithUs = () => {
       {/* Details */}
 
       {/* m */}
-      <div className="flex flex-col  items-center mx-7 md:mx-52 lg:mx-72 flex-wrap   xl:mx-96 gap-5  py-16">
-        <h1 className=" text-3xl text-[#333333] ">
+      <div id="expert" className="flex flex-col  items-center mx-7 md:mx-52 lg:mx-72 flex-wrap   xl:mx-96 gap-5  py-16">
+        <h1 id="expert" className=" text-3xl text-[#333333] ">
           Do not just get it listed. Get it the attention it merits.
         </h1>
-        <p className=" font-sans   text-gray-500">
+        <p id="expert" className=" font-sans   text-gray-500">
           For those who seek unparalleled service like no other, there is
           TmeechEstate. We are the industry top agents, crafting with unmatched
           focus on style and detail. We are here to assist in selling your home
           at a level you simply will not find anywhere else.
         </p>
       </div>
-      <div className="bg-[#0b1636]  py-12 text-white">
-        <div className="mx-auto   flex-wrap    flex flex-col items-center  gap-6 ">
-          <h1 className="sm:text-4xl text-2xl text-center">
+      <div id="expert" className="bg-[#0b1636]  py-12 text-white">
+        <div id="expert" className="mx-auto   flex-wrap    flex flex-col items-center  gap-6 ">
+          <h1 id="expert" className="sm:text-4xl text-2xl text-center">
             Sell Your Home with TmeechEstate
           </h1>
 
-          <p className="font-sans text-[12px] sm:text-[16px] lg:mx-0 md:mx-6 mx-3 text-center xl:mx-64">
+          <p id="expert" className="font-sans text-[12px] sm:text-[16px] lg:mx-0 md:mx-6 mx-3 text-center xl:mx-64">
             If you are planning a move anywhere worldwide, it would be our honor
             to assist in achieving your best result.
           </p>
-          <div className="flex flex-col md:flex-row gap-10 md:mx-10 xl:mx-20">
+          <div id="expert" className="flex flex-col md:flex-row gap-10 md:mx-10 xl:mx-20">
             <div className="flex gap-4 flex-col">
               <img src={people} className="xl:h-[60vh] h-[50vh]" alt="" />
               <h3 className="text-xl font-josefin sm:mx-0 mx-6">
@@ -184,7 +267,7 @@ const SellWithUs = () => {
                 Locate an agent nearby and discover their local insights.
               </p>
             </div>
-            <div className="flex gap-4 flex-col">
+            <div  className="flex gap-4 flex-col">
               <img src={mingle} className="xl:h-[60vh] h-[50vh]" alt="" />
               <h3 className="text-xl font-josefin sm:mx-0 mx-6">
                 Benefit from our local knowledge and outstanding service.
@@ -199,8 +282,8 @@ const SellWithUs = () => {
         </div>
       </div>
 
-      <div>
-        <div className="flex sm:flex-row flex-col gap-7 xl:gap-28 xl:p-24  sm:px-7 py-24 mx-10">
+      <div id="market">
+        <div  id="market" className="flex sm:flex-row flex-col gap-7 xl:gap-28 xl:p-24  sm:px-7 py-24 mx-10">
           <img
             src={about}
             className="xl:w-[40%] sm:w-[50%] w-full rounded z-20 h-[85vh] xl:h-[100vh]"
@@ -251,7 +334,7 @@ const SellWithUs = () => {
           </div>
         </div>
       </div>
-      <div className="bg-[#0b1636] text-white py-20 gap-10 flex flex-col items-center ">
+      <div id="market" className="bg-[#0b1636] text-white py-20 gap-10 flex flex-col items-center ">
         <h1 className="lg:text-4xl flex-wrap   lg:mx-52  text-3xl text-center sm:mx-12 mx-3 ">
           Expertise that spans from the block to the globe.
         </h1>
@@ -264,7 +347,7 @@ const SellWithUs = () => {
         </p>
       </div>
 
-      <div className="flex flex-col items-center sm:mx-auto mx-12 gap-5 my-16 mb-24">
+      <div id="market" className="flex flex-col items-center sm:mx-auto mx-12 gap-5 my-16 mb-24">
         <p className="text-[12px] uppercase text-slate-500">
           Unmatched social media
         </p>
@@ -307,14 +390,14 @@ const SellWithUs = () => {
         </div>
       </div>
 
-      <div className="flex flex-col gap-6 items-center pb-24">
+      <div id="market" className="flex flex-col gap-6 items-center pb-24">
         <p className="text-[12px] sm:mx-0 mx-6 uppercase text-slate-500">
           Distinctive highlights
         </p>
         <h1 className="text-center text-3xl mx-7 md:mx-24 pb-12 text-[#333333] lg:mx-72 lg:text-3xl  ">
           Your homes marketing should have that wow factor as well.
         </h1>
-        <div className="flex flex-col w-auto sm:flex-row gap-10  md:mx-12 lg:mx-10 pb-12 xl:mx-20">
+        <div className="flex flex-col w-auto mx-4 sm:flex-row gap-10  md:mx-12 lg:mx-10 pb-12 xl:mx-20">
           <div className="flex gap-4 w-fit flex-col">
             <img
               src={news}
@@ -373,7 +456,10 @@ const SellWithUs = () => {
       </div>
 
       <div className="bg-gray-200">
-        <div className="mx-10 flex xl:flex-row flex-col gap-12 pt-20 pb-28 md:px-20">
+        <div
+          id="list"
+          className="mx-10 flex xl:flex-row flex-col gap-12 pt-20 pb-28 md:px-20"
+        >
           <div className="xl:w-[50%] flex-col flex gap-8">
             <h1 className="text-[#333333] lg:text-4xl text-2xl">
               Sell your home with our tailored solution for you.
@@ -385,110 +471,135 @@ const SellWithUs = () => {
             </p>
           </div>
           <div className="xl:w-fit w-full flex flex-col gap-8">
-            
             <div>
-    {isSubmitted ? (
-      <div className="xl:  flex flex-col ">
-        <p className='text-xl lg:text-3xl text-[#333333]'>Thanks for your interest, We will <br className='hidden'/> get back to you shortly.</p>
-        <button
-          onClick={() => setIsSubmitted(false)}
-          className="mt-4 uppercase text-[#333333] font-josefin  p-2 flex gap-2 items-center text-[12px] lg:text-[15px]"
-        >
+              {isSubmitted ? (
+                <div className="xl:  flex flex-col ">
+                  <p className="text-xl lg:text-3xl text-[#333333]">
+                    Thanks for your interest, We will <br className="hidden" />{' '}
+                    get back to you shortly.
+                  </p>
+                  <button
+                    onClick={() => setIsSubmitted(false)}
+                    className="mt-4 uppercase text-[#333333] font-josefin  p-2 flex gap-2 items-center text-[12px] lg:text-[15px]"
+                  >
                     Send Another Message
                     <ArrowLongRightIcon className="w-8 text-[#333333] h-6 mb-[-20px] transform  -translate-y-1/2 transition-transform duration-300 ease-in-out hover:translate-x-2 hover:scale-110 flex items-center justify-center" />
-        </button>
-      </div>
+                  </button>
+                </div>
               ) : (
-                  <div>
-                    <h1 className="lg:text-3xl text-[#333333] mb-8 text-2xl">Lets get in touch</h1>
-      <form className="grid grid-cols-2 gap-12" onSubmit={handleSubmit}>
-        <div>
-          {formData.errors.firstName && formData.isTouched.firstName && (
-            <p className="text-red-500 text-sm">This field is required.</p>
-          )}
-          <input
-            name="firstName"
-            type="text"
-            placeholder="First Name"
-            value={formData.firstName}
-            onChange={handleInputChange}
-            className={`border-b xl:w-56 placeholder-slate-600 outline-none bg-transparent text-[#333333] ${
-              formData.errors.firstName ? 'border-red-500' : 'border-[#333333]'
-            }`}
-          />
-        </div>
-        <div>
-          {formData.errors.lastName && formData.isTouched.lastName && (
-            <p className="text-red-500 text-sm">This field is required.</p>
-          )}
-          <input
-            name="lastName"
-            type="text"
-            placeholder="Last Name"
-            value={formData.lastName}
-            onChange={handleInputChange}
-            className={`border-b xl:w-56 placeholder-slate-600 outline-none bg-transparent text-[#333333] ${
-              formData.errors.lastName ? 'border-red-500' : 'border-[#333333]'
-            }`}
-          />
-        </div>
-        <div>
-          {formData.errors.email && formData.isTouched.email && (
-            <p className="text-red-500 text-sm col-span-2">This field is required.</p>
-          )}
-          <input
-            name="email"
-            type="text"
-            placeholder="Email Address"
-            value={formData.email}
-            onChange={handleInputChange}
-            className={`border-b xl:w-56 placeholder-slate-600 outline-none bg-transparent text-[#333333] ${
-              formData.errors.email ? 'border-red-500' : 'border-[#333333]'
-            }`}
-          />
-        </div>
-        <input
-          type="number"
-          name="phone"
-          placeholder="Phone Number (Optional)"
-          value={formData.phone}
-          onChange={handleInputChange}
-          className="border-b outline-none xl:w-56 placeholder-slate-600 border-[#333333] bg-transparent text-[#333333]"
-        />
-        <div className="col-span-2">
-          {formData.errors.message && formData.isTouched.message ? (
-            <p className="text-red-500 text-sm">This field is required.</p>
-          ) : (
-            <p className="text-slate-600 font-sans pb-3">Message</p>
-          )}
-          <textarea
-            name="message"
-            value={formData.message}
-            onChange={handleInputChange}
-            className={`w-full h-28 p-3 placeholder-slate-600 outline-none border bg-transparent text-[#333333] ${
-              formData.errors.message ? 'border-red-500' : 'border-[#333333]'
-            }`}
-            placeholder="I'd like to discuss selling with you"
-          ></textarea>
-        </div>
-        <button
-          type="submit"
-          disabled={loading}
-          className="uppercase flex items-center disabled:opacity-75 hover:opacity-75 md:w-[50%] w-[65%] gap-4 bg-[#0b1636] text-white p-5 col-span-2"
-        >
-          {loading ? (
-            <Spinner className="w-7 h-7 border-white mt-0 mb-0 mx-auto" />
-          ) : (
-            <>
-              Send Message
-              <ArrowLongRightIcon className="w-8 h-6 mb-[-20px] transform text-white -translate-y-1/2 transition-transform duration-300 ease-in-out hover:translate-x-2 hover:scale-110 flex items-center justify-center" />
-            </>
-          )}
-        </button>
-      </form>
-      </div>
-    )}
-  </div>
+                <div>
+                  <h1 className="lg:text-3xl text-[#333333] mb-8 text-2xl">
+                    Lets get in touch
+                  </h1>
+                  <form
+                    className="sm:grid sm:grid-cols-2 flex flex-col gap-12"
+                    onSubmit={handleSubmit}
+                  >
+                    <div>
+                      {formData.errors.firstName &&
+                        formData.isTouched.firstName && (
+                          <p className="text-red-500 text-sm">
+                            This field is required.
+                          </p>
+                        )}
+                      <input
+                        name="firstName"
+                        type="text"
+                        placeholder="First Name"
+                        value={formData.firstName}
+                        onChange={handleInputChange}
+                        className={`border-b xl:w-56 w-full text-[12px] md:text-[16px] placeholder-slate-600 outline-none bg-transparent text-[#333333] ${
+                          formData.errors.firstName
+                            ? 'border-red-500'
+                            : 'border-[#333333]'
+                        }`}
+                      />
+                    </div>
+                    <div>
+                      {formData.errors.lastName &&
+                        formData.isTouched.lastName && (
+                          <p className="text-red-500 text-sm">
+                            This field is required.
+                          </p>
+                        )}
+                      <input
+                        name="lastName"
+                        type="text"
+                        placeholder="Last Name"
+                        value={formData.lastName}
+                        onChange={handleInputChange}
+                        className={`border-b xl:w-56  w-full  text-[12px] md:text-[16px] placeholder-slate-600 outline-none bg-transparent text-[#333333] ${
+                          formData.errors.lastName
+                            ? 'border-red-500'
+                            : 'border-[#333333]'
+                        }`}
+                      />
+                    </div>
+                    <div>
+                      {formData.errors.email && formData.isTouched.email && (
+                        <p className="text-red-500 text-sm col-span-2">
+                          This field is required.
+                        </p>
+                      )}
+                      <input
+                        name="email"
+                        type="email"
+                        placeholder="Email Address"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        className={`border-b xl:w-56  w-full  text-[12px] md:text-[16px] placeholder-slate-600 outline-none bg-transparent text-[#333333] ${
+                          formData.errors.email
+                            ? 'border-red-500'
+                            : 'border-[#333333]'
+                        }`}
+                      />
+                    </div>
+                    <input
+                      type="number"
+                      name="phone"
+                      placeholder="Phone Number (Optional)"
+                      value={formData.phone}
+                      onChange={handleInputChange}
+                      className="border-b outline-none w-full  text-[12px] md:text-[16px] xl:w-56 placeholder-slate-600 border-[#333333] bg-transparent text-[#333333]"
+                    />
+                    <div className="col-span-2">
+                      {formData.errors.message && formData.isTouched.message ? (
+                        <p className="text-red-500 text-sm">
+                          This field is required.
+                        </p>
+                      ) : (
+                        <p className="text-slate-600 text-[12px] md:text-[16px] font-sans pb-3">Message</p>
+                      )}
+                      <textarea
+                        name="message"
+                        value={formData.message}
+                        onChange={handleInputChange}
+                        className={`w-full h-28 p-3 text-[12px] md:text-[16px] placeholder-slate-600 outline-none border bg-transparent text-[#333333] ${
+                          formData.errors.message
+                            ? 'border-red-500'
+                            : 'border-[#333333]'
+                        }`}
+                        placeholder="I'd like to discuss selling with you"
+                      ></textarea>
+                    </div>
+                    <button
+                      type="submit"
+                      disabled={loading}
+                      className="uppercase whitespace-nowrap text-[12px] md:text-[16px] flex items-center disabled:opacity-75 hover:opacity-75  sm:w-[50%] w-[60%] gap-4 bg-[#0b1636] text-white p-5 col-span-2"
+                    >
+                      {loading ? (
+                        <Spinner className="w-7 h-7 border-white mt-0 mb-0 mx-auto" />
+                      ) : (
+                        <>
+                          Send Message
+                          <ArrowLongRightIcon className="w-8 h-6 mb-[-20px] transform text-white -translate-y-1/2 transition-transform duration-300 ease-in-out hover:translate-x-2 hover:scale-110 flex items-center justify-center" />
+                        </>
+                      )}
+                    </button>
+                  </form>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
