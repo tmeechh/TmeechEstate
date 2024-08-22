@@ -24,6 +24,7 @@
     "redux-persist": "^6.0.0",
     "sonner": "^1.5.0",
     "swiper": "^11.1.9",
+    "tmeech-estate": "file:..",
     "validator": "^13.12.0"
   },
   "devDependencies": {
