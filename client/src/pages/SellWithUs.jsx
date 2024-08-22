@@ -166,7 +166,10 @@ function handleScroll() {
         links.forEach(link => link.classList.remove('active'));
         link.classList.add('active');
         activeFound = true; // Ensure only one link is active at a time
+      } else if (rect.top > window.innerHeight * 0.5 || rect.bottom < 0) {
+        link.classList.remove('active'); // Remove active class if out of view
       }
+
     }
   });
 }

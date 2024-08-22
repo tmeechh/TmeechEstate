@@ -14,7 +14,7 @@ import Spinner from '../Spinner';
 
 const SignIn = ({ onClose, swapModal, onForgot }) => {
   const [formData, setFormData] = useState({});
-  const { loading } = useSelector((state) => state.user);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [error, setError] = useState('');
@@ -39,8 +39,9 @@ const SignIn = ({ onClose, swapModal, onForgot }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+ 
     try {
-      dispatch(signInStart());
+      setLoading(true);
       const res = await fetch('/api/auth/signin', {
         method: 'POST',
         headers: {
@@ -62,19 +63,20 @@ const SignIn = ({ onClose, swapModal, onForgot }) => {
           errorMessage = errorData.message || 'An error occurred';
         }
 
-        dispatch(signInFailure(errorMessage));
+        setLoading(false);
         setError(errorMessage); // Set error message to display
         return;
       }
 
       const data = await res.json();
+      setLoading(false);
       dispatch(signInSuccess(data));
       onClose();
       navigate('/');
       console.log(data);
     } catch (error) {
       console.error('Error in handleSubmit:', error);
-      dispatch(signInFailure(error.message));
+      setLoading(false);
       setError(error.message || 'An unexpected error occurred'); // Set error message to display
     }
   };
@@ -131,13 +133,13 @@ const SignIn = ({ onClose, swapModal, onForgot }) => {
           </form>
           <div className="flex flex-col justify-between items-center mt-5">
             <div className="flex gap-1 text-[12px] lg:text-[16px]">
-              <p className="font-sans text-[#333333]">
+              <p className="font-josefin text-[#333333]">
                 {' '}
                 Do not have an account?
               </p>
               <span
                 onClick={() => swapModal()}
-                className="text-blue-700 cursor-pointer"
+                className="text-blue-700 font-josefin cursor-pointer"
               >
                 Sign up
               </span>
@@ -145,9 +147,9 @@ const SignIn = ({ onClose, swapModal, onForgot }) => {
 
             <div
               onClick={onClose}
-              className="hover:underline text-[#333333] hover:text-gray-600 text-[12px] lg:text-[16px]"
+              className="hover:underline  text-[#333333] hover:text-gray-600 text-[12px] lg:text-[16px]"
             >
-              <Link onClick={onForgot}>Forgot Password?</Link>
+              <Link className='font-josefin' onClick={onForgot}>Forgot Password?</Link>
             </div>
           </div>
         </div>
