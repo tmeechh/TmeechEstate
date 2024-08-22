@@ -18,6 +18,7 @@ const userSchema = new mongoose.Schema(
     },
     otp: { type: String }, // Optional: For storing OTP
     otpExpires: { type: Date }, // Optional: For OTP expiration
+    isDeleted: { type: Boolean, default: false },
   },
   { timestamps: true }
 );

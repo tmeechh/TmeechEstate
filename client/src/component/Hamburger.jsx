@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { CgCloseR, CgMenuRight } from 'react-icons/cg';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { UserIcon, XMarkIcon } from '@heroicons/react/24/solid';
 
 const Hamburger = ({ onSignIn, onProfile }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -23,7 +24,7 @@ const Hamburger = ({ onSignIn, onProfile }) => {
       {isOpen && (
         <div className="fixed top-0 left-0 bottom-0 z-10 bg-opacity-90 w-screen h-screen bg-black/80 text-white font-semibold text-[18px] shadow-lg">
           <button onClick={toggleMenu} className="absolute top-4 right-5">
-            <CgCloseR className="text-[30px] text-white/70" />
+          <XMarkIcon className="w-7 h-7" />
           </button>
           <div className="flex ">
             <div className="flex   gap-4 items-start p-4">
@@ -53,12 +54,13 @@ const Hamburger = ({ onSignIn, onProfile }) => {
                   {currentUser ? (
                     <div className="flex flex-col gap-3">
                       <li onClick={onProfile} className="flex  items-center gap-2">
-                        <img
+                        {/* <img
                           className="rounded-full h-7 w-7 object-cover"
                           src={currentUser.avatar}
                           alt="profile"
-                        />
-                        <p className="text-sm">{currentUser.username}</p>
+                        /> */}
+                          <UserIcon className="w-6"/>
+                        {/* <p className="text-sm">{currentUser.username}</p> */}
                       </li>
                     </div>
                   ) : (

@@ -11,13 +11,13 @@ import {
 } from '../redux/user/userSlice';
 import OAuth from '../component/OAuth';
 import Spinner from '../Spinner';
-import { toast } from 'sonner';
 
 const SignIn = ({ onClose, swapModal, onForgot }) => {
   const [formData, setFormData] = useState({});
-  const { loading, error } = useSelector((state) => state.user);
+  const { loading } = useSelector((state) => state.user);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [error, setError] = useState('');
 
   useEffect(() => {
     // Disable vertical scrolling
@@ -48,27 +48,47 @@ const SignIn = ({ onClose, swapModal, onForgot }) => {
         },
         body: JSON.stringify(formData),
       });
-      const data = await res.json();
-      if (data.success === false) {
-        dispatch(signInFailure(data.message));
+
+      if (!res.ok) {
+        const errorData = await res.json();
+
+        let errorMessage = 'An error occurred';
+        if (res.status === 404) {
+          errorMessage =
+            'We were not able to find the supplied email and/or password. Please try again. Registration is required. Please use the links below if you have forgotten your password, or if you need to sign up.';
+        } else if (res.status === 401) {
+          errorMessage = 'Wrong credentials!';
+        } else {
+          errorMessage = errorData.message || 'An error occurred';
+        }
+
+        dispatch(signInFailure(errorMessage));
+        setError(errorMessage); // Set error message to display
         return;
       }
-      dispatch(signInSuccess(data));
 
+      const data = await res.json();
+      dispatch(signInSuccess(data));
       onClose();
       navigate('/');
-      // toast.success('Welcome Back');
       console.log(data);
     } catch (error) {
+      console.error('Error in handleSubmit:', error);
       dispatch(signInFailure(error.message));
-      toast.error(error.message); // max-w-lg
+      setError(error.message || 'An unexpected error occurred'); // Set error message to display
     }
   };
 
   // console.log(formData);
   return (
-    <div onClick={onClose} className=" fixed top-0 left-0 bottom-0 z-[3000] bg-opacity-90 w-screen   bg-black/80 shadow-lg  flex  lg:p-12 mx-auto">
-      <div onClick={(e) => e.stopPropagation()} className=" mx-auto overflow-y-auto sm:h-[70vh] h-[100vh] overflow-hidden bg-white my-auto w-full   lg:w-[40vw] sm:w-[60vh]">
+    <div
+      onClick={onClose}
+      className=" fixed top-0 left-0 bottom-0 z-[3000] bg-opacity-90 w-screen   bg-black/80 shadow-lg  flex  lg:p-12 mx-auto"
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className=" mx-auto overflow-y-auto sm:h-[70vh] h-[100vh] overflow-hidden bg-white my-auto w-full   lg:w-[40vw] sm:w-[60vh]"
+      >
         <div className="lg:w-[90%] mx-auto p-12   flex flex-col items-center">
           <div className="flex justify-between  w-full  pb-7">
             <h1 className="text-xl md:text-2xl text-center font-semibold whitespace-nowrap text-[#333333]">
@@ -81,29 +101,33 @@ const SignIn = ({ onClose, swapModal, onForgot }) => {
           <form onSubmit={handleSubmit} className="flex w-full gap-6 flex-col ">
             <input
               className="border-b border-[#333333] bg-transparent   outline-none"
+              required
               id="email"
               type="email"
-              placeholder="email"
+              placeholder="Email"
               onChange={handleChange}
             />
             <input
               className="border-b border-[#333333] bg-transparent   outline-none"
+              required
               id="password"
               type="password"
-              placeholder="password"
+              placeholder="Password"
               onChange={handleChange}
             />
             <button
               disabled={loading}
-              className="cursor-pointer hover:opacity-90 disabled:opacity-80  bg-[#081d57] text-white p-2 lg:p-3 text-sm lg:text-[16px]  uppercase"
+              className=" hover:opacity-90 disabled:opacity-80  bg-[#081d57] text-white p-2 lg:p-3 text-sm lg:text-[16px]  uppercase"
             >
-              {loading.signIn ? (
+              {loading ? (
                 <Spinner className="w-6 h-6 border-white mt-0 mb-0 mx-auto " />
               ) : (
                 'sign in'
               )}
             </button>
             <OAuth onClose={onClose} />
+
+            {error && <p className="text-red-600 text-center">{error}</p>}
           </form>
           <div className="flex flex-col justify-between items-center mt-5">
             <div className="flex gap-1 text-[12px] lg:text-[16px]">

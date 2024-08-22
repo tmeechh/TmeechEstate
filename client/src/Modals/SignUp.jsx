@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import OAuth from '../component/OAuth';
 
 import Spinner from '../Spinner';
-import { toast } from 'sonner';
+
 import {
   XMarkIcon,
 } from '@heroicons/react/24/solid';
@@ -59,13 +59,11 @@ const SignUp = ({ onClose, swapModal, handleShowSignIn }) => {
       console.log(data);
     } catch (error) {
       setLoading(false);
-      toast.error(error.message);
-      // setError(error.message);
+      
+      setError(error.message);
     }
   };
-  //flex justify-between items-center
 
-  // console.log(formData);
   return (
     <div onClick={onClose} className=" fixed top-0 left-0 bottom-0 z-[3000] bg-opacity-90 w-screen   bg-black/80 shadow-lg  flex  lg:p-12 mx-auto">
 
@@ -83,23 +81,26 @@ const SignUp = ({ onClose, swapModal, handleShowSignIn }) => {
         <form onSubmit={handleSubmit} className="flex w-full gap-6 flex-col ">
           <input
             className="border-b border-[#333333] bg-transparent   outline-none"
-            id="username"
+              id="username"
+              required
             type="text"
-            placeholder="username"
+            placeholder="Username"
             onChange={handleChange}
           />
           <input
-            className="border-b border-[#333333] bg-transparent   outline-none"
+              className="border-b border-[#333333] bg-transparent   outline-none"
+              required
             id="email"
             type="email"
-            placeholder="email"
+            placeholder="Email"
             onChange={handleChange}
           />
           <input
              className="border-b border-[#333333] bg-transparent   outline-none"
-            id="password"
+              id="password"
+              required
             type="password"
-            placeholder="password"
+            placeholder="Password"
             onChange={handleChange}
           />
           <button
@@ -112,7 +113,8 @@ const SignUp = ({ onClose, swapModal, handleShowSignIn }) => {
               'sign up'
             )}
           </button>
-          <OAuth onClose={onClose} />
+            <OAuth onClose={onClose} />
+            {error && <p className="text-red-600 text-center">{error}</p>}
         </form>
         <div className="flex gap-2 mt-5 text-[12px] lg:text-[16px]">
           <p className="text-[#333333]">Have an account?</p>

@@ -3,7 +3,7 @@ import { errorHandler } from "../utils/error.js";
 import mongoose from 'mongoose';
 
 export const createListing = async (req, res, next) => {
-  const allowedUserIds = ['669c46c2c8a948365b5d87ac', '66a5868be14c9fc5faf9a2e1'];
+  const allowedUserIds = process.env.ALLOWED_USER_IDS.split(',');
 
   try {
     // Check if the current user is allowed to create a listing

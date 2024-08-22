@@ -1,7 +1,10 @@
 import { useSelector } from 'react-redux';
 import { Outlet, Navigate } from 'react-router-dom';
 
-const allowedUserIds = ['669c46c2c8a948365b5d87ac', '66a5868be14c9fc5faf9a2e1'];
+const allowedUserIds = import.meta.env.VITE_ALLOWED_USER_IDS
+  ? import.meta.env.VITE_ALLOWED_USER_IDS.split(',')
+  : [];
+
 
 const PrivateRoute = ({ handleShowSignIn, restricted = false }) => {
   const { currentUser } = useSelector((state) => state.user);

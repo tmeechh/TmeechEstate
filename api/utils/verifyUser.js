@@ -13,12 +13,12 @@ export const verifyToken = (req, res, next) => {
       console.log('Token verification failed', err);
       return next(errorHandler(403, 'Forbidden'));
     } 
+    // console.log('Decoded user:', user);
 
-    req.user = { id: user.id };
+    req.user = { id: user.id || user._id };
     console.log('Verified user:', req.user);
     next();
   });
 };
 
 
-// req.user = { id: user.id };

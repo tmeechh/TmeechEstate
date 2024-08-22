@@ -1,4 +1,4 @@
-import { MagnifyingGlassIcon as FaSearch } from '@heroicons/react/24/solid';
+import { MagnifyingGlassIcon as FaSearch, UserIcon } from '@heroicons/react/24/solid';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import Hamburger from './Hamburger';
@@ -88,12 +88,13 @@ const Navbar = ({ onSignIn, onProfile }) => {
               <div className='flex cursor-pointer items-center gap-4 '>
 
               <li  onClick={onProfile} className="flex gap-1 items-center">
-                <img
+                {/* <img
                   className="rounded-full h-7 w-7 object-cover"
                   src={currentUser.avatar}
                   alt="profile"
                 />
-                <h3 className="text-sm font-josefin text-[#F5F5F5]">{currentUser.username}</h3>
+                <h3 className="text-sm font-josefin text-[#F5F5F5]">{currentUser.username}</h3> */}
+                  <UserIcon className="w-6"/>
                 </li>
                 </div>
               

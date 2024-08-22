@@ -1,87 +1,97 @@
-import Listing from "../models/ListModel.js";
-import userModel from "../models/UserModel.js";
-import { errorHandler } from "../utils/error.js";
+import Listing from '../models/ListModel.js';
+import userModel from '../models/UserModel.js';
+import { errorHandler } from '../utils/error.js';
 import bcryptjs from 'bcryptjs';
 import validator from 'validator';
 
 export const updateUser = async (req, res, next) => {
-    console.log("req.user:", req.user);
-    console.log("req.params.id:", req.params.id);
- 
-    
- // Convert both IDs to strings for comparison
- if (!req.user || req.user.id !== req.params.id) {
-    return next(errorHandler(401, "You can only update your own account!"));
+  console.log('req.user:', req.user);
+  console.log('req.params.id:', req.params.id);
+
+  // Convert both IDs to strings for comparison
+  if (!req.user || req.user.id !== req.params.id) {
+    return next(errorHandler(401, 'You can only update your own account!'));
   }
 
   if (req.body.email && !validator.isEmail(req.body.email)) {
     return res.status(400).json({ message: 'Invalid email address' });
   }
-  
-    try {
-        if (req.body.password) {
-            req.body.password = bcryptjs.hashSync(req.body.password, 10);
-          }
 
-          const updatedUser = await userModel.findByIdAndUpdate(
-            req.params.id,
-            {
-              $set: {
-                username: req.body.username,
-                email: req.body.email,
-                password: req.body.password,
-                avatar: req.body.avatar,
-              },
-            },
-            { new: true }
-          );
+  try {
+    if (req.body.password) {
+      req.body.password = bcryptjs.hashSync(req.body.password, 10);
+    }
 
-          const { password, ...rest } = updatedUser._doc;
+    const updatedUser = await userModel.findByIdAndUpdate(
+      req.params.id,
+      {
+        $set: {
+          username: req.body.username,
+          email: req.body.email,
+          password: req.body.password,
+          avatar: req.body.avatar,
+        },
+      },
+      { new: true }
+    );
 
-          res.status(200).json(rest);
-        } catch (error) {
-          next(error);
-        }
-}
+    const { password, ...rest } = updatedUser._doc;
 
+    res.status(200).json(rest);
+  } catch (error) {
+    next(error);
+  }
+};
 
 export const deleteUser = async (req, res, next) => {
-  if (req.user.id !== req.params.id) return next(errorHandler(401, 'You can only delete your own account!'));
   try {
-    await userModel.findByIdAndDelete(req.params.id)
+    // Check if the user is trying to delete their own account
+    if (req.user.id !== req.params.id) {
+      return next(errorHandler(401, 'You can only delete your own account!'));
+    }
+
+    // Find the user by ID first
+    const user = await userModel.findById(req.params.id);
+
+    if (!user) {
+      return next(errorHandler(404, 'User not found!'));
+    }
+
+    // Soft delete the user
+    user.isDeleted = true;
+    await user.save();
     res.clearCookie('access_token');
     res.status(200).json('User has been deleted');
   } catch (error) {
-    next(error)
+    next(error);
   }
-} 
+};
 
 export const getUserListing = async (req, res, next) => {
   if (req.user.id === req.params.id) {
     try {
-      const listings = await Listing.find({ userRef: req.params.id })
-      .sort({ createdAt: -1 }); 
+      const listings = await Listing.find({ userRef: req.params.id }).sort({
+        createdAt: -1,
+      });
       res.status(200).json(listings);
     } catch (error) {
-      next(error)
+      next(error);
     }
   } else {
     return next(errorHandler(401, 'You can only view your own listing!'));
   }
-} 
+};
 
 export const getUser = async (req, res, next) => {
-
   try {
     const user = await userModel.findById(req.params.id);
-  
-  if (!user) return next(errorHandler(404, 'User not found'));
 
-  const { password: pass, ...rest } = user._doc;
+    if (!user) return next(errorHandler(404, 'User not found'));
 
-  res.status(200).json(rest);
+    const { password: pass, ...rest } = user._doc;
+
+    res.status(200).json(rest);
   } catch (error) {
-    next(error)
+    next(error);
   }
-  
-}
+};

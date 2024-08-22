@@ -33,12 +33,16 @@ import {
 // request.resource.contentType.matches('images/.*')
 
 const Profile = ({ onClose }) => {
-  const allowedUserIds = ['669c46c2c8a948365b5d87ac', '66a5868be14c9fc5faf9a2e1'];
+  const allowedUserIds = import.meta.env.VITE_ALLOWED_USER_IDS
+  ? import.meta.env.VITE_ALLOWED_USER_IDS.split(',')
+  : [];
+
   const fileRef = useRef(null);
-  const { currentUser, loading, error } = useSelector((state) => state.user);
+  const { currentUser, loading} = useSelector((state) => state.user);
   const [file, setFile] = useState(undefined);
   const [filePerc, setFilePerc] = useState(0);
   const [fileUploadError, setFileUploadError] = useState(false);
+  const [error, setError] = useState(null);
   const [formData, setFormData] = useState({});
   // const [showListingError, setShowListingError] = useState(false);
   const [updateSuccess, setUpdateSuccess] = useState(false);
@@ -78,6 +82,13 @@ const Profile = ({ onClose }) => {
     );
   };
 
+  const handleCombinedClick = () => {
+    onClose();
+    handleDeleteUser();
+  };
+  
+
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
@@ -105,7 +116,7 @@ const Profile = ({ onClose }) => {
       toast.success('Profile updated successfully');
     } catch (error) {
       dispatch(updateUserFailure(error.message));
-      toast.error(error.message);
+      setError(error.message);
     }
   };
 
@@ -166,7 +177,7 @@ const Profile = ({ onClose }) => {
           <button onClick={onClose} className="">
            <XMarkIcon className='w-6 h-6'/>
           </button>
-        </div>
+        </div> 
         <form onSubmit={handleSubmit} className="flex w-full gap-6 flex-col ">
           <input
             onChange={(e) => setFile(e.target.files[0])}
@@ -223,12 +234,13 @@ const Profile = ({ onClose }) => {
             disabled={loading.updateUser}
             className="bg-[#081d57] text-white  p-3 uppercase hover:opacity-85 disabled:opacity-80"
           >
-            {loading ? (
+            {loading.updateUser ? (
               <Spinner className="w-6 h-6 mt-0 mb-0 border-white mx-auto " />
             ) : (
               'update'
             )}
-          </button>
+            </button>
+            {error && <p className="text-red-600 text-center">{error}</p>}
             {allowedUserIds.includes(currentUser._id) && (
               <Link
               onClick={onClose}
@@ -240,8 +252,8 @@ const Profile = ({ onClose }) => {
             )}
         </form>
         <div className=" flex justify-between w-full mt-5">
-          <span
-            onClick={handleDeleteUser}
+            <span
+             onClick={handleCombinedClick}
             className="text-red-700 cursor-pointer"
           >
             Delete Account
