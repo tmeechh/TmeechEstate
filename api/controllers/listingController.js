@@ -2,6 +2,10 @@ import Listing from "../models/ListModel.js";
 import { errorHandler } from "../utils/error.js";
 import mongoose from 'mongoose';
 
+import dotenv from 'dotenv';
+dotenv.config();
+
+
 export const createListing = async (req, res, next) => {
   const allowedUserIds = process.env.ALLOWED_USER_IDS.split(',');
 
