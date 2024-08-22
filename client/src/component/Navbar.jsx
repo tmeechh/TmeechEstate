@@ -99,12 +99,12 @@ const Navbar = ({ onSignIn, onProfile }) => {
                 </div>
               
             ) : (
-              <li
+              <Link
                 onClick={onSignIn}
                 className="cursor-pointer  font-josefin uppercase text-[14px]    px-[10px] py-[4px]   "
               >
                 Join {''} / Log in
-              </li>
+              </Link>
             )}
           </div>
           <Link to="/sell-with-us">

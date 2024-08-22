@@ -73,7 +73,7 @@ const listingSchema = new mongoose.Schema(
         squareFootage: {
             type: Number,
             default: null,
-        },
+        }, 
         yearBuilt: {
             type: Number,
             default: null,

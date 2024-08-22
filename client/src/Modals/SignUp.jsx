@@ -27,6 +27,7 @@ const SignUp = ({ onClose, swapModal, handleShowSignIn }) => {
   }, []);
 
   const handleChange = (e) => {
+    setError('');
     setFormData({
       ...formData,
       [e.target.id]: e.target.value,

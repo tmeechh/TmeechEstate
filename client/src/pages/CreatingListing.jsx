@@ -121,6 +121,9 @@ const CreatingListing = () => {
   const handleChange = (e) => {
     const { id, value, checked, type } = e.target;
 
+    
+   
+
     if (id === 'sale' || id === 'rent') {
       setFormData((prevState) => ({
         ...prevState,
@@ -165,6 +168,14 @@ const CreatingListing = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const currentYear = new Date().getFullYear();
+
+  if (formData.yearBuilt < 1600 || formData.yearBuilt > currentYear) {
+    toast.error(`Year must be between 1600 and ${currentYear}`);
+    return;  // Stop further execution
+  }
+
     try {
       if (formData.imageUrls.length < 1)
         return setError('you must upload at least one image');

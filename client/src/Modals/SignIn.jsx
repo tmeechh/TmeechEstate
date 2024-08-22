@@ -31,6 +31,7 @@ const SignIn = ({ onClose, swapModal, onForgot }) => {
   }, []);
 
   const handleChange = (e) => {
+    setError('');
     setFormData({
       ...formData,
       [e.target.id]: e.target.value,

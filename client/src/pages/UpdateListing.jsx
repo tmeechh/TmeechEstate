@@ -180,6 +180,14 @@ const UpdateListing = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const currentYear = new Date().getFullYear();
+
+    if (formData.yearBuilt < 1600 || formData.yearBuilt > currentYear) {
+      toast.error(`Year must be between 1600 and ${currentYear}`);
+      return;  // Stop further execution
+    }
+
     try {
       if (formData.imageUrls.length < 1)
         return setError('you must upload at least one image');
