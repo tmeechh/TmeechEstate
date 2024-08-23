@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import Spinner from '../Spinner';
 import ListingItem from '../component/ListingItem';
 import CustomSelect from '../component/CustomSelect';
-// import { debounce } from 'lodash';
 
 import {
   MagnifyingGlassIcon as FaSearch,
@@ -45,42 +44,44 @@ const Search = () => {
   useEffect(() => {
     // Extract URL parameters
     const urlParams = new URLSearchParams(location.search);
-    const searchTermFromUrl = urlParams.get('searchTerm') || '';
-    const typeFromUrl = urlParams.get('type') || 'all'; 
+    const searchTermFromUrl = urlParams.get('searchTerm')|| '';
+    const typeFromUrl = urlParams.get('type')|| 'all'; 
     const parkingFromUrl = urlParams.get('parking');
     const furnishedFromUrl = urlParams.get('furnished');
     const offerFromUrl = urlParams.get('offer');
     const sortFromUrl = urlParams.get('sort');
     const orderFromUrl = urlParams.get('order');
-  
-    setSidebardata({
-      searchTerm: searchTermFromUrl,
-      type: typeFromUrl,
-      parking: parkingFromUrl === 'true',
-      furnished: furnishedFromUrl === 'true',
-      offer: offerFromUrl === 'true',
-      sort: sortFromUrl || 'random',
-      order: orderFromUrl || '',
-    });
-  
-    // Trigger fetchListing only if coming from the home page with a search term
-    if (searchTermFromUrl) {
-      fetchListing(searchTermFromUrl);
+
+    if (
+      searchTermFromUrl ||
+      typeFromUrl ||
+      parkingFromUrl ||
+      furnishedFromUrl ||
+      offerFromUrl ||
+      sortFromUrl ||
+      orderFromUrl
+    ) {
+      setSidebardata({
+        searchTerm: searchTermFromUrl || '',
+        type: typeFromUrl || 'all',
+        parking: parkingFromUrl === 'true',
+        furnished: furnishedFromUrl === 'true',
+        offer: offerFromUrl === 'true',
+        sort: sortFromUrl || 'random',
+        order: orderFromUrl || '',
+      });
     }
   }, [location.search]);
 
-
-  
-
   // Function to fetch listings based on sidebardata
-
-  const fetchListing = async (searchTermOverride) => {
+  const fetchListing = async () => {
     setLoadingSearch(true);
     setLoading(true);
     setShowMore(false);
   
+    // Convert boolean values to strings for true filters only
     const queryParams = {
-      searchTerm: searchTermOverride || sidebardata.searchTerm,
+      searchTerm: sidebardata.searchTerm,
       type: sidebardata.type !== 'all' ? sidebardata.type : 'all',
       offer: sidebardata.offer ? sidebardata.offer.toString() : undefined,
       furnished: sidebardata.furnished ? sidebardata.furnished.toString() : undefined,
@@ -93,8 +94,10 @@ const Search = () => {
   
     const searchQuery = new URLSearchParams(queryParams).toString();
     
+  
     const res = await fetch(`/api/listing/get?${searchQuery}`);
     const data = await res.json();
+   
   
     if (data.length > 8) {
       setShowMore(true);
@@ -124,7 +127,6 @@ const Search = () => {
     sidebardata.offer,
     sidebardata.sort,
     sidebardata.order,
-    
   ]);
 
   // Handle form input changes

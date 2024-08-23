@@ -1,4 +1,4 @@
-import {  useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -16,14 +16,21 @@ import sec from '../assets/sec.png';
 import ListingItem from '../component/ListingItem';
 import Footer from '../component/Footer';
 
-
-
 const Home = () => {
   const [offerListings, setOfferListings] = useState([]);
   const [saleListings, setSaleListings] = useState([]);
   const [rentListings, setRentListings] = useState([]);
 
   const navigate = useNavigate('');
+
+  // Handle search submission from home page
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const searchTerm = document.getElementById('searchTerm').value.trim();
+    if (searchTerm) {
+      navigate(`/search?searchTerm=${searchTerm}`);
+    }
+  };
 
   SwiperCore.use([Autoplay, Pagination]);
   // console.log( saleListings);
@@ -80,15 +87,10 @@ const Home = () => {
             Explore a vast selection of properties waiting for you.
           </div>
           <div>
-          <form 
-  className="mt-12" 
-  onSubmit={(e) => {
-    e.preventDefault();
-    const searchTerm = document.getElementById('searchTerm').value;
-    navigate(`/search?searchTerm=${searchTerm}`);
-  }}
->
-
+            {/* <form
+              className="mt-12"
+              onSubmit={handleSubmit}
+            >
               <div className="flex items-center border-b border-slate-200 sm:w-[60%]">
                 <FaSearch className="w-6 h-6 text-gray-200 cursor-pointer" />
 
@@ -108,7 +110,16 @@ const Home = () => {
                   </button>
                 </div>
               </div>
-            </form>
+            </form> */}
+
+            <Link
+              to="/search"
+              className="bg-[#021342] font-josefin uppercase text-[10px] lg:text-[13px] rounded-xl flex gap-2 lg:gap-3 w-fit items-center p-2 lg:py-3 lg:px-4 text-white"
+            >
+             Explore Listings
+             {' '}
+              <ArrowLongRightIcon className="w-6 lg:w-8 lg:h-7 h-5 lg:mb-[-27px] mb-[-20px]  transform -translate-y-1/2 transition-transform duration-300 ease-in-out hover:translate-x-2 hover:scale-110 flex items-center justify-center" />
+            </Link>
             {/* <TestComponent/> */}
           </div>
         </div>
