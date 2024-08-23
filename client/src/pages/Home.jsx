@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import {  useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css/bundle';
@@ -16,10 +16,14 @@ import sec from '../assets/sec.png';
 import ListingItem from '../component/ListingItem';
 import Footer from '../component/Footer';
 
+
+
 const Home = () => {
   const [offerListings, setOfferListings] = useState([]);
   const [saleListings, setSaleListings] = useState([]);
   const [rentListings, setRentListings] = useState([]);
+
+  const navigate = useNavigate('');
 
   SwiperCore.use([Autoplay, Pagination]);
   // console.log( saleListings);
@@ -76,7 +80,15 @@ const Home = () => {
             Explore a vast selection of properties waiting for you.
           </div>
           <div>
-            <form className="mt-12">
+          <form 
+  className="mt-12" 
+  onSubmit={(e) => {
+    e.preventDefault();
+    const searchTerm = document.getElementById('searchTerm').value;
+    navigate(`/search?searchTerm=${searchTerm}`);
+  }}
+>
+
               <div className="flex items-center border-b border-slate-200 sm:w-[60%]">
                 <FaSearch className="w-6 h-6 text-gray-200 cursor-pointer" />
 
