@@ -1,11 +1,43 @@
 import useVisibility from './useVisibility';
+import { useEffect, useState } from 'react';
+import SaveButton from './SaveButton.jsx';
 
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const MoreSearch = ({ listing }) => {
   const { ref, isVisible } = useVisibility({
     threshold: 0.1, // Adjust this value if needed
   });
+  const { currentUser } = useSelector((state) => state.user);
+
+  const [isSaved, setIsSaved] = useState(false);
+
+
+  useEffect(() => {
+    const checkSavedStatus = async () => {
+      if (!currentUser) {
+        // If there's no user signed in, don't fetch the saved status
+        return;
+      }
+  
+      try {
+        const res = await fetch(`/api/user/check-saved/${listing._id}`);
+        const data = await res.json();
+        setIsSaved(data.isSaved);
+      } catch (error) {
+        console.error('Failed to fetch saved status:', error);
+      }
+    };
+  
+    checkSavedStatus();
+  }, [listing._id, currentUser]); // Also depend on currentUser to refetch when the user signs in or out
+  
+
+  const handleSaveStatusChange = (newStatus) => {
+    setIsSaved(newStatus);
+  };
+
 
   return (
     <div
@@ -33,7 +65,7 @@ const MoreSearch = ({ listing }) => {
               </p>
             </div>
 
-            {/* <div className="text-slate-700 flex flex-col items-start gap-4"> */}
+           
               <p className="text-slate-500 mt-2 font-semibold">
                 {listing.priceUponRequest
                   ? 'Price Upon Request'
@@ -53,7 +85,20 @@ const MoreSearch = ({ listing }) => {
                   : '1 Bath'}
               </div>
               </div>
-            {/* </div> */}
+              <div className="flex justify-between  items-center">
+          <p className="text-sm font-sans pt-2 text-slate-600">Marketed By TmmechEstate</p>
+          <button
+            onClick={(e) => {
+              e.preventDefault(); // Prevent the click from triggering the Link
+            }}
+          >
+            <SaveButton
+              listingId={listing._id}
+              isSaved={isSaved}
+              onSaveStatusChange={handleSaveStatusChange}
+            />
+          </button>
+        </div>
           </div>
         </Link>
       </div>

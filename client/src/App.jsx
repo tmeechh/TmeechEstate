@@ -17,6 +17,8 @@ import { Toaster } from 'sonner';
 import YourListings from './pages/YourListings.jsx';
 import SellWithUs from './pages/SellWithUs.jsx';
 import Photos from './Modals/Photos.jsx';
+import SavedListings from './pages/SavedListings.jsx';
+import ListingItem from './component/ListingItem.jsx';
 
 const App = () => {
   const [showSignIn, setShowSignIn] = useState(false);
@@ -69,6 +71,8 @@ const App = () => {
   const handleClosePhotos = () => setShowPhotos(false);
 
   return (
+
+    
     <BrowserRouter className="overflow-x-hidden">
       <Toaster position="top-right" />
       {showSignIn ? (
@@ -97,7 +101,7 @@ const App = () => {
       ) : null}
 
       {showProfile ? (
-        <Profile onClose={handleCloseProfile} />
+        <Profile onClose={handleCloseProfile}  />
       ) : null}
 
       {showReset ? (
@@ -111,12 +115,13 @@ const App = () => {
       <Navbar onSignIn={handleShowSignIn} onProfile={handleShowProfile} />
 
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<Home onSignIn={handleShowSignIn} />} />
 
         {/* <Route path="/reset-password" element={<ResetPassword />} /> */}
         <Route path="/about" element={<About />} />
         <Route path="/sell-with-us" element={<SellWithUs />} />
-        <Route path="/search" element={<Search />} />
+        <Route path="/search" element={<Search  onSignIn={handleShowSignIn} />} />
+        <Route path="/saved-listings" element={<SavedListings   onSignIn={handleShowSignIn}/>} />
         <Route
           path="/listing/:listingId"
           element={
@@ -134,6 +139,10 @@ const App = () => {
   <Route path="/your-listings" element={<YourListings />} />
 </Route>
       </Routes>
+
+    
+      
+      
     </BrowserRouter>
   );
 };

@@ -95,3 +95,79 @@ export const getUser = async (req, res, next) => {
     next(error);
   }
 };
+
+
+export const saveListing = async (req, res, next) => {
+  try {
+    const user = await userModel.findById(req.user.id);
+    if (!user) return next(errorHandler(404, 'User not found'));
+
+    // Check if the listing is already saved
+    if (user.savedListings.includes(req.params.listingId)) {
+      return res.status(400).json({ message: 'Listing already saved' });
+    }
+
+    user.savedListings.push(req.params.listingId);
+    await user.save();
+
+    res.status(200).json({ message: 'Listing saved successfully' });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const unsaveListing = async (req, res, next) => {
+  console.log('Unsave request received for listingId:', req.params.listingId);
+  try {
+    const user = await userModel.findById(req.user.id);
+    if (!user) return next(errorHandler(404, 'User not found'));
+
+    user.savedListings = user.savedListings.filter(
+      (id) => id.toString() !== req.params.listingId
+    );
+    await user.save();
+
+    res.status(200).json({ message: 'Listing removed from saved listings' });
+  } catch (error) {
+    console.error('Error in unsaveListing:', error);
+    next(error);
+  }
+};
+
+
+export const checkSavedStatus = async (req, res, next) => {
+  try {
+    const user = await userModel.findById(req.user.id);
+    if (!user) return next(errorHandler(404, 'User not found'));
+
+    const isSaved = user.savedListings.includes(req.params.listingId);
+    res.status(200).json({ isSaved });
+  } catch (error) {
+    next(error);
+  }
+}; 
+ 
+// Fetch saved listings for the current user
+
+
+
+export const getSavedListings = async (req, res, next) => { 
+  try {
+    const user = await userModel.findById(req.user.id).populate('savedListings');
+
+    if (!user) {
+      return next(errorHandler(404, 'User not found'));
+    }
+
+    res.status(200).json(user.savedListings);
+  } catch (error) {
+    console.error('Error fetching saved listings:', error); // Log the error
+    next(errorHandler(500, 'Internal Server Error'));
+  }
+};
+
+
+
+
+
+

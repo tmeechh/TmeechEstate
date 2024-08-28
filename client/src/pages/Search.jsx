@@ -7,9 +7,16 @@ import CustomSelect from '../component/CustomSelect';
 import {
   MagnifyingGlassIcon as FaSearch,
   ArrowLongRightIcon,
+  ExclamationCircleIcon,
 } from '@heroicons/react/24/solid';
 
-const Search = () => {
+
+
+
+
+
+
+const Search = ({onSignIn}) => {
   const navigate = useNavigate();
   const [sidebardata, setSidebardata] = useState({
     searchTerm: '',
@@ -24,6 +31,7 @@ const Search = () => {
   const [listings, setListings] = useState([]);
   const [loadingSearch, setLoadingSearch] = useState(false);
   const [showMore, setShowMore] = useState(false);
+  const [error, setError] = useState(null);
   const options = [
     { value: 'random', label: 'Exclusive(Default)' },
     { value: 'regularPrice_desc', label: 'Price high to low' },
@@ -44,8 +52,8 @@ const Search = () => {
   useEffect(() => {
     // Extract URL parameters
     const urlParams = new URLSearchParams(location.search);
-    const searchTermFromUrl = urlParams.get('searchTerm')|| '';
-    const typeFromUrl = urlParams.get('type')|| 'all'; 
+    const searchTermFromUrl = urlParams.get('searchTerm') || '';
+    const typeFromUrl = urlParams.get('type') || 'all';
     const parkingFromUrl = urlParams.get('parking');
     const furnishedFromUrl = urlParams.get('furnished');
     const offerFromUrl = urlParams.get('offer');
@@ -75,41 +83,49 @@ const Search = () => {
 
   // Function to fetch listings based on sidebardata
   const fetchListing = async () => {
-    setLoadingSearch(true);
-    setLoading(true);
-    setShowMore(false);
-  
-    // Convert boolean values to strings for true filters only
-    const queryParams = {
-      searchTerm: sidebardata.searchTerm,
-      type: sidebardata.type !== 'all' ? sidebardata.type : 'all',
-      offer: sidebardata.offer ? sidebardata.offer.toString() : undefined,
-      furnished: sidebardata.furnished ? sidebardata.furnished.toString() : undefined,
-      parking: sidebardata.parking ? sidebardata.parking.toString() : undefined,
-      sort: sidebardata.sort,
-      order: sidebardata.order,
-      limit: 9,
-      startIndex: 0,
-    };
-  
-    const searchQuery = new URLSearchParams(queryParams).toString();
-    
-  
-    const res = await fetch(`/api/listing/get?${searchQuery}`);
-    const data = await res.json();
-   
-  
-    if (data.length > 8) {
-      setShowMore(true);
-    } else {
+    try {
+      setLoadingSearch(true);
+      setLoading(true);
       setShowMore(false);
+      setError(null);
+
+      // Convert boolean values to strings for true filters only
+      const queryParams = {
+        searchTerm: sidebardata.searchTerm,
+        type: sidebardata.type !== 'all' ? sidebardata.type : 'all',
+        offer: sidebardata.offer ? sidebardata.offer.toString() : undefined,
+        furnished: sidebardata.furnished
+          ? sidebardata.furnished.toString()
+          : undefined,
+        parking: sidebardata.parking
+          ? sidebardata.parking.toString()
+          : undefined,
+        sort: sidebardata.sort,
+        order: sidebardata.order,
+        limit: 9,
+        startIndex: 0,
+      };
+
+      const searchQuery = new URLSearchParams(queryParams).toString();
+
+      const res = await fetch(`/api/listing/get?${searchQuery}`);
+      const data = await res.json();
+
+      if (data.length > 8) {
+        setShowMore(true);
+      } else {
+        setShowMore(false);
+      }
+      setListings(data);
+    } catch (error) {
+      console.error('Error fetching listings:', error);
+      setError('Something went wrong while fetching the listings. Please try again.');
+      setListings([]); // Clear listings on error
+    } finally {
+      setLoadingSearch(false);
+      setLoading(false);
     }
-    setListings(data);
-    setLoadingSearch(false);
-    setLoading(false);
   };
-  
-  
 
   useEffect(() => {
     // Fetch listings only if filters are set or search term is changed via form submission
@@ -166,7 +182,6 @@ const Search = () => {
     fetchListing();
     const urlParams = new URLSearchParams(sidebardata).toString();
     navigate(`/search?${urlParams}`);
-    
   };
 
   const onShowMoreClick = async () => {
@@ -214,111 +229,116 @@ const Search = () => {
                 isSticky ? 'fixed-bg ' : 'sticky-active '
               }`}
             >
-              <div className="flex flex-col gap-4">
-                <div className="flex gap-5 flex-wrap items-center">
-                  {/* Rent & Sell Buttons */}
-                  <button
-                    id="all"
-                    className={`border p-2 cursor-pointer ${
-                      sidebardata.type === 'all'
-                        ? 'bg-[#081d57] text-white'
-                        : 'bg-transparent'
-                    }`}
-                    onClick={() =>
-                      setSidebardata({
-                        ...sidebardata,
-                        type: 'all',
-                        sort: 'random',
-                        order: '',
-                      })
-                    } // Reset to default
-                  >
-                    <p className="font-sans text-[15px]">Rent & Sell</p>
-                  </button>
+              <div className="flex flex-col ">
+              <div className="w-full">
 
-                  <div className="">
-                    <button
-                      id="rent"
-                      className={`border px-3 py-1  cursor-pointer  ${
-                        sidebardata.type === 'rent'
-                          ? 'bg-[#081d57] text-white'
-                          : 'bg-transparent'
-                      }`}
-                      onClick={() =>
-                        setSidebardata({ ...sidebardata, type: 'rent' })
-                      }
-                    >
-                      <p className="font-sans text-[15px]">Rent</p>
-                    </button>
+      <div className=" flex gap-5 flex-wrap items-center">
+        {/* Rent & Sell Button */}
+        <button
+          id="all"
+          className={`border p-2 cursor-pointer ${
+            sidebardata.type === 'all'
+              ? 'bg-[#081d57] text-white'
+              : 'bg-transparent'
+          }`}
+          onClick={() =>
+            setSidebardata({
+              ...sidebardata,
+              type: 'all',
+              sort: 'random',
+              order: '',
+            })
+          }
+        >
+          <p className="font-sans text-[15px]">Rent & Sell</p>
+        </button>
 
-                    <button
-                      id="sale"
-                      className={`border px-3 py-1  cursor-pointer ${
-                        sidebardata.type === 'sale'
-                          ? 'bg-[#081d57] text-white'
-                          : 'bg-transparent'
-                      }`}
-                      onClick={() =>
-                        setSidebardata({ ...sidebardata, type: 'sale' })
-                      }
-                    >
-                      <p className="font-sans text-[15px]">Sale</p>
-                    </button>
-                  </div>
-                  {/* Offer Button */}
-                  <button
-                    id="offer"
-                    className={`border px-3 py-1   cursor-pointer ${
-                      sidebardata.offer
-                        ? 'bg-[#081d57] text-white '
-                        : 'bg-transparent'
-                    }`}
-                    onClick={() =>
-                      setSidebardata({
-                        ...sidebardata,
-                        offer: !sidebardata.offer,
-                      })
-                    }
-                  >
-                    <p className="font-sans text-[15px]">Offer</p>
-                  </button>
+        {/* Rent Button */}
+        <button
+          id="rent"
+          className={`border px-3 py-1 cursor-pointer ${
+            sidebardata.type === 'rent'
+              ? 'bg-[#081d57] text-white'
+              : 'bg-transparent'
+          }`}
+          onClick={() =>
+            setSidebardata({ ...sidebardata, type: 'rent' })
+          }
+        >
+          <p className="font-sans text-[15px]">Rent</p>
+        </button>
 
-                  {/* Amenities Buttons */}
-                  <button
-                    id="parking"
-                    className={`border px-3 py-1   cursor-pointer ${
-                      sidebardata.parking
-                        ? ' bg-[#081d57]  text-white '
-                        : 'bg-transparent'
-                    }`}
-                    onClick={() =>
-                      setSidebardata({
-                        ...sidebardata,
-                        parking: !sidebardata.parking,
-                      })
-                    }
-                  >
-                    <p className="font-sans text-[15px]">Parking</p>
-                  </button>
+        {/* Sale Button */}
+        <button
+          id="sale"
+          className={`border px-3 py-1 cursor-pointer ${
+            sidebardata.type === 'sale'
+              ? 'bg-[#081d57] text-white'
+              : 'bg-transparent'
+          }`}
+          onClick={() =>
+            setSidebardata({ ...sidebardata, type: 'sale' })
+          }
+        >
+          <p className="font-sans text-[15px]">Sale</p>
+        </button>
 
-                  <button
-                    id="furnished"
-                    className={`border px-3 py-1   cursor-pointer ${
-                      sidebardata.furnished
-                        ? 'bg-[#081d57]  text-white'
-                        : 'bg-transparent'
-                    }`}
-                    onClick={() =>
-                      setSidebardata({
-                        ...sidebardata,
-                        furnished: !sidebardata.furnished,
-                      })
-                    }
-                  >
-                    <p className="font-sans text-[15px]">Furnished</p>
-                  </button>
-                </div>
-              </div>
+        {/* Offer Button */}
+        <button
+          id="offer"
+          className={`border px-3 py-1 cursor-pointer ${
+            sidebardata.offer
+              ? 'bg-[#081d57] text-white'
+              : 'bg-transparent'
+          }`}
+          onClick={() =>
+            setSidebardata({
+              ...sidebardata,
+              offer: !sidebardata.offer,
+            })
+          }
+        >
+          <p className="font-sans text-[15px]">Offer</p>
+        </button>
+
+        {/* Parking Button */}
+        <button
+          id="parking"
+          className={`border px-3 py-1 cursor-pointer ${
+            sidebardata.parking
+              ? 'bg-[#081d57] text-white'
+              : 'bg-transparent'
+          }`}
+          onClick={() =>
+            setSidebardata({
+              ...sidebardata,
+              parking: !sidebardata.parking,
+            })
+          }
+        >
+          <p className="font-sans text-[15px]">Parking</p>
+        </button>
+
+        {/* Furnished Button */}
+        <button
+          id="furnished"
+          className={`border px-3 py-1 cursor-pointer ${
+            sidebardata.furnished
+              ? 'bg-[#081d57] text-white'
+              : 'bg-transparent'
+          }`}
+          onClick={() =>
+            setSidebardata({
+              ...sidebardata,
+              furnished: !sidebardata.furnished,
+            })
+          }
+        >
+          <p className="font-sans text-[15px]">Furnished</p>
+        </button>
+      </div>
+            </div>
+              </div> 
 
               <div className="flex flex-col gap-5 lg:gap-9">
                 <div className="flex items-center border-b border-slate-500 xl:w-[160%]">
@@ -365,9 +385,13 @@ const Search = () => {
         </div>
         {/* Bottom */}
         <div className="xl:mt-28 mt-44">
-          <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3   2xl:grid-cols-5 gap-4 p-4">
-            {!loading && listings.length === 0 && (
-              <p className="text-xl text-slate-700">No listing found!</p>
+        {!loading && error && (
+              <p className=" text-center pt-32 justify-center mx-auto w-[80%]  flex flex-col items-center sm:gap-1 text-[#333333] text-sm md:text-[16px] "> <ExclamationCircleIcon className="w-6" />  {error}</p> // Display error message
+            )}
+          <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-5 gap-4 p-4">
+          
+            {!loading && !error && listings.length === 0 && (
+              <p className="text-xl  text-center pt-32 justify-center mx-auto  flex items-center  text-slate-700">No listing found!</p>
             )}
             {loading && (
               <div className="flex justify-center items-center col-span-3 xl:col-span-4">
@@ -375,11 +399,14 @@ const Search = () => {
               </div>
             )}
             {!loading &&
+              !error &&
               listings &&
               listings.map((listing) => (
-                <ListingItem key={listing._id} listing={listing} />
+                <ListingItem key={listing._id} onSignIn={onSignIn} listing={listing} />
+
               ))}
           </div>
+
           {!loading && showMore && (
             <div className="p-7 text-center w-full">
               <button

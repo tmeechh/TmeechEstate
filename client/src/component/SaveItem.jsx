@@ -1,22 +1,12 @@
-import { FaMapMarkerAlt } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import SaveButton from './SaveButton.jsx';
-import { useSelector } from 'react-redux'; 
 
-const ListingItem = ({ listing,onSignIn }) => {
+const SaveItem = ({ listing }) => {
   const [isSaved, setIsSaved] = useState(false);
-  const { currentUser } = useSelector((state) => state.user);
-
-
 
   useEffect(() => {
     const checkSavedStatus = async () => {
-      if (!currentUser) {
-        // If there's no user signed in, don't fetch the saved status
-        return;
-      }
-  
       try {
         const res = await fetch(`/api/user/check-saved/${listing._id}`);
         const data = await res.json();
@@ -25,30 +15,16 @@ const ListingItem = ({ listing,onSignIn }) => {
         console.error('Failed to fetch saved status:', error);
       }
     };
-  
     checkSavedStatus();
-  }, [listing._id, currentUser]);
+  }, [listing._id]);
 
   const handleSaveStatusChange = (newStatus) => {
     setIsSaved(newStatus);
   };
 
-  const handleSaveButtonClick = (e) => {
-    e.preventDefault(); // Prevent the click from triggering the Link
-    if (!currentUser) {
-      console.log('User not signed in, calling onSignIn');
-      if (onSignIn) { // Ensure onSignIn is defined
-        onSignIn(); // Show sign-in modal
-      } else {
-        console.error('onSignIn is not defined');
-      }
-    }
-  };
-  
-
   return (
-    <div className="flex items-center justify-center ">
-      <div className="bg-white shadow-md hover:shadow-xl mb-6 transition-shadow overflow-hidden rounded-lg w-full sm:w-[330px] xl:w-[370px]">
+    <div className="flex items-center justify-center">
+      <div className="bg-white shadow-md hover:shadow-xl mb-6 transition-shadow overflow-hidden  w-[370px]">
         <Link to={`/listing/${listing._id}`}>
           <img
             className="h-[320px] sm:h-[220px] w-full object-cover hover:scale-105 transition-scale duration-300"
@@ -57,20 +33,11 @@ const ListingItem = ({ listing,onSignIn }) => {
           />
 
           <div className="p-3 flex flex-col gap-2 w-full">
-            <p className="truncate text-lg font-semibold text-[#333333] ">
-              {listing.name}
+            <p className="text-[18px] text-wrap w-fit  h-[90px]  text-gray-600">
+              {listing.address}
             </p>
-            <div className="flex gap-1 items-center ">
-              {' '}
-              <FaMapMarkerAlt className="text-green-700 w-4 h-[13px]" />
-              <p className="truncate text-sm w-full text-gray-600">
-                {listing.address}
-              </p>
-            </div>
-            <p className="font-sans text-sm w-full text-gray-600 line-clamp-2">
-              {listing.description}
-            </p>
-            <p className="text-gray-500 mt-2 font-semibold">
+
+            <p className="text-[#333333] mt-2 font-semibold">
               {listing.priceUponRequest
                 ? 'Price Upon Request'
                 : listing.offer
@@ -90,22 +57,26 @@ const ListingItem = ({ listing,onSignIn }) => {
               </div>
             </div>
             <div className="flex justify-between  items-center">
-          <p className="text-sm font-sans pt-2 text-slate-600">Marketed By TmmechEstate</p>
-          <button onClick={handleSaveButtonClick}>
+              <p className="text-sm font-sans pt-2 text-slate-600">
+                Marketed By TmmechEstate
+              </p>
+              <button
+                onClick={(e) => {
+                  e.preventDefault(); // Prevent the click from triggering the Link
+                }}
+              >
                 <SaveButton
                   listingId={listing._id}
                   isSaved={isSaved}
                   onSaveStatusChange={handleSaveStatusChange}
-                 
                 />
               </button>
-        </div>
+            </div>
           </div>
         </Link>
-      
       </div>
     </div>
   );
 };
 
-export default ListingItem;
+export default SaveItem;

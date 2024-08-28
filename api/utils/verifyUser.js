@@ -15,7 +15,7 @@ export const verifyToken = (req, res, next) => {
     } 
     // console.log('Decoded user:', user);
 
-    req.user = { id: user.id || user._id };
+    req.user = { id: user.id || user._id  };
     console.log('Verified user:', req.user);
     next();
   });

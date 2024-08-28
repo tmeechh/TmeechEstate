@@ -88,13 +88,9 @@ const Navbar = ({ onSignIn, onProfile }) => {
               <div className='flex cursor-pointer items-center gap-4 '>
 
               <li  onClick={onProfile} className="flex gap-1 items-center">
-                {/* <img
-                  className="rounded-full h-7 w-7 object-cover"
-                  src={currentUser.avatar}
-                  alt="profile"
-                />
-                <h3 className="text-sm font-josefin text-[#F5F5F5]">{currentUser.username}</h3> */}
-                  <UserIcon className="w-6"/>
+                
+                  <UserIcon className="w-4" />
+                  <h3 className='font-josefin text-[14px]  '>My Portfolio</h3>
                 </li>
                 </div>
               

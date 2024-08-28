@@ -16,21 +16,15 @@ import sec from '../assets/sec.png';
 import ListingItem from '../component/ListingItem';
 import Footer from '../component/Footer';
 
-const Home = () => {
+const Home = ({onSignIn}) => {
   const [offerListings, setOfferListings] = useState([]);
   const [saleListings, setSaleListings] = useState([]);
   const [rentListings, setRentListings] = useState([]);
 
-  const navigate = useNavigate('');
+
 
   // Handle search submission from home page
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const searchTerm = document.getElementById('searchTerm').value.trim();
-    if (searchTerm) {
-      navigate(`/search?searchTerm=${searchTerm}`);
-    }
-  };
+
 
   SwiperCore.use([Autoplay, Pagination]);
   // console.log( saleListings);
@@ -114,9 +108,9 @@ const Home = () => {
 
             <Link
               to="/search"
-              className="bg-[#021342] font-josefin uppercase text-[10px] lg:text-[13px] rounded-xl flex gap-2 lg:gap-3 w-fit items-center p-2 lg:py-3 lg:px-4 text-white"
+              className="bg-[#021342] font-josefin uppercase text-[10px] lg:text-[13px] rounded-xl flex gap-2 lg:gap-3 w-fit items-center p-2 lg:py-3  lg:px-4 text-white"
             >
-             Explore Listings
+            <p className='lg:pt-0 pt-1'>Explore Listings</p> 
              {' '}
               <ArrowLongRightIcon className="w-6 lg:w-8 lg:h-7 h-5 lg:mb-[-27px] mb-[-20px]  transform -translate-y-1/2 transition-transform duration-300 ease-in-out hover:translate-x-2 hover:scale-110 flex items-center justify-center" />
             </Link>
@@ -300,7 +294,7 @@ const Home = () => {
             </div>
             <div className=" grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3   2xl:grid-cols-5 gap-4 p-4">
               {offerListings.map((listing) => (
-                <ListingItem listing={listing} key={listing._id} />
+                <ListingItem listing={listing} onSignIn={onSignIn} key={listing._id} />
               ))}
             </div>
           </div>
@@ -321,7 +315,7 @@ const Home = () => {
           </div>
           <div className="mb-12 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3   2xl:grid-cols-5 gap-4 p-4">
             {rentListings.map((listing) => (
-              <ListingItem listing={listing} key={listing._id} />
+              <ListingItem listing={listing} onSignIn={onSignIn} key={listing._id} />
             ))}
           </div>
         </div>
@@ -342,7 +336,7 @@ const Home = () => {
           </div>
           <div className=" grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3   2xl:grid-cols-5 gap-4 p-4">
             {saleListings.map((listing) => (
-              <ListingItem listing={listing} key={listing._id} />
+              <ListingItem listing={listing} onSignIn={onSignIn} key={listing._id} />
             ))}
           </div>
         </div>

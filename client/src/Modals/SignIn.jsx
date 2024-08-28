@@ -1,16 +1,13 @@
 /* eslint-disable react/no-unescaped-entities */
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 import { XMarkIcon } from '@heroicons/react/24/solid';
-import {
-  signInStart,
-  signInSuccess,
-  signInFailure,
-} from '../redux/user/userSlice';
+import { signInSuccess } from '../redux/user/userSlice';
 import OAuth from '../component/OAuth';
 import Spinner from '../Spinner';
+import { toast } from 'sonner';
 
 const SignIn = ({ onClose, swapModal, onForgot }) => {
   const [formData, setFormData] = useState({});
@@ -40,7 +37,7 @@ const SignIn = ({ onClose, swapModal, onForgot }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
- 
+
     try {
       setLoading(true);
       const res = await fetch('/api/auth/signin', {
@@ -73,6 +70,7 @@ const SignIn = ({ onClose, swapModal, onForgot }) => {
       setLoading(false);
       dispatch(signInSuccess(data));
       onClose();
+      toast.success('Welcome Back');
       navigate('/');
       console.log(data);
     } catch (error) {
@@ -150,7 +148,9 @@ const SignIn = ({ onClose, swapModal, onForgot }) => {
               onClick={onClose}
               className="hover:underline  text-[#333333] hover:text-gray-600 text-[12px] lg:text-[16px]"
             >
-              <Link className='font-josefin' onClick={onForgot}>Forgot Password?</Link>
+              <Link className="font-josefin" onClick={onForgot}>
+                Forgot Password?
+              </Link>
             </div>
           </div>
         </div>

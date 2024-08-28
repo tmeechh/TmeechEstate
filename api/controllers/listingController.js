@@ -73,7 +73,7 @@ export const deleteListing = async (req, res, next) => {
 
 
 export const updateListing = async (req, res, next) => {
-  const allowedUserIds = ['669c46c2c8a948365b5d87ac', '66a5868be14c9fc5faf9a2e1'];
+  const allowedUserIds = process.env.ALLOWED_USER_IDS.split(',');
 
   // Validate the ObjectId
   if (!mongoose.Types.ObjectId.isValid(req.params.id)) {

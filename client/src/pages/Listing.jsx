@@ -8,15 +8,18 @@ import 'swiper/css/bundle';
 import { useSelector } from 'react-redux';
 import { FaShare } from 'react-icons/fa';
 import Contact from '../component/Contact.jsx';
-import { PhotoIcon } from '@heroicons/react/24/solid';
+import { ExclamationCircleIcon, PhotoIcon } from '@heroicons/react/24/solid';
+import { ArrowLongLeftIcon } from '@heroicons/react/24/outline';
 import MoreSearch from '../component/MoreSearch.jsx';
 import Footer from '../component/Footer.jsx';
+import SaveButton from '../component/SaveButton.jsx';
 
-const Listing = ({ handleShowPhotos}) => {
+const Listing = ({ handleShowPhotos, onSignIn }) => {
   SwiperCore.use([Navigation, Pagination]);
   const params = useParams();
 
   const [listing, setListing] = useState(null);
+  const [isSaved, setIsSaved] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const { currentUser } = useSelector((state) => state.user);
@@ -84,17 +87,104 @@ const Listing = ({ handleShowPhotos}) => {
     fetchListings();
   }, []);
 
+  useEffect(() => {
+    const checkSavedStatus = async () => {
+      if (!currentUser) {
+        // If there's no user signed in, don't fetch the saved status
+        return;
+      }
+
+      try {
+        const res = await fetch(`/api/user/check-saved/${listing._id}`);
+        const data = await res.json();
+        setIsSaved(data.isSaved);
+      } catch (error) {
+        console.error('Failed to fetch saved status:', error);
+      }
+    };
+    checkSavedStatus();
+  }, [params.listingId, currentUser]);
+
+  const handleSaveButtonClick = async (e) => {
+    e.preventDefault(); // Prevent the default button behavior
+
+    if (!currentUser) {
+      // If the user is not signed in, show the sign-in modal
+      console.log('User not signed in, calling onSignIn');
+      if (onSignIn) {
+        onSignIn(); // Show sign-in modal
+      } else {
+        console.error('onSignIn is not defined');
+      }
+      return;
+    }
+
+    // Perform the save operation
+    const newStatus = !isSaved;
+    try {
+      const response = await fetch(`/api/user/save/${listing._id}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ isSaved: newStatus }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to save status');
+      }
+
+      // Update the status only if the save operation is successful
+      setIsSaved(newStatus);
+    } catch (error) {
+      console.error('Failed to update saved status:', error);
+      // Optionally show an error message to the user
+    }
+  };
+
+  const handleSaveStatusChange = (newStatus) => {
+    setIsSaved(newStatus);
+  };
+
+  const [isSticky, setIsSticky] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const navbarHeight = 500; // Adjust this based on your navbar height
+      const scrollPosition = window.scrollY;
+
+      if (scrollPosition >= navbarHeight) {
+        setIsSticky(true);
+      } else {
+        setIsSticky(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
+  const handleGoBack = () => {
+    window.history.back();
+  };
+
   return (
     <main>
       {loading && <Spinner />}
       {error && (
-        <div className="text-center my-7">
-          <p className="mb-4  text-2xl">Something went wrong!!</p>
+        <div className="p-28 flex flex-col gap-2  items-center justify-center">
+          {' '}
+          <p className="flex gap-2  items-center justify-center text-2xl">
+            <ExclamationCircleIcon className="w-9" /> Something went wrong !{' '}
+          </p>{' '}
           <Link
-            className="text-blue-500 text-center hover:underline text-xl"
             to="/"
+            className="font-josefin hover:no-underline text-sm underline text-[#0c2875]"
           >
-            Return to Homepage
+            Return to home page
           </Link>
         </div>
       )}
@@ -117,7 +207,7 @@ const Listing = ({ handleShowPhotos}) => {
 
               <button
                 onClick={() => handleShowPhotos(listing.imageUrls)}
-                className="flex cursor-pointer gap-2 items-center bg-white p-2 text-gray-600 rounded border border-amber-700 w-fit"
+                className="flex cursor-pointer gap-2 items-center bg-white  p-2 text-gray-600 rounded border border-amber-700 w-fit"
               >
                 <PhotoIcon className="w-5" />
                 <p className="text-[17px]"> {listing.imageUrls.length}</p>
@@ -145,7 +235,36 @@ const Listing = ({ handleShowPhotos}) => {
               Link copied!
             </p>
           )}
+          <div
+            id="stickyElement"
+            className={`px-7 border-b flex items-center justify-between border-slate-300 ${
+              isSticky ? 'fixed-bg-listing ' : ' '
+            }`}
+          >
+            <div onClick={handleGoBack} className="flex items-center gap-5">
+              <button className="dynamic-button flex py-4 sm:pl-5  lg:pl-12 pr-4 lg:pr-7 gap-2 border-r border-slate-300 h-[50px]   uppercase font-josefin text-[#021342] text-[11px] items-center cursor-pointer">
+                <ArrowLongLeftIcon className="w-6 lg:w-6 lg:h-7 lg:mb-[-26px] mb-[-20px]  transform -translate-y-1/2 transition-transform duration-300 ease-in-out hover:translate-x-[-8px] hover:scale-110 flex items-center justify-center" />
+                back
+              </button>
 
+              <p className="text-[#021342] hidden sm:inline text-[14px]">
+                {listing.address}
+              </p>
+            </div>
+
+            <button
+              className="flex gap-2 uppercase font-josefin  text-[#021342] text-[11px] items-center cursor-pointer"
+              onClick={handleSaveButtonClick}
+            >
+              <SaveButton
+                listingId={params.listingId}
+                isSaved={isSaved}
+                onSaveStatusChange={handleSaveStatusChange}
+                onSignIn={onSignIn}
+              />
+              <p className="pt-1"> {isSaved ? 'Saved' : 'Save'}</p>
+            </button>
+          </div>
           <div className="flex flex-col max-w-6xl mx-8 p-3 my-7 gap-4">
             <div className="xl:flex flex-row-reverse items-center justify-between mt-12">
               <button
@@ -544,7 +663,7 @@ const Listing = ({ handleShowPhotos}) => {
                 </div>
               </div>
             </div>
-          </div> 
+          </div>
           {(!currentUser || currentUser._id !== listing.userRef) && (
             <div className="mt-24  px-20 py-32  bg-gray-100">
               <Contact listing={listing} />

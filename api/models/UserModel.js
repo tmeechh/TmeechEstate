@@ -19,6 +19,7 @@ const userSchema = new mongoose.Schema(
     otp: { type: String }, // Optional: For storing OTP
     otpExpires: { type: Date }, // Optional: For OTP expiration
     isDeleted: { type: Boolean, default: false },
+    savedListings: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Listing' }],
   },
   { timestamps: true }
 );

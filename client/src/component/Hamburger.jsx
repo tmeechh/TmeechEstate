@@ -52,8 +52,8 @@ const Hamburger = ({ onSignIn, onProfile }) => {
                 </Link>
                 <div onClick={toggleMenu}>
                   {currentUser ? (
-                    <div className="flex flex-col gap-3">
-                      <li onClick={onProfile} className="flex  items-center gap-2">
+                    <div className="flex flex-col gap-3 cursor-pointer">
+                      <li onClick={onProfile} className="flex cursor-pointer  items-center gap-2">
                         {/* <img
                           className="rounded-full h-7 w-7 object-cover"
                           src={currentUser.avatar}
@@ -66,7 +66,7 @@ const Hamburger = ({ onSignIn, onProfile }) => {
                   ) : (
                     <p
                       onClick={onSignIn}
-                      className="hover:underline text-[14px]   "
+                      className="hover:underline text-[14px]   cursor-pointer"
                     >
                       Join {''} / Log in
                     </p>
