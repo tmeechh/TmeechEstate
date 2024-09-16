@@ -74,7 +74,7 @@ const App = () => {
 
     
     <BrowserRouter className="overflow-x-hidden">
-      <Toaster position="top-right" />
+      <Toaster position="top-right" richColors/>
       {showSignIn ? (
         <SignIn
           onClose={handleCloseSignIn}
